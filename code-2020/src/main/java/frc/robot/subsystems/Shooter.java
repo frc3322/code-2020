@@ -13,9 +13,10 @@ public class Shooter extends PIDSubsystem {
     private static double P = 0.03;
     private static double I = 0;
     private static double D = 0;
+    private static double F = 4;
 
-    private CANSparkMax[] motors;
-    private CANEncoder[] encoders;
+    private CANSparkMax[] motors = new CANSparkMax[2];
+    private CANEncoder[] encoders = new CANEncoder[2];
 
     private final int MOTOR_0 = 0,
                         MOTOR_1 = 1;
@@ -24,7 +25,7 @@ public class Shooter extends PIDSubsystem {
                         ENCODER_1 = 1;
 
     public Shooter() {
-        super("Shooter PID", P, I, D);
+        super("Shooter PID", P, I, D, F);
 
         motors[MOTOR_0] = new CANSparkMax(RobotMap.CAN.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(RobotMap.CAN.SHOOTER_2, MotorType.kBrushless);
@@ -35,7 +36,7 @@ public class Shooter extends PIDSubsystem {
         motors[MOTOR_1].follow(motors[MOTOR_0]);
 
         setAbsoluteTolerance(20);
-        getPIDController().setContinuous(true);
+        getPIDController().setContinuous(false);
         setOutputRange(0, 1);
     }
 
