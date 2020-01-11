@@ -9,7 +9,7 @@ package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.buttons.*;
-
+import frc.robot.commands.*;
 /**
  * This class is the glue that binds the controls on the physical operator
  * interface to the commands and command groups that allow control of the robot.
@@ -37,7 +37,7 @@ public class OI {
     private Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
 
     public OI() {
-
+        button_a_lower.whenPressed(new TurnToAngle());
     }
 
     public Joystick getUpperChassis(){

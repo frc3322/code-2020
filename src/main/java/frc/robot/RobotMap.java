@@ -15,13 +15,13 @@ package frc.robot;
  */
 public class RobotMap {
     public static class CAN {
-        public static final int LEFT_FRONT_MOTOR = 44;
-        public static final int LEFT_BACK_MOTOR = 43;
-        public static final int RIGHT_FRONT_MOTOR = 41;
-        public static final int RIGHT_BACK_MOTOR = 42;
+        public static final int LEFT_FRONT_MOTOR = 37;
+        public static final int LEFT_BACK_MOTOR = 46;
+        public static final int RIGHT_FRONT_MOTOR = 34;
+        public static final int RIGHT_BACK_MOTOR = 35;
 
-        public static final int SHOOTER_1 = 45;
-        public static final int SHOOTER_2 = 46;
+        public static final int SHOOTER_1 = 0;
+        public static final int SHOOTER_2 = 0;
     }
 
     public static class DIO {

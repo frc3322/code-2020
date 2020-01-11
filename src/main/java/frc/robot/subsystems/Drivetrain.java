@@ -34,6 +34,7 @@ public class Drivetrain extends Subsystem {
         motors[RIGHT_FRONT] = new CANSparkMax(RobotMap.CAN.RIGHT_FRONT_MOTOR, MotorType.kBrushless);
 
         motors[LEFT_BACK].follow(motors[LEFT_FRONT]);
+        motors[RIGHT_BACK].follow(motors[RIGHT_FRONT]);
 
         encoders[LEFT_BACK] = motors[LEFT_BACK].getEncoder();
         encoders[LEFT_FRONT] = motors[LEFT_FRONT].getEncoder();
