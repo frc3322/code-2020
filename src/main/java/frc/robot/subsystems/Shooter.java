@@ -7,10 +7,11 @@ import com.revrobotics.ControlType;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 
-public class Shooter {
+public class Shooter extends Subsystem {
 
     private static double P = 0.2;
     private static double I = 0;
@@ -42,8 +43,14 @@ public class Shooter {
         }
 
         controller = motors[MOTOR_0].getPIDController();
-        updateConstants();
 
+        SmartDashboard.putNumber("P", P);
+        SmartDashboard.putNumber("I", I);
+        SmartDashboard.putNumber("D", D);
+        SmartDashboard.putNumber("F", F);
+
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Set Shooter RPM", 3000);
     }
 
     /*
@@ -73,13 +80,15 @@ public class Shooter {
         controller.setFF(SmartDashboard.getNumber("F", 0));
     }
 
-    public void putNumbers() {
-        SmartDashboard.putNumber("P", P);
-        SmartDashboard.putNumber("I", I);
-        SmartDashboard.putNumber("D", D);
-        SmartDashboard.putNumber("F", F);
+    @Override
+    protected void initDefaultCommand() {
+        // TODO Auto-generated method stub
 
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Set Shooter RPM", 3000);
     }
+
+    @Override
+    public void periodic() {
+        updateConstants();
+    }
+
 }

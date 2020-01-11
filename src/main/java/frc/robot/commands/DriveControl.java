@@ -11,14 +11,6 @@ public class DriveControl extends Command {
     private final int SPEED_AXIS;
     private final int ROTATION_AXIS;
 
-    private double rotationModifier;
-
-    private double turnDirection;
-
-    private double speed;
-
-    private double turn;
-
     private double y;
     private double x;
     private double sX;
@@ -37,8 +29,6 @@ public class DriveControl extends Command {
 
     @Override
     protected void execute() {
-        speed = oi.getLowerChassis().getRawAxis(SPEED_AXIS);
-
         x = oi.getLowerChassis().getRawAxis(ROTATION_AXIS);
         y = oi.getLowerChassis().getRawAxis(SPEED_AXIS);
         

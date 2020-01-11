@@ -13,12 +13,19 @@ package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.wpilibj.smartdashboard.*;
 
 public class Limelight extends Subsystem {
 
+    public Limelight() {
+        SmartDashboard.putNumber("Limelight Angle", 35);
+        SmartDashboard.putNumber("Limelight Height", 1/2);
+        SmartDashboard.putString("Limelight Lights On", "f");
+    }
+
     @Override
     protected void initDefaultCommand() {
-
+        
     }
 
     private static NetworkTableInstance table = null;
@@ -113,6 +120,15 @@ public class Limelight extends Subsystem {
         getValue("camMode").setNumber(mode.ordinal());
     }
 
+    public static double getDistance() {
+        double limelightAngle = 24;
+        double targetAngle = getTy();
+        double limelightHeight = 1/6;
+        double targetHeight = 7 + (5/6);
+
+        return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
+    }
+
     /**
      * Sets pipeline number (0-9 value).
      *
@@ -134,5 +150,16 @@ public class Limelight extends Subsystem {
         }
 
         return table.getTable("limelight").getEntry(key);
+    }
+
+    @Override
+    public void periodic() {
+        SmartDashboard.putNumber("Distance to Target", getDistance());
+        
+        if(SmartDashboard.getString("Limelight Lights On", "f").equals("t")){
+            Limelight.setLedMode(LightMode.eOn);
+        } else{
+            Limelight.setLedMode(LightMode.eOff);
+        }
     }
 }

@@ -69,5 +69,10 @@ public class Drivetrain extends Subsystem {
     @Override
     protected void initDefaultCommand() {
         setDefaultCommand(new DriveControl());
-	}
+    }
+
+    @Override
+    public void periodic() {
+        
+    }
 }
