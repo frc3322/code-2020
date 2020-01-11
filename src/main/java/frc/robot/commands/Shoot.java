@@ -1,21 +1,30 @@
 package frc.robot.commands;
+import frc.robot.subsystems.Shooter;
+import static frc.robot.Robot.shooter;
+import edu.wpi.first.wpilibj2.command.*;
+import java.util.*;
 
-import edu.wpi.first.wpilibj.command.Command;
-
-public class Shoot extends Command {
-
+public class Shoot implements Command {
     @Override
-    protected void initialize(){
+    public Set<Subsystem> getRequirements() {
+        Set<Subsystem> requSet = new HashSet<Subsystem>();
+        requSet.add(shooter);
+        return requSet;
 
     }
 
     @Override
-    protected void execute(){
+    public void initialize(){
 
     }
 
     @Override
-    protected boolean isFinished() {
+    public void execute(){
+
+    }
+
+    @Override
+    public boolean isFinished() {
         return false;
     }
 
