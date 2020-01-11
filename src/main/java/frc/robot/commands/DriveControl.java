@@ -1,13 +1,14 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
+import java.util.*;
+
+import edu.wpi.first.wpilibj2.command.*;
 import frc.robot.RobotMap;
 
 import static frc.robot.Robot.drivetrain;
 import static frc.robot.Robot.oi;
 
-//Should be "implements"
-public class DriveControl extends Command {
+public class DriveControl implements Command {
 
     private final int SPEED_AXIS;
     private final int ROTATION_AXIS;
@@ -30,14 +31,14 @@ public class DriveControl extends Command {
     private double newY;
 
     public DriveControl() {
-        requires(drivetrain);
+        
 
         SPEED_AXIS = RobotMap.XBOX.STICK_L_Y_AXIS;
         ROTATION_AXIS = RobotMap.XBOX.STICK_R_X_AXIS;
     }
 
     @Override
-    protected void execute() {
+    public void execute() {
         speed = oi.getLowerChassis().getRawAxis(SPEED_AXIS);
 
         x = oi.getLowerChassis().getRawAxis(ROTATION_AXIS);
@@ -64,7 +65,15 @@ public class DriveControl extends Command {
     }
 
     @Override
-    protected boolean isFinished() {
+    public Set<Subsystem> getRequirements() {
+        Set<Subsystem> requSet = new HashSet<Subsystem>();
+        requSet.add(drivetrain);
+        return requSet;
+        
+    }
+
+    @Override
+    public boolean isFinished() {
         return false;
     }
 

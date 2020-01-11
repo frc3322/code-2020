@@ -4,12 +4,14 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveControl;
 
-public class Drivetrain extends Subsystem {
+public class Drivetrain implements Subsystem {
 
     private DifferentialDrive robotDrive;
 
@@ -22,6 +24,7 @@ public class Drivetrain extends Subsystem {
                         RIGHT_FRONT = 3;
 
     public Drivetrain() {
+        CommandScheduler.getInstance().registerSubsystem(this);
         motors[LEFT_BACK] = new CANSparkMax(RobotMap.CAN.LEFT_BACK_MOTOR, MotorType.kBrushless);
         motors[LEFT_FRONT] = new CANSparkMax(RobotMap.CAN.LEFT_FRONT_MOTOR, MotorType.kBrushless);
         motors[RIGHT_BACK] = new CANSparkMax(RobotMap.CAN.RIGHT_BACK_MOTOR, MotorType.kBrushless);
@@ -67,7 +70,7 @@ public class Drivetrain extends Subsystem {
     }
 
     @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(new DriveControl());
+    public void setDefaultCommand(Command defaultCommand) {
+        CommandScheduler.getInstance().setDefaultCommand(this, new DriveControl());
 	}
 }
