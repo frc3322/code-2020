@@ -10,14 +10,15 @@
 
 package frc.robot.subsystems;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
 
-public class Limelight extends Subsystem {
+public class Limelight implements Subsystem {
 
     @Override
-    protected void initDefaultCommand() {
+    public void setDefaultCommand(Command defaultCommand) {
 
     }
 
