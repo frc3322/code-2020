@@ -74,10 +74,10 @@ public class Shooter extends Subsystem {
 
     public void updateConstants() {
         controller.setOutputRange(0, 1);
-        controller.setP(SmartDashboard.getNumber("P", 0));
-        controller.setI(SmartDashboard.getNumber("I", 0));
-        controller.setD(SmartDashboard.getNumber("D", 0));
-        controller.setFF(SmartDashboard.getNumber("F", 0));
+        controller.setP(SmartDashboard.getNumber("Shooter P", 0));
+        controller.setI(SmartDashboard.getNumber("Shooter I", 0));
+        controller.setD(SmartDashboard.getNumber("Shooter D", 0));
+        controller.setFF(SmartDashboard.getNumber("Shooter F", 0));
     }
 
     @Override

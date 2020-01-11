@@ -4,10 +4,14 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
 import frc.robot.commands.DriveControl;
+
+import static frc.robot.Robot.limelight;
 
 public class Drivetrain extends Subsystem {
 
@@ -15,6 +19,8 @@ public class Drivetrain extends Subsystem {
 
     private CANSparkMax[] motors = new CANSparkMax[4];
     private CANEncoder[] encoders = new CANEncoder[4];
+
+    private PIDController PID;
 
     private final int LEFT_BACK = 0, 
                         LEFT_FRONT = 1, 
@@ -35,6 +41,15 @@ public class Drivetrain extends Subsystem {
         encoders[RIGHT_FRONT] = motors[RIGHT_FRONT].getEncoder();
 
         robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);    
+        
+        PID = new PIDController(0, 0, 0);
+
+        PID.disableContinuousInput();
+        PID.setTolerance(2.5);
+
+        SmartDashboard.putNumber("Drivetrain P", 0);
+        SmartDashboard.putNumber("Drivetrain I", 0);
+        SmartDashboard.putNumber("Drivetrain D", 0);
     }
 
     public double getVoltage(int n) {
@@ -62,6 +77,20 @@ public class Drivetrain extends Subsystem {
 
     }
 
+    public void pidDrive(Double speed) {
+        drive(speed, PID.calculate(limelight.getTx(), 0));
+    }
+
+    public boolean onTarget() {
+        return PID.atSetpoint();
+    }
+
+    public void updateConstants() {
+        PID.setP(SmartDashboard.getNumber("Drivetrain P", 0));
+        PID.setI(SmartDashboard.getNumber("Drivetrain I", 0));
+        PID.setD(SmartDashboard.getNumber("Drivetrain D", 0));
+    }
+
     public void tankDrive(double leftSpeed, double rightSpeed) {
         robotDrive.tankDrive(leftSpeed, rightSpeed);
     }
@@ -73,6 +102,6 @@ public class Drivetrain extends Subsystem {
 
     @Override
     public void periodic() {
-        
+        updateConstants();
     }
 }

@@ -53,7 +53,7 @@ public class Limelight extends Subsystem {
      *
      * @return true if a target is detected, false otherwise.
      */
-    public static boolean isTarget() {
+    public boolean isTarget() {
         return getValue("tv").getDouble(0) == 1;
     }
 
@@ -62,7 +62,7 @@ public class Limelight extends Subsystem {
      *
      * @return tx as reported by the Limelight.
      */
-    public static double getTx() {
+    public double getTx() {
         return getValue("tx").getDouble(0.00);
     }
 
@@ -71,7 +71,7 @@ public class Limelight extends Subsystem {
      *
      * @return ty as reported by the Limelight.
      */
-    public static double getTy() {
+    public double getTy() {
         return getValue("ty").getDouble(0.00);
     }
 
@@ -80,7 +80,7 @@ public class Limelight extends Subsystem {
      *
      * @return Area of target.
      */
-    public static double getTa() {
+    public double getTa() {
         return getValue("ta").getDouble(0.00);
     }
 
@@ -89,7 +89,7 @@ public class Limelight extends Subsystem {
      *
      * @return Target skew.
      */
-    public static double getTs() {
+    public double getTs() {
         return getValue("ts").getDouble(0.00);
     }
 
@@ -120,7 +120,7 @@ public class Limelight extends Subsystem {
         getValue("camMode").setNumber(mode.ordinal());
     }
 
-    public static double getDistance() {
+    public double getDistance() {
         double limelightAngle = 24;
         double targetAngle = getTy();
         double limelightHeight = 1/6;
