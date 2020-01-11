@@ -4,11 +4,14 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
-import edu.wpi.first.wpilibj.command.PIDSubsystem;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.RobotMap;
+import frc.robot.commands.Shoot;
 
-public class Shooter extends PIDSubsystem {
+public class Shooter implements Subsystem {
 
     private static double P = 0.03;
     private static double I = 0;
@@ -25,8 +28,8 @@ public class Shooter extends PIDSubsystem {
                         ENCODER_1 = 1;
 
     public Shooter() {
-        super("Shooter PID", P, I, D, F);
-
+        //super("Shooter PID", P, I, D, F);
+        CommandScheduler.getInstance().registerSubsystem(this);
         motors[MOTOR_0] = new CANSparkMax(RobotMap.CAN.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(RobotMap.CAN.SHOOTER_2, MotorType.kBrushless);
 
@@ -34,12 +37,13 @@ public class Shooter extends PIDSubsystem {
         encoders[ENCODER_1] = new CANEncoder(motors[MOTOR_1]);
 
         motors[MOTOR_1].follow(motors[MOTOR_0]);
-
+        /*
         setAbsoluteTolerance(20);
         getPIDController().setContinuous(false);
         setOutputRange(0, 1);
+        */
     }
-
+    /*
     @Override
     public void setSetpoint(double setpoint) {
         super.setSetpoint(setpoint);
@@ -55,10 +59,11 @@ public class Shooter extends PIDSubsystem {
         SmartDashboard.putNumber("PID Output", output);
         motors[MOTOR_0].pidWrite(output);
     }
-
+    */
     @Override
-    protected void initDefaultCommand() {
-
+    public void setDefaultCommand(Command defaultCommand) {
+        defaultCommand = new Shoot();
+        CommandScheduler.getInstance().setDefaultCommand(this, defaultCommand);
     }
 
 
