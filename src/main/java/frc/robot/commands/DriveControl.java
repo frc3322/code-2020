@@ -6,6 +6,7 @@ import frc.robot.RobotMap;
 import static frc.robot.Robot.drivetrain;
 import static frc.robot.Robot.oi;
 
+//Should be "implements"
 public class DriveControl extends Command {
 
     private final int SPEED_AXIS;
