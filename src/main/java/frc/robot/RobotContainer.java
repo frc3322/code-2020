@@ -64,9 +64,7 @@ public class RobotContainer {
       .whenPressed(new InstantCommand(()->shooter.setSetpoint(3000)))
       .whenReleased(new InstantCommand(()->shooter.setSetpoint(0)));
 
-    Command pidDrive = new RunCommand(()->drivetrain.pidDrive(0.0), drivetrain);
-    BooleanSupplier onTarget = ()->drivetrain.onTarget();
-    button_a_lower.whenPressed(pidDrive.withInterrupt(onTarget));
+    button_a_lower.whenPressed(new RunCommand(()->drivetrain.pidDrive(0.0), drivetrain).withInterrupt(()->drivetrain.onTarget()));
   }
 
   // public Command getAutonomousCommand() {
