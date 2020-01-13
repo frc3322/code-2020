@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
 import edu.wpi.first.wpilibj2.command.button.*;
+import frc.robot.Constants.RobotMap;
 
 /**
  * This class is where the bulk of the robot should be declared.  Since Command-based is a
