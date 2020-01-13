@@ -74,6 +74,7 @@ public class Shooter extends SubsystemBase {
   }
 
   public void updateConstants() {
+      setSetpoint(SmartDashboard.getNumber("Set Shooter RPM", 3000));
       controller.setOutputRange(0, 1);
       controller.setP(SmartDashboard.getNumber("Shooter P", 0));
       controller.setI(SmartDashboard.getNumber("Shooter I", 0));
