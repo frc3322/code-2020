@@ -29,18 +29,21 @@ public class DriveControl extends CommandBase {
   private double theta;
   private double newX;
   private double newY;
-  private double x = m_x.getAsDouble();
-  private double y = m_y.getAsDouble();
+  private double x;
+  private double y;
 
-  public DriveControl(Drivetrain subsystem, DoubleSupplier x, DoubleSupplier y) {
+  public DriveControl(Drivetrain subsystem, DoubleSupplier i_x, DoubleSupplier i_y) {
     drivetrain = subsystem;
-    m_y = y;
-    m_x = x;
+    m_y = i_y;
+    m_x = i_x;
     addRequirements(subsystem);
   }
 
   @Override
-    public void execute() {
+  public void execute() {
+    x = m_x.getAsDouble();
+    y = m_y.getAsDouble();
+
     theta = Math.atan(Math.abs(y)/Math.abs(x));
 
     if (Math.abs(y) > Math.abs(x)) {
