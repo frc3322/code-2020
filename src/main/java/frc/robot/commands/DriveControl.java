@@ -60,6 +60,11 @@ public class DriveControl extends CommandBase {
     newX = x / s;
     newY = y / s;
 
-    drivetrain.tankDrive(newX + newY, newY - newX);
+    double speed = newX + newY;
+    double turn = (Math.abs(x) < .1) ? (newY - newX) : 0;
+
+    
+
+    drivetrain.tankDrive(speed, turn);
     }
 }
