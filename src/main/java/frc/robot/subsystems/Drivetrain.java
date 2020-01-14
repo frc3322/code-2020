@@ -61,7 +61,7 @@ public class Drivetrain extends SubsystemBase {
 
     robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);    
     
-    PID = new PIDController(0, 0, 0);
+    PID = new PIDController(0.3, 0, 0);
 
     PID.disableContinuousInput();
     PID.setTolerance(2.5);
@@ -116,6 +116,6 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    updateConstants();
+    //updateConstants();
   }
 }

@@ -60,11 +60,15 @@ public class DriveControl extends CommandBase {
     newX = x / s;
     newY = y / s;
 
-    double speed = newX + newY;
-    double turn = (Math.abs(x) < .1) ? (newY - newX) : 0;
+    double left = newX + newY;
+    double right = newY - newX;
 
-    
 
-    drivetrain.tankDrive(speed, turn);
+    if(Math.abs(x) > 0.15){
+      drivetrain.tankDrive(left, right);
+    } else {
+      drivetrain.drive(left, 0);
+    }
+     
     }
 }
