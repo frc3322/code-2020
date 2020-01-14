@@ -12,7 +12,9 @@ import frc.robot.subsystems.Drivetrain;
 
 import java.util.function.DoubleSupplier;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.RobotMap;
 
 /**
  * An example command that uses an example subsystem.
@@ -20,9 +22,7 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 public class DriveControl extends CommandBase {
   @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
   private final Drivetrain drivetrain;
-
-  private DoubleSupplier m_y;
-  private DoubleSupplier m_x;
+  private final Joystick lowerChassis;
   private double sX;
   private double sY;
   private double s;
@@ -32,17 +32,16 @@ public class DriveControl extends CommandBase {
   private double x;
   private double y;
 
-  public DriveControl(Drivetrain subsystem, DoubleSupplier i_x, DoubleSupplier i_y) {
+  public DriveControl(Drivetrain subsystem, Joystick joystick) {
     drivetrain = subsystem;
-    m_y = i_y;
-    m_x = i_x;
+    lowerChassis = joystick;
     addRequirements(subsystem);
   }
 
   @Override
   public void execute() {
-    x = m_x.getAsDouble();
-    y = m_y.getAsDouble();
+    x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
+    y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
 
     theta = Math.atan(Math.abs(y)/Math.abs(x));
 

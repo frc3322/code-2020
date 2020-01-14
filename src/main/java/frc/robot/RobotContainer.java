@@ -30,8 +30,8 @@ public class RobotContainer {
   private final Drivetrain drivetrain = new Drivetrain();
   private final Shooter shooter = new Shooter();
 
-  private Joystick lowerChassis = new Joystick(0);
-  private Joystick upperChassis = new Joystick(1);
+  private final Joystick lowerChassis = new Joystick(0);
+  private final Joystick upperChassis = new Joystick(1);
 
 
 
@@ -39,9 +39,9 @@ public class RobotContainer {
   public RobotContainer() {
     configureButtonBindings();
 
-    drivetrain.setDefaultCommand(new DriveControl(drivetrain, ()->lowerChassis.getX(), ()->lowerChassis.getY()));
+    drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
   }
-
+  
   private void configureButtonBindings() {    
     Button button_a_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_A);
     Button button_b_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_B);
