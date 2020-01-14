@@ -97,8 +97,14 @@ public class Drivetrain extends SubsystemBase {
 
   }
 
+  public void getLimelightX(){
+    limelightX = tx.getDouble(0.0);
+    SmartDashboard.putNumber("Limelight tx", limelightX);
+  }
+
   public void pidDrive(Double speed) {
     limelightX = tx.getDouble(0.0);
+    SmartDashboard.putNumber("Limelight tx", limelightX);
     drive(speed, PID.calculate(limelightX, 0));
   }
 
@@ -119,5 +125,6 @@ public class Drivetrain extends SubsystemBase {
   @Override
   public void periodic() {
     //updateConstants();
+    getLimelightX();
   }
 }
