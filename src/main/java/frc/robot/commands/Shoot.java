@@ -1,8 +1,12 @@
 package frc.robot.commands;
+
 import frc.robot.subsystems.Shooter;
+import java.util.Set;
+import java.util.HashSet;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Subsystem;
+
 import static frc.robot.Robot.shooter;
-import edu.wpi.first.wpilibj2.command.*;
-import java.util.*;
 
 public class Shoot implements Command {
     @Override
