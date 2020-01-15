@@ -36,15 +36,18 @@ public class Drivetrain extends SubsystemBase {
     RIGHT_FRONT = 3;
 
 
-  NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-  NetworkTableEntry tx = table.getEntry("tx");
-  NetworkTableEntry ty = table.getEntry("ty");
-  NetworkTableEntry ta = table.getEntry("ta");
+  private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+  private NetworkTableEntry tx = table.getEntry("tx");
+  private NetworkTableEntry ty = table.getEntry("ty");
+  private NetworkTableEntry ta = table.getEntry("ta");
     
-  double limelightX = tx.getDouble(0.0);
-  double limelightY = ty.getDouble(0.0);
-  double limelightA = ta.getDouble(0.0);
-                  
+  private double limelightX = tx.getDouble(0.0);
+  private double limelightY = ty.getDouble(0.0);
+  private double limelightA = ta.getDouble(0.0);
+
+  private double P = 0.026;
+  private double I = 0.0619;
+  private double D = 0.00075;                  
 
   public Drivetrain() {
     motors[LEFT_BACK] = new CANSparkMax(RobotMap.CAN.LEFT_BACK_MOTOR, MotorType.kBrushless);
@@ -62,14 +65,13 @@ public class Drivetrain extends SubsystemBase {
 
     robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);    
     
-    PID = new PIDController(0.3, 0, 0);
+    PID = new PIDController(P, I, D);
 
     PID.disableContinuousInput();
-    PID.setTolerance(2.5);
-
-    SmartDashboard.putNumber("Drivetrain P", 0);
-    SmartDashboard.putNumber("Drivetrain I", 0);
-    SmartDashboard.putNumber("Drivetrain D", 0);
+    PID.setTolerance(1);
+    SmartDashboard.putNumber("Drivetrain P", P);
+    SmartDashboard.putNumber("Drivetrain I", I);
+    SmartDashboard.putNumber("Drivetrain D", D);
   }
 
   public double getVoltage(int n) {
@@ -104,6 +106,7 @@ public class Drivetrain extends SubsystemBase {
 
   public void pidDrive(Double speed) {
     limelightX = tx.getDouble(0.0);
+    PID.reset();
     SmartDashboard.putNumber("Limelight tx", limelightX);
     drive(speed, PID.calculate(limelightX, 0));
   }
@@ -124,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
-    //updateConstants();
+    updateConstants();
     getLimelightX();
   }
 }
