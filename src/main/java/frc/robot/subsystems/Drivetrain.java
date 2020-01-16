@@ -1,31 +1,58 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 package frc.robot.subsystems;
 
+import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.controller.PIDController;
-import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.geometry.Pose2d;
+import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.robot.RobotMap;
-import frc.robot.commands.DriveControl;
+import edu.wpi.first.wpilibj.SPI;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
+import frc.robot.Constants.RobotMap;
 
-import static frc.robot.Robot.limelight;
-
-public class Drivetrain extends Subsystem {
-
+public class Drivetrain extends SubsystemBase {
     private DifferentialDrive robotDrive;
 
     private CANSparkMax[] motors = new CANSparkMax[4];
     private CANEncoder[] encoders = new CANEncoder[4];
 
+    private AHRS navx = new AHRS(SPI.Port.kMXP);
+
     private PIDController PID;
 
-    private final int LEFT_BACK = 0, 
-                        LEFT_FRONT = 1, 
-                        RIGHT_BACK = 2, 
-                        RIGHT_FRONT = 3;
+    private DifferentialDriveOdometry odometry;
+
+    private final int LEFT_BACK = 0, LEFT_FRONT = 1, RIGHT_BACK = 2, RIGHT_FRONT = 3;
+
+    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private NetworkTableEntry tx = table.getEntry("tx");
+    private NetworkTableEntry ty = table.getEntry("ty");
+    private NetworkTableEntry ta = table.getEntry("ta");
+
+    private double limelightX = tx.getDouble(0.0);
+    private double limelightY = ty.getDouble(0.0);
+    private double limelightA = ta.getDouble(0.0);
+
+    private double P = 0.026;
+    private double I = 0.0619;
+    private double D = 0.00075;
 
     public Drivetrain() {
         motors[LEFT_BACK] = new CANSparkMax(RobotMap.CAN.LEFT_BACK_MOTOR, MotorType.kBrushless);
@@ -41,16 +68,17 @@ public class Drivetrain extends Subsystem {
         encoders[RIGHT_BACK] = motors[RIGHT_BACK].getEncoder();
         encoders[RIGHT_FRONT] = motors[RIGHT_FRONT].getEncoder();
 
-        robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);    
-        
-        PID = new PIDController(0, 0, 0);
+        robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);
+
+        PID = new PIDController(P, I, D);
+
+        odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
         PID.disableContinuousInput();
-        PID.setTolerance(2.5);
-
-        SmartDashboard.putNumber("Drivetrain P", 0);
-        SmartDashboard.putNumber("Drivetrain I", 0);
-        SmartDashboard.putNumber("Drivetrain D", 0);
+        PID.setTolerance(1);
+        SmartDashboard.putNumber("Drivetrain P", P);
+        SmartDashboard.putNumber("Drivetrain I", I);
+        SmartDashboard.putNumber("Drivetrain D", D);
     }
 
     public double getVoltage(int n) {
@@ -73,13 +101,32 @@ public class Drivetrain extends Subsystem {
         return encoders[n].getVelocity();
     }
 
-    public void drive(double speed, double rotation){
+    public void drive(double speed, double rotation) {
         robotDrive.arcadeDrive(speed, rotation);
 
     }
 
+    public void getLimelightX() {
+        limelightX = tx.getDouble(0.0);
+        SmartDashboard.putNumber("Limelight tx", limelightX);
+    }
+
     public void pidDrive(Double speed) {
-        drive(speed, PID.calculate(limelight.getTx(), 0));
+        limelightX = tx.getDouble(0.0);
+        PID.reset();
+        SmartDashboard.putNumber("Limelight tx", limelightX);
+        drive(speed, PID.calculate(limelightX, 0));
+    }
+
+    // returns meters traveled
+    public double getEncDistance(CANEncoder enc) {
+        return enc.getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
+    }
+
+    // returns meters per second
+    public double getEncRate(CANEncoder enc) {
+        double RPS = enc.getVelocity() / 60;
+        return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
 
     public boolean onTarget() {
@@ -96,13 +143,27 @@ public class Drivetrain extends Subsystem {
         robotDrive.tankDrive(leftSpeed, rightSpeed);
     }
 
-    @Override
-    protected void initDefaultCommand() {
-        setDefaultCommand(new DriveControl());
+    public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+        return new DifferentialDriveWheelSpeeds(getEncRate(encoders[LEFT_FRONT]), getEncRate(encoders[RIGHT_FRONT]));
+    }
+
+    public double getHeading() {
+        return Math.IEEEremainder(navx.getAngle(), 360) * (Constants.DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
+    }
+
+    public Pose2d getPose() {
+        return odometry.getPoseMeters();
+    }
+
+    public void tankDriveVolts(double leftVolts, double rightVolts) {
+        motors[LEFT_FRONT].setVoltage(leftVolts);
+        motors[RIGHT_FRONT].setVoltage(-rightVolts);
     }
 
     @Override
     public void periodic() {
         updateConstants();
+        getLimelightX();
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getEncDistance(encoders[LEFT_FRONT]), getEncDistance(encoders[RIGHT_FRONT]));
     }
 }

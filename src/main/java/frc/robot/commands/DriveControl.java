@@ -1,60 +1,70 @@
+/*----------------------------------------------------------------------------*/
+/* Copyright (c) 2018-2019 FIRST. All Rights Reserved.                        */
+/* Open Source Software - may be modified and shared by FRC teams. The code   */
+/* must be accompanied by the FIRST BSD license file in the root directory of */
+/* the project.                                                               */
+/*----------------------------------------------------------------------------*/
+
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Command;
-import frc.robot.RobotMap;
+import frc.robot.subsystems.Drivetrain;
+import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants.RobotMap;
 
-import static frc.robot.Robot.drivetrain;
-import static frc.robot.Robot.oi;
+/**
+ * An example command that uses an example subsystem.
+ */
+public class DriveControl extends CommandBase {
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Drivetrain drivetrain;
+  private final Joystick lowerChassis;
+  private double sX;
+  private double sY;
+  private double s;
+  private double theta;
+  private double newX;
+  private double newY;
+  private double x;
+  private double y;
 
-public class DriveControl extends Command {
+  public DriveControl(Drivetrain subsystem, Joystick joystick) {
+    drivetrain = subsystem;
+    lowerChassis = joystick;
+    addRequirements(subsystem);
+  }
 
-    private final int SPEED_AXIS;
-    private final int ROTATION_AXIS;
+  @Override
+  public void execute() {
+    x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
+    y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
 
-    private double y;
-    private double x;
-    private double sX;
-    private double sY;
-    private double s;
-    private double theta;
-    private double newX;
-    private double newY;
+    theta = Math.atan(Math.abs(y)/Math.abs(x));
 
-    public DriveControl() {
-        requires(drivetrain);
-
-        SPEED_AXIS = RobotMap.XBOX.STICK_L_Y_AXIS;
-        ROTATION_AXIS = RobotMap.XBOX.STICK_R_X_AXIS;
+    if (Math.abs(y) > Math.abs(x)) {
+        sY = 1;
+        sX = 1 / Math.tan(theta);
+        s = sX + sY;
+    } else if (Math.abs(x) > Math.abs(y)) {
+        sX = 1;
+        sY = Math.tan(theta);
+        s = sX + sY;
+    } else if (Math.abs(x) == Math.abs(y)) {
+        s = 2;
     }
 
-    @Override
-    protected void execute() {
-        x = oi.getLowerChassis().getRawAxis(ROTATION_AXIS);
-        y = oi.getLowerChassis().getRawAxis(SPEED_AXIS);
-        
-        theta = Math.atan(Math.abs(y)/Math.abs(x));
+    newX = x / s;
+    newY = y / s;
 
-        if (Math.abs(y) > Math.abs(x)) {
-            sY = 1;
-            sX = 1 / Math.tan(theta);
-            s = sX + sY;
-        } else if (Math.abs(x) > Math.abs(y)) {
-            sX = 1;
-            sY = Math.tan(theta);
-            s = sX + sY;
-        } else if (Math.abs(x) == Math.abs(y)) {
-            s = 2;
-        }
+    double left = newX + newY;
+    double right = newY - newX;
 
-        newX = x / s;
-        newY = y / s;
 
-        drivetrain.tankDrive(newX + newY, newY - newX);
+    if(Math.abs(x) > 0.15){
+      drivetrain.tankDrive(left, right);
+    } else {
+      drivetrain.drive(left, 0);
     }
-
-    @Override
-    protected boolean isFinished() {
-        return false;
+     
     }
-
 }
