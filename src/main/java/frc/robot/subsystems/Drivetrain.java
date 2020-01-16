@@ -17,9 +17,10 @@ import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.PIDSource;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-
+import frc.robot.Constants;
 import frc.robot.Constants.RobotMap;
 
 public class Drivetrain extends SubsystemBase {
@@ -110,6 +111,15 @@ public class Drivetrain extends SubsystemBase {
     SmartDashboard.putNumber("Limelight tx", limelightX);
     drive(speed, PID.calculate(limelightX, 0));
   }
+  //returns meters traveled
+  public double getEncDistance(CANEncoder enc) {
+      return enc.getPosition() * (4 * .0254) * Math.PI;
+  }
+  //returns meters per second
+  public double getEncRate(CANEncoder enc){
+      double RPS = enc.getVelocity() / 60;
+      return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
+  }
 
   public boolean onTarget() {
     return PID.atSetpoint();
@@ -123,6 +133,10 @@ public class Drivetrain extends SubsystemBase {
 
   public void tankDrive(double leftSpeed, double rightSpeed) {
     robotDrive.tankDrive(leftSpeed, rightSpeed);
+  }
+
+  public DifferentialDriveWheelSpeeds getWheelSpeeds() {
+    return new DifferentialDriveWheelSpeeds(getEncRate(encoders[LEFT_FRONT]), getEncRate(encoders[RIGHT_FRONT]));
   }
 
   @Override

@@ -58,6 +58,7 @@ public final class Constants {
         }
     }
     public static class DriveConstants {
-        
+        public static final double WHEEL_DIAMETER = 4;
+        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER * .0254 * Math.PI;
     }
 }
