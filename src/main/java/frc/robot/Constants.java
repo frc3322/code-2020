@@ -61,8 +61,8 @@ public final class Constants {
     }
 
     public static class DriveConstants {
-        public static final double WHEEL_DIAMETER = 4;
-        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER * .0254 * Math.PI;
+        public static final double WHEEL_DIAMETER_INCHES = 4;
+        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_INCHES * .0254 * Math.PI;
         public static final boolean GYRO_REVERSED = false;
 		public static final double ksVolts = 0;
 		public static final double kvVoltSecondsPerMeter = 0;

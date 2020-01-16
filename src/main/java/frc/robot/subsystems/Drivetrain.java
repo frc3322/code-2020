@@ -120,7 +120,7 @@ public class Drivetrain extends SubsystemBase {
 
     // returns meters traveled
     public double getEncDistance(CANEncoder enc) {
-        return enc.getPosition() * (4 * .0254) * Math.PI;
+        return enc.getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
     }
 
     // returns meters per second
