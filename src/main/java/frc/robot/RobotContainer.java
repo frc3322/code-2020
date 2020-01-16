@@ -10,6 +10,7 @@ package frc.robot;
 import frc.robot.commands.DriveControl;
 import frc.robot.subsystems.*;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.function.BooleanSupplier;
 
@@ -23,6 +24,7 @@ import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
+import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -39,6 +41,7 @@ import frc.robot.Constants.RobotMap;
  * scheduler calls). Instead, the structure of the robot (including subsystems,
  * commands, and button mappings) should be declared here.
  */
+
 public class RobotContainer {
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
@@ -79,6 +82,8 @@ public class RobotContainer {
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
     }
 
+    Trajectory testTrajectory;
+
     public Command getAutonomousCommand() {
         // Create a voltage constraint to ensure we don't accelerate too fast
         var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
@@ -94,19 +99,17 @@ public class RobotContainer {
                         // Apply the voltage constraint
                         .addConstraint(autoVoltageConstraint);
 
+        try{
+            testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/Test.wpilib.json"));
+        } catch(Exception e) {
+            e.printStackTrace();
+            System.exit(1);
+        }
+
         
-        // An example trajectory to follow. All units in meters.
-        Trajectory exampleTrajectory = TrajectoryGenerator.generateTrajectory(
-                // Start at the origin facing the +X direction
-                new Pose2d(0, 0, new Rotation2d(0)),
-                // Pass through these two interior waypoints, making an 's' curve path
-                List.of(new Translation2d(1, 1), new Translation2d(2, -1)),
-                // End 3 meters straight ahead of where we started, facing forward
-                new Pose2d(3, 0, new Rotation2d(0)),
-                // Pass config
-                config);
         
-        RamseteCommand ramseteCommand = new RamseteCommand(exampleTrajectory, drivetrain::getPose,
+        
+        RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
                 new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),
                 new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
                         Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
