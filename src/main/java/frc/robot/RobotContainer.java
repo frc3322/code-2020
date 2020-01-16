@@ -93,11 +93,11 @@ public class RobotContainer {
 
         // Create config for trajectory
         TrajectoryConfig config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                        // Add kinematics to ensure max speed is actually obeyed
-                        .setKinematics(Constants.DriveConstants.kDriveKinematics)
-                        // Apply the voltage constraint
-                        .addConstraint(autoVoltageConstraint);
+            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                // Add kinematics to ensure max speed is actually obeyed
+                .setKinematics(Constants.DriveConstants.kDriveKinematics)
+                // Apply the voltage constraint
+                .addConstraint(autoVoltageConstraint);
 
         try{
             testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/Test.wpilib.json"));
@@ -110,13 +110,13 @@ public class RobotContainer {
         
         
         RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
-                new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),
-                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
-                        Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-                Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
-                new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
-                // RamseteCommand passes volts to the callback
-                drivetrain::tankDriveVolts, drivetrain);
+            new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),
+            new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
+                    Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+            Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
+            new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
+            // RamseteCommand passes volts to the callback
+            drivetrain::tankDriveVolts, drivetrain);
 
         // Run path following command, then stop at the end.
         return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
