@@ -85,20 +85,6 @@ public class RobotContainer {
     Trajectory testTrajectory;
 
     public Command getAutonomousCommand() {
-        // Create a voltage constraint to ensure we don't accelerate too fast
-        var autoVoltageConstraint = new DifferentialDriveVoltageConstraint(
-                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
-                        Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-                Constants.DriveConstants.kDriveKinematics, 10);
-
-        // Create config for trajectory
-        TrajectoryConfig config = new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                // Add kinematics to ensure max speed is actually obeyed
-                .setKinematics(Constants.DriveConstants.kDriveKinematics)
-                // Apply the voltage constraint
-                .addConstraint(autoVoltageConstraint);
-
         try{
             testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/Test.wpilib.json"));
         } catch(Exception e) {
@@ -106,9 +92,6 @@ public class RobotContainer {
             System.exit(1);
         }
 
-        
-        
-        
         RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
             new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),
             new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
