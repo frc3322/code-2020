@@ -16,7 +16,7 @@ public class Robot extends TimedRobot {
   
   private Command drivecontrol;
 
-  private RobotContainer m_robotContainer;
+  private RobotContainer m_robotContainer = new RobotContainer();
 
   private Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
