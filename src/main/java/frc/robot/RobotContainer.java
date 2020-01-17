@@ -51,6 +51,7 @@ public class RobotContainer {
 
     public RobotContainer() {
         configureButtonBindings();
+        getAutonomousCommand();
 
         drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
     }

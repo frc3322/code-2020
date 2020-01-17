@@ -13,10 +13,12 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
 
 public class Robot extends TimedRobot {
-  private Command m_autonomousCommand;
+  
   private Command drivecontrol;
 
   private RobotContainer m_robotContainer;
+
+  private Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
   @Override
   public void robotInit() {
@@ -39,19 +41,21 @@ public class Robot extends TimedRobot {
   @Override
   public void autonomousInit() {
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.schedule();
+        m_autonomousCommand.schedule();
     }
   }
 
   @Override
   public void autonomousPeriodic() {
+      CommandScheduler.getInstance().run();
   }
 
   @Override
   public void teleopInit() {
     if (m_autonomousCommand != null) {
-      m_autonomousCommand.cancel();
+        m_autonomousCommand.cancel();
     }
+    
   }
 
   @Override
