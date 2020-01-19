@@ -64,12 +64,12 @@ public final class Constants {
         public static final double WHEEL_DIAMETER_INCHES = 4;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_INCHES * .0254 * Math.PI;
         public static final boolean GYRO_REVERSED = false;
-		public static final double ksVolts = 0.221;
-		public static final double kvVoltSecondsPerMeter = 2.46;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.207;
+		public static final double ksVolts = 0.201;
+		public static final double kvVoltSecondsPerMeter = 2.48;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.17;
         public static final double kTrackwidthMeters = 0.66;
 		public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-		public static final double kPDriveVel = 8;
+		public static final double kPDriveVel = 6.64;
     }
 
     public static class AutoConstants {

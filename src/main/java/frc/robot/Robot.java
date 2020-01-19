@@ -13,14 +13,15 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
 
 public class Robot extends TimedRobot {
-
-    private Command drivecontrol;
-    private RobotContainer m_robotContainer;
-    private Command m_autonomousCommand;
+    
+    private static RobotContainer m_robotContainer;
+    private static Command m_autonomousCommand;
+    private Drivetrain m_drivetrain;
 
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
+        m_drivetrain = m_robotContainer.getDrivetrain();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     }
 
@@ -39,6 +40,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        m_drivetrain.resetEncoders();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -51,6 +53,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        m_drivetrain.resetEncoders();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }

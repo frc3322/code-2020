@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
+import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.Constants.RobotMap;
 
@@ -52,7 +53,6 @@ public class RobotContainer {
     public RobotContainer() {
         configureButtonBindings();
         getAutonomousCommand();
-
         drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
     }
 
@@ -81,6 +81,10 @@ public class RobotContainer {
         button_a_lower.whenPressed(new RunCommand(() -> drivetrain.pidDrive(0.0),
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
+    }
+
+    public Drivetrain getDrivetrain() {
+        return drivetrain;
     }
 
     Trajectory testTrajectory;

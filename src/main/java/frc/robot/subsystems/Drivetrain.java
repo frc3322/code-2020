@@ -100,6 +100,13 @@ public class Drivetrain extends SubsystemBase {
     public double getVelocity(int n) {
         return encoders[n].getVelocity();
     }
+    
+    public void resetEncoders() {
+        encoders[LEFT_FRONT].setPosition(0);
+        encoders[RIGHT_FRONT].setPosition(0);
+        encoders[LEFT_BACK].setPosition(0);
+        encoders[RIGHT_BACK].setPosition(0);
+    }
 
     public void drive(double speed, double rotation) {
         robotDrive.arcadeDrive(speed, rotation);
@@ -119,13 +126,22 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // returns meters traveled
-    public double getEncDistance(CANEncoder enc) {
-        return enc.getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
+    public double getLeftEncDistance() {
+        return encoders[LEFT_FRONT].getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
     }
 
+    public double getRightEncDistance() {
+        return -encoders[RIGHT_FRONT].getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
+    }
+
+
     // returns meters per second
-    public double getEncRate(CANEncoder enc) {
-        double RPS = enc.getVelocity() / 60;
+    public double getLeftEncRate() {
+        double RPS = encoders[LEFT_FRONT].getVelocity() / 60;
+        return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
+    }
+    public double getRightEncRate() {
+        double RPS = encoders[RIGHT_FRONT].getVelocity() / 60;
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
 
@@ -144,7 +160,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
-        return new DifferentialDriveWheelSpeeds(getEncRate(encoders[LEFT_FRONT]), getEncRate(encoders[RIGHT_FRONT]));
+        return new DifferentialDriveWheelSpeeds(getLeftEncRate(), getRightEncRate());
     }
 
     public double getHeading() {
@@ -162,9 +178,16 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("ENC Left Position", encoders[LEFT_FRONT].getPosition());
+        SmartDashboard.putNumber("ENC Right Position", encoders[RIGHT_FRONT].getPosition());
+        SmartDashboard.putNumber("ENC Rate Left m/s", getLeftEncRate());
+        SmartDashboard.putNumber("ENC Rate Right m/s", getRightEncRate());
+        SmartDashboard.putNumber("Heading", getHeading());
+        SmartDashboard.putNumber("ENC Distance Left m", getLeftEncDistance());
+        SmartDashboard.putNumber("ENC Distance Right m", getRightEncDistance());
         updateConstants();
         getLimelightX();
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getEncDistance(encoders[LEFT_FRONT]),
-                getEncDistance(encoders[RIGHT_FRONT]));
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
+                getRightEncDistance());
     }
 }
