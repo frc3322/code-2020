@@ -91,7 +91,7 @@ public class RobotContainer {
 
     public Command getAutonomousCommand() {
         try{
-            testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/Test.wpilib.json"));
+            testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/output/Test.wpilib.json"));
         } catch(Exception e) {
             e.printStackTrace();
             System.exit(1);

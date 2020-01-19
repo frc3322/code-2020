@@ -26,7 +26,7 @@ public final class Constants {
             public static final int RIGHT_BACK_MOTOR = 35;
     
             public static final int SHOOTER_1 = 0;
-            public static final int SHOOTER_2 = 0;
+            public static final int SHOOTER_2 = 1;
         }
     
         public static class DIO {
@@ -61,6 +61,7 @@ public final class Constants {
     }
 
     public static class DriveConstants {
+        public static final double GEARING = 408.0/2640.0;
         public static final double WHEEL_DIAMETER_INCHES = 4;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_INCHES * .0254 * Math.PI;
         public static final boolean GYRO_REVERSED = false;

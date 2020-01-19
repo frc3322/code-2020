@@ -101,11 +101,12 @@ public class Drivetrain extends SubsystemBase {
         return encoders[n].getVelocity();
     }
     
-    public void resetEncoders() {
+    public void resetForAuto() {
         encoders[LEFT_FRONT].setPosition(0);
         encoders[RIGHT_FRONT].setPosition(0);
         encoders[LEFT_BACK].setPosition(0);
         encoders[RIGHT_BACK].setPosition(0);
+        navx.zeroYaw();
     }
 
     public void drive(double speed, double rotation) {
@@ -127,21 +128,21 @@ public class Drivetrain extends SubsystemBase {
 
     // returns meters traveled
     public double getLeftEncDistance() {
-        return encoders[LEFT_FRONT].getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
+        return encoders[LEFT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;
     }
 
     public double getRightEncDistance() {
-        return -encoders[RIGHT_FRONT].getPosition() * (Constants.DriveConstants.WHEEL_DIAMETER_INCHES * .0254) * Math.PI;
+        return -encoders[RIGHT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;
     }
 
 
     // returns meters per second
     public double getLeftEncRate() {
-        double RPS = encoders[LEFT_FRONT].getVelocity() / 60;
+        double RPS = (encoders[LEFT_FRONT].getVelocity() * Constants.DriveConstants.GEARING)/ 60;
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
     public double getRightEncRate() {
-        double RPS = encoders[RIGHT_FRONT].getVelocity() / 60;
+        double RPS = (encoders[RIGHT_FRONT].getVelocity() * Constants.DriveConstants.GEARING) / 60;
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
 
