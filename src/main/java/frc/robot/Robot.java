@@ -15,14 +15,13 @@ import frc.robot.subsystems.Drivetrain;
 public class Robot extends TimedRobot {
 
     private Command drivecontrol;
-
-    private RobotContainer m_robotContainer = new RobotContainer();
-
-    private Command m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+    private RobotContainer m_robotContainer;
+    private Command m_autonomousCommand;
 
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
     }
 
     @Override
