@@ -16,54 +16,55 @@ import frc.robot.Constants.RobotMap;
  * An example command that uses an example subsystem.
  */
 public class DriveControl extends CommandBase {
-    @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
-    private final Drivetrain drivetrain;
-    private final Joystick lowerChassis;
-    private double sX;
-    private double sY;
-    private double s;
-    private double theta;
-    private double newX;
-    private double newY;
-    private double x;
-    private double y;
+  @SuppressWarnings({"PMD.UnusedPrivateField", "PMD.SingularField"})
+  private final Drivetrain drivetrain;
+  private final Joystick lowerChassis;
+  private double sX;
+  private double sY;
+  private double s;
+  private double theta;
+  private double newX;
+  private double newY;
+  private double x;
+  private double y;
 
-    public DriveControl(Drivetrain subsystem, Joystick joystick) {
-        drivetrain = subsystem;
-        lowerChassis = joystick;
-        addRequirements(subsystem);
+  public DriveControl(Drivetrain subsystem, Joystick joystick) {
+    drivetrain = subsystem;
+    lowerChassis = joystick;
+    addRequirements(subsystem);
+  }
+
+  @Override
+  public void execute() {
+    x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
+    y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
+
+    theta = Math.atan(Math.abs(y)/Math.abs(x));
+
+    if (Math.abs(y) > Math.abs(x)) {
+        sY = 1;
+        sX = 1 / Math.tan(theta);
+        s = sX + sY;
+    } else if (Math.abs(x) > Math.abs(y)) {
+        sX = 1;
+        sY = Math.tan(theta);
+        s = sX + sY;
+    } else if (Math.abs(x) == Math.abs(y)) {
+        s = 2;
     }
 
-    @Override
-    public void execute() {
-        x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
-        y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
+    newX = x / s;
+    newY = y / s;
 
-        theta = Math.atan(Math.abs(y) / Math.abs(x));
+    double left = newX + newY;
+    double right = newY - newX;
 
-        if (Math.abs(y) > Math.abs(x)) {
-            sY = 1;
-            sX = 1 / Math.tan(theta);
-            s = sX + sY;
-        } else if (Math.abs(x) > Math.abs(y)) {
-            sX = 1;
-            sY = Math.tan(theta);
-            s = sX + sY;
-        } else if (Math.abs(x) == Math.abs(y)) {
-            s = 2;
-        }
 
-        newX = x / s;
-        newY = y / s;
-
-        double left = newX + newY;
-        double right = newY - newX;
-
-        if (Math.abs(x) > 0.15) {
-            drivetrain.tankDrive(left, right);
-        } else {
-            drivetrain.drive(left, 0);
-        }
-
+    if(Math.abs(x) > 0.15){
+      drivetrain.tankDrive(left, right);
+    } else {
+      drivetrain.drive(left, 0);
+    }
+     
     }
 }
