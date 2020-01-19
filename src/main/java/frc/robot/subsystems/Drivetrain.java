@@ -164,6 +164,7 @@ public class Drivetrain extends SubsystemBase {
     public void periodic() {
         updateConstants();
         getLimelightX();
-        odometry.update(Rotation2d.fromDegrees(getHeading()), getEncDistance(encoders[LEFT_FRONT]), getEncDistance(encoders[RIGHT_FRONT]));
+        odometry.update(Rotation2d.fromDegrees(getHeading()), getEncDistance(encoders[LEFT_FRONT]),
+                getEncDistance(encoders[RIGHT_FRONT]));
     }
 }
