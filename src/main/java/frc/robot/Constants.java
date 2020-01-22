@@ -42,6 +42,11 @@ public final class Constants {
         public static class DIO {
 
         }
+
+        // no real purpose
+        public static class JOJO {
+
+        }
     
         public static class PCM {
               
