@@ -20,8 +20,8 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 public final class Constants {
     public static class RobotMap {
         public static class CAN {
-            public static final int LEFT_FRONT_MOTOR = 37;
-            public static final int LEFT_BACK_MOTOR = 35;
+            public static final int LEFT_FRONT_MOTOR = 35;
+            public static final int LEFT_BACK_MOTOR = 37;
             public static final int RIGHT_FRONT_MOTOR = 34;
             public static final int RIGHT_BACK_MOTOR = 46;
     
