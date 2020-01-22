@@ -24,6 +24,10 @@ public final class Constants {
             public static final int LEFT_BACK_MOTOR = 46;
             public static final int RIGHT_FRONT_MOTOR = 34;
             public static final int RIGHT_BACK_MOTOR = 35;
+
+            // TODO: give these actual IDs
+            public static final int LEFT_HOPPER_MOTOR = 0;
+            public static final int RIGHT_HOPPER_MOTOR = 0;
     
             public static final int SHOOTER_1 = 0;
             public static final int SHOOTER_2 = 1;
