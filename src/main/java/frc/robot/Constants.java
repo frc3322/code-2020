@@ -29,6 +29,12 @@ public final class Constants {
             public static final int LEFT_HOPPER_MOTOR = 0;
             public static final int RIGHT_HOPPER_MOTOR = 0;
     
+            //TODO need to set id #'s for these
+            public static final int INTAKE_RIGHT = 0;
+            public static final int INTAKE_LEFT = 0;
+            
+
+
             public static final int SHOOTER_1 = 0;
             public static final int SHOOTER_2 = 1;
         }
@@ -38,7 +44,12 @@ public final class Constants {
         }
     
         public static class PCM {
-    
+              
+            //TODO: need to give these values 
+            public static final int PCM_ID = 0;
+            public static final int INTAKE_EXTEND = 0;
+            public static final int INTAKE_RETRACT = 0;
+            
         }
     
         public static class XBOX {
