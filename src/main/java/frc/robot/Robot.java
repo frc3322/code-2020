@@ -8,6 +8,8 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
@@ -18,11 +20,22 @@ public class Robot extends TimedRobot {
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
 
+    public static SendableChooser<Constants.whichBot> chooseBot = new SendableChooser<>();
+
     @Override
     public void robotInit() {
         m_robotContainer = new RobotContainer();
         m_drivetrain = m_robotContainer.getDrivetrain();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+
+        // can be updated as our default bot changes
+        chooseBot.setDefaultOption("TEST_BENCH", Constants.whichBot.TEST_BENCH);
+        chooseBot.addOption("P1", Constants.whichBot.P1);
+        chooseBot.addOption("P2", Constants.whichBot.P2);
+
+        SmartDashboard.putData("Robot in use", chooseBot);
+
+        Constants.RobotMap.CAN.setCANIDs();
     }
 
     @Override

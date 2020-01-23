@@ -18,25 +18,58 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+
+    public enum whichBot {
+        TEST_BENCH,
+        P1,
+        P2
+    }
+    
     public static class RobotMap {
         public static class CAN {
-            public static final int LEFT_FRONT_MOTOR = 37;
-            public static final int LEFT_BACK_MOTOR = 46;
-            public static final int RIGHT_FRONT_MOTOR = 34;
-            public static final int RIGHT_BACK_MOTOR = 35;
+            public static int LEFT_FRONT_MOTOR;
+            public static int LEFT_BACK_MOTOR;
+            public static int RIGHT_FRONT_MOTOR;
+            public static int RIGHT_BACK_MOTOR;
 
             // TODO: give these actual IDs
-            public static final int LEFT_HOPPER_MOTOR = 0;
-            public static final int RIGHT_HOPPER_MOTOR = 0;
+            public static int LEFT_HOPPER_MOTOR;
+            public static int RIGHT_HOPPER_MOTOR;
     
             //TODO need to set id #'s for these
-            public static final int INTAKE_RIGHT = 0;
-            public static final int INTAKE_LEFT = 0;
+            public static int INTAKE_RIGHT;
+            public static int INTAKE_LEFT;
             
 
 
-            public static final int SHOOTER_1 = 0;
-            public static final int SHOOTER_2 = 1;
+            public static int SHOOTER_1;
+            public static int SHOOTER_2;
+
+            public static void setCANIDs() {
+                switch(Robot.chooseBot.getSelected()) {
+                    case TEST_BENCH:
+                        LEFT_FRONT_MOTOR = 37;
+                        LEFT_BACK_MOTOR = 46;
+                        RIGHT_FRONT_MOTOR = 34;
+                        RIGHT_BACK_MOTOR = 35;
+        
+                        // TODO: give these actual IDs
+                        LEFT_HOPPER_MOTOR = 0;
+                        RIGHT_HOPPER_MOTOR = 0;
+            
+                        //TODO need to set id #'s for these
+                        INTAKE_RIGHT = 0;
+                        INTAKE_LEFT = 0;
+                    
+                        SHOOTER_1 = 0;
+                        SHOOTER_2 = 1;
+                        break;
+                    case P1:
+                        break;
+                    case P2:
+                        break;
+                }
+            }
         }
     
         public static class DIO {
