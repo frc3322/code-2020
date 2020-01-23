@@ -87,15 +87,49 @@ public class RobotContainer {
         return drivetrain;
     }
 
-    Trajectory testTrajectory;
-
     public Command getAutonomousCommand() {
-        try{
-            testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/output/Test.wpilib.json"));
-        } catch(Exception e) {
-            e.printStackTrace();
-            System.exit(1);
-        }
+
+        
+
+        // try{
+        //     testTrajectory = TrajectoryUtil.fromPathweaverJson(Paths.get("/home/lvuser/deploy/output/Test.wpilib.json"));
+        // } catch(Exception e) {
+        //     e.printStackTrace();
+        //     System.exit(1);
+        // }
+
+        var autoVoltageConstraint =
+        new DifferentialDriveVoltageConstraint(
+            new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+                                       Constants.DriveConstants.kvVoltSecondsPerMeter,
+                                       Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+                                       Constants.DriveConstants.kDriveKinematics,
+                                       10);
+
+        TrajectoryConfig config =
+        new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                             Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                             // Add kinematics to ensure max speed is actually obeyed
+                             .setKinematics(Constants.DriveConstants.kDriveKinematics)
+                             // Apply the voltage constraint
+                             .addConstraint(autoVoltageConstraint);
+
+        Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
+        // Start at the origin facing the +X direction
+        new Pose2d(0, 0, new Rotation2d(0)),
+        // Pass through these two interior waypoints, making an 's' curve path
+        List.of(
+            new Translation2d(1, 0.5),
+            new Translation2d(2, -0.5)
+        ),
+        // End 3 meters straight ahead of where we started, facing forward
+        new Pose2d(3, 0, new Rotation2d(0)),
+        // Pass config
+        config
+        );
+
+        var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
+        testTrajectory = testTrajectory.transformBy(transform);
 
         RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
             new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta),

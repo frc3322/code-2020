@@ -186,6 +186,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Heading", getHeading());
         SmartDashboard.putNumber("ENC Distance Left m", getLeftEncDistance());
         SmartDashboard.putNumber("ENC Distance Right m", getRightEncDistance());
+        SmartDashboard.putString("pose", getPose().toString());
         updateConstants();
         getLimelightX();
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
