@@ -19,6 +19,7 @@ public class Robot extends TimedRobot {
     private static RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
+    public static Constants.RobotMap.CAN m_can;
 
     public static SendableChooser<Constants.whichBot> chooseBot = new SendableChooser<>();
 
@@ -35,7 +36,8 @@ public class Robot extends TimedRobot {
 
         SmartDashboard.putData("Robot in use", chooseBot);
 
-        Constants.RobotMap.CAN.setCANIDs();
+        m_can = new Constants.RobotMap.CAN();
+
     }
 
     @Override

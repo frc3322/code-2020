@@ -17,20 +17,22 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.RobotMap;
 
+import static frc.robot.Robot.m_can;
+
 public class Intake extends SubsystemBase {
   /**
    * Creates a new Intake.
    */
-  private CANSparkMax[] motors = new CANSparkMax[2];
-    private CANEncoder[] encoders = new CANEncoder[2];
+  private final CANSparkMax[] motors = new CANSparkMax[2];
+    private final CANEncoder[] encoders = new CANEncoder[2];
     DoubleSolenoid intakeExtender;
     
     private final int INTAKE_RIGHT = 0, INTAKE_LEFT = 1;
 
   public Intake() {
     intakeExtender = new DoubleSolenoid(RobotMap.PCM.PCM_ID, RobotMap.PCM.INTAKE_EXTEND, RobotMap.PCM.INTAKE_RETRACT);
-    motors[INTAKE_RIGHT] = new CANSparkMax(RobotMap.CAN.INTAKE_RIGHT, MotorType.kBrushless);
-    motors[INTAKE_LEFT] = new CANSparkMax(RobotMap.CAN.INTAKE_LEFT, MotorType.kBrushless);
+    motors[INTAKE_RIGHT] = new CANSparkMax(m_can.INTAKE_RIGHT, MotorType.kBrushless);
+    motors[INTAKE_LEFT] = new CANSparkMax(m_can.INTAKE_LEFT, MotorType.kBrushless);
     motors[INTAKE_LEFT].follow(motors[INTAKE_RIGHT]);
 
     encoders[INTAKE_RIGHT] = motors[INTAKE_RIGHT].getEncoder();
@@ -54,23 +56,23 @@ public void intakeRetract() {
   intakeExtender.set(DoubleSolenoid.Value.kReverse);
 }
 
-  public double getVoltage(int n) {
+  public double getVoltage(final int n) {
     return motors[n].getBusVoltage();
 }
 
-public double getMotorHeat(int n) {
+public double getMotorHeat(final int n) {
     return motors[n].getMotorTemperature();
 }
 
-public double getOutputCurrent(int n) {
+public double getOutputCurrent(final int n) {
     return motors[n].getOutputCurrent();
 }
 
-public double getEncoder(int n) {
+public double getEncoder(final int n) {
     return encoders[n].getPosition();
 }
 
-public double getVelocity(int n) {
+public double getVelocity(final int n) {
     return encoders[n].getVelocity();
 }
 

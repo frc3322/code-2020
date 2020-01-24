@@ -13,7 +13,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-import frc.robot.Constants.RobotMap;
+import static frc.robot.Robot.m_can;
 
 public class Hopper extends SubsystemBase {
   /**
@@ -26,8 +26,8 @@ public class Hopper extends SubsystemBase {
 
 
   public Hopper() {
-    motors[LEFT] = new CANSparkMax(RobotMap.CAN.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
-    motors[RIGHT] = new CANSparkMax(RobotMap.CAN.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
+    motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
+    motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
     motors[RIGHT].follow(motors[LEFT]);
 
