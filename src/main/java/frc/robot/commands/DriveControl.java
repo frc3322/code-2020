@@ -36,8 +36,8 @@ public class DriveControl extends CommandBase {
 
     @Override
     public void execute() {
-        x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
-        y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
+        x = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
+        y = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
 
         theta = Math.atan(Math.abs(y) / Math.abs(x));
 

@@ -20,10 +20,10 @@ import edu.wpi.first.wpilibj.kinematics.DifferentialDriveKinematics;
 public final class Constants {
     public static class RobotMap {
         public static class CAN {
-            public static final int LEFT_FRONT_MOTOR = 35;
-            public static final int LEFT_BACK_MOTOR = 37;
-            public static final int RIGHT_FRONT_MOTOR = 34;
-            public static final int RIGHT_BACK_MOTOR = 46;
+            public static final int LEFT_FRONT_MOTOR = 33; //35
+            public static final int LEFT_BACK_MOTOR = 45; //37
+            public static final int RIGHT_FRONT_MOTOR = 40; //34
+            public static final int RIGHT_BACK_MOTOR = 36; //46
     
             public static final int SHOOTER_1 = 0;
             public static final int SHOOTER_2 = 1;
@@ -62,15 +62,16 @@ public final class Constants {
 
     public static class DriveConstants {
         public static final double GEARING = 408.0/2640.0;
-        public static final double WHEEL_DIAMETER_INCHES = 4;
-        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_INCHES * .0254 * Math.PI;
+        public static final double WHEEL_DIAMETER_INCHES = 6;
+        public static final double WHEEL_DIAMETER_METERS = WHEEL_DIAMETER_INCHES * 0.0254;
+        public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         public static final boolean GYRO_REVERSED = false;
-		public static final double ksVolts = 0.201;
-		public static final double kvVoltSecondsPerMeter = 2.48;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.17;
+		public static final double ksVolts = 0.137;
+		public static final double kvVoltSecondsPerMeter = 2.66;
+        public static final double kaVoltSecondsSquaredPerMeter = 0.275;
         public static final double kTrackwidthMeters = 0.66;
 		public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-		public static final double kPDriveVel = 6.64;
+		public static final double kPDriveVel = 10.7;
     }
 
     public static class AutoConstants {
