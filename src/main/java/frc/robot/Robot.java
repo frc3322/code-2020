@@ -25,12 +25,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        // can be updated as our default bot changes
-        chooseBot.setDefaultOption("TEST_BENCH", Constants.whichBot.TEST_BENCH);
-        chooseBot.addOption("P1", Constants.whichBot.P1);
-        chooseBot.addOption("P2", Constants.whichBot.P2);
-
-        SmartDashboard.putData("Robot in use", chooseBot);
 
         m_can = new Constants.RobotMap.CAN();
 

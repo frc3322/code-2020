@@ -44,7 +44,8 @@ public final class Constants {
             public final int SHOOTER_2;
 
             public CAN() {
-                switch(Robot.chooseBot.getSelected()) {
+                // TODO: switch the part of the enum to match robot currently being deployed to
+                switch(whichBot.TEST_BENCH) {
                     case TEST_BENCH:
                         LEFT_FRONT_MOTOR = 37;
                         LEFT_BACK_MOTOR = 46;
