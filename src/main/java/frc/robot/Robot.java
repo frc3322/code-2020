@@ -25,10 +25,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        m_robotContainer = new RobotContainer();
-        m_drivetrain = m_robotContainer.getDrivetrain();
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
         // can be updated as our default bot changes
         chooseBot.setDefaultOption("TEST_BENCH", Constants.whichBot.TEST_BENCH);
         chooseBot.addOption("P1", Constants.whichBot.P1);
@@ -37,6 +33,10 @@ public class Robot extends TimedRobot {
         SmartDashboard.putData("Robot in use", chooseBot);
 
         m_can = new Constants.RobotMap.CAN();
+
+        m_robotContainer = new RobotContainer();
+        m_drivetrain = m_robotContainer.getDrivetrain();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     }
 
