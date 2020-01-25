@@ -19,6 +19,7 @@ import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
+import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.wpilibj.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -108,6 +109,10 @@ public class Drivetrain extends SubsystemBase {
         encoders[LEFT_BACK].setPosition(0);
         encoders[RIGHT_BACK].setPosition(0);
         navx.zeroYaw();
+
+        Rotation2d originRotation = new Rotation2d(0.0);
+        Pose2d originPose = new Pose2d(0.0, 0.0, originRotation);
+        odometry.resetPosition(originPose, originRotation);
     }
 
     public void drive(double speed, double rotation) {
@@ -166,7 +171,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getHeading() {
-        return -Math.IEEEremainder(navx.getAngle(), 360) * (Constants.DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
+        return -1*Math.IEEEremainder(navx.getAngle(), 360) * (Constants.DriveConstants.GYRO_REVERSED ? -1.0 : 1.0);
     }
 
     public Pose2d getPose() {
@@ -192,5 +197,10 @@ public class Drivetrain extends SubsystemBase {
         getLimelightX();
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
                 getRightEncDistance());
+            
+        var translation = odometry.getPoseMeters().getTranslation();
+
+        SmartDashboard.putNumber("Odometry X", translation.getX());
+        SmartDashboard.putNumber("Odometry Y", translation.getY());
     }
 }

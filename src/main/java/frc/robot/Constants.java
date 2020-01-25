@@ -155,17 +155,17 @@ public final class Constants {
     }
 
     public static class DriveConstants {
-        public static final double GEARING = 408.0/2640.0;
+        public static final double GEARING = 242.0/2480.0;
         public static final double WHEEL_DIAMETER_INCHES = 6;
         public static final double WHEEL_DIAMETER_METERS = WHEEL_DIAMETER_INCHES * 0.0254;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         public static final boolean GYRO_REVERSED = false;
-		public static final double ksVolts = 0.137;
-		public static final double kvVoltSecondsPerMeter = 2.66;
-        public static final double kaVoltSecondsSquaredPerMeter = 0.275;
+		public static final double ksVolts = 0.142;
+		public static final double kvVoltSecondsPerMeter = 3; //2.64
+        public static final double kaVoltSecondsSquaredPerMeter = 0.4; //0.339
         public static final double kTrackwidthMeters = 0.66;
 		public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
-		public static final double kPDriveVel = 10.7;
+		public static final double kPDriveVel = 0; //0.4
     }
 
     public static class AutoConstants {
