@@ -10,6 +10,7 @@ package frc.robot.subsystems;
 import com.kauailabs.navx.frc.AHRS;
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.networktables.NetworkTable;
@@ -118,6 +119,20 @@ public class Drivetrain extends SubsystemBase {
     public void drive(double speed, double rotation) {
         robotDrive.arcadeDrive(speed, rotation);
 
+    }
+
+    public void coastMode() {
+        motors[LEFT_FRONT].setIdleMode(IdleMode.kCoast);
+        motors[LEFT_BACK].setIdleMode(IdleMode.kCoast);
+        motors[RIGHT_FRONT].setIdleMode(IdleMode.kCoast);
+        motors[RIGHT_BACK].setIdleMode(IdleMode.kCoast);
+    }
+
+    public void brakeMode(){
+        motors[LEFT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[LEFT_BACK].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
     }
 
     public void getLimelightX() {

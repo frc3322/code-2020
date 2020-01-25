@@ -20,12 +20,6 @@ public class DriveControl extends CommandBase {
     @SuppressWarnings({ "PMD.UnusedPrivateField", "PMD.SingularField" })
     private final Drivetrain drivetrain;
     private final Joystick lowerChassis;
-    // private double sX;
-    // private double sY;
-    // private double s;
-    // private double theta;
-    // private double newX;
-    // private double newY;
     private double x;
     private double y;
     private double outputTurn;
@@ -44,56 +38,27 @@ public class DriveControl extends CommandBase {
 
     @Override
     public void execute() {
-        double rawX = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
-        double y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
+        x = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
+        y = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
 
+        SmartDashboard.putNumber("X", x);
+        SmartDashboard.putNumber("Y", y);
 
-        if(rawX >= 0){
+        double m_x = Math.abs(x);
+
+        if(x >= 0){
             direction = 1;
         } else {
             direction = -1;
         }
 
+        outputTurn = direction * ((a*Math.pow(m_x, pow1)) + (b*Math.pow(m_x, pow2) + (c * m_x)));
 
-
-        double x = Math.abs(rawX);
-
-        outputTurn = direction * ((a*Math.pow(x, pow1)) + (b*Math.pow(x, pow2) + (c * x)));
-        SmartDashboard.putNumber("Turn", outputTurn);
-        if(Math.abs(y) < 0.15){
+        if(Math.abs(y) < 0.37){
             drivetrain.drive(y, outputTurn);
         } else {
-            drivetrain.drive(y, rawX);
+            drivetrain.drive(y, x);
         }
-            
-        // SmartDashboard.putNumber("x", x);
-        // SmartDashboard.putNumber("y", y);
-
-        // theta = Math.atan(Math.abs(y) / Math.abs(x));
-
-        // if (Math.abs(y) > Math.abs(x)) {
-        //     sY = 1;
-        //     sX = 1 / Math.tan(theta);
-        //     s = sX + sY;
-        // } else if (Math.abs(x) > Math.abs(y)) {
-        //     sX = 1;
-        //     sY = Math.tan(theta);
-        //     s = sX + sY;
-        // } else if (Math.abs(x) == Math.abs(y)) {
-        //     s = 2;
-        // }
-
-        // newX = x / s;
-        // newY = y / s;
-
-        // double left = newX + newY;
-        // double right = newY - newX;
-
-        // if (Math.abs(x) > 0.15) {
-        //     drivetrain.tankDrive(left, right);
-        // } else {
-        //     drivetrain.drive(left, 0);
-        // }
 
     }
 }

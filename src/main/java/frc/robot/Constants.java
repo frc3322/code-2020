@@ -45,7 +45,7 @@ public final class Constants {
 
             public CAN() {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
-                switch(whichBot.TEST_BENCH) {
+                switch(whichBot.P1) {
                     case TEST_BENCH:
                         LEFT_FRONT_MOTOR = 34;
                         LEFT_BACK_MOTOR = 46;
@@ -160,10 +160,10 @@ public final class Constants {
         public static final double WHEEL_DIAMETER_METERS = WHEEL_DIAMETER_INCHES * 0.0254;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         public static final boolean GYRO_REVERSED = false;
-		public static final double ksVolts = 0.142;
-		public static final double kvVoltSecondsPerMeter = 3; //2.64
-        public static final double kaVoltSecondsSquaredPerMeter = 0.4; //0.339
-        public static final double kTrackwidthMeters = 0.66;
+		public static final double ksVolts = 0.146;
+		public static final double kvVoltSecondsPerMeter = 2.65; //2.65 2.64
+        public static final double kaVoltSecondsSquaredPerMeter = 0.298; //0.339
+        public static final double kTrackwidthMeters = 0.66; //0.66
 		public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 		public static final double kPDriveVel = 0; //0.4
     }
@@ -172,8 +172,8 @@ public final class Constants {
 
 		public static final double kRamseteB = 2;
 		public static final double kRamseteZeta = 0.7;
-		public static double kMaxSpeedMetersPerSecond = 1;
-		public static double kMaxAccelerationMetersPerSecondSquared = 0.5;
+		public static double kMaxSpeedMetersPerSecond = 5;
+		public static double kMaxAccelerationMetersPerSecondSquared = 2.5;
 
     }
 }

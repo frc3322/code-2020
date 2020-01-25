@@ -116,7 +116,7 @@ public class RobotContainer {
     config
     );
 
-    public Command getAutonomousCommand() {     
+    public Command getAutonomousCommand() {    
         var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
         testTrajectory = testTrajectory.transformBy(transform);
 
@@ -131,13 +131,13 @@ public class RobotContainer {
         var feedForward = new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
         Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
         //second element was:
-        //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
-
+        
         var m_leftReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_reference");
         var m_leftMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_measurement");
         var m_rightReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_reference");
         var m_rightMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_measurement");
-
+        //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
+        
         RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
         disabledRamsete,
         feedForward,
@@ -155,6 +155,6 @@ public class RobotContainer {
         }, drivetrain);
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        return ramseteCommand.andThen(() -> drivetrain.brakeMode()).andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

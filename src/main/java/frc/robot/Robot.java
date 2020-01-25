@@ -25,6 +25,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
+        
 
         m_can = new Constants.RobotMap.CAN();
 
@@ -50,6 +51,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_drivetrain.resetForAuto();
+        m_drivetrain.coastMode();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -62,6 +64,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        m_drivetrain.brakeMode();
         m_drivetrain.resetForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
