@@ -46,6 +46,7 @@ import frc.robot.Constants.RobotMap;
 public class RobotContainer {
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
+    private final Hopper hopper = new Hopper();
 
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);

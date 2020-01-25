@@ -16,7 +16,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants.RobotMap;
+import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
@@ -35,8 +35,8 @@ public class Shooter extends SubsystemBase {
     CANPIDController controller;
 
     public Shooter() {
-        motors[MOTOR_0] = new CANSparkMax(RobotMap.CAN.SHOOTER_1, MotorType.kBrushless);
-        motors[MOTOR_1] = new CANSparkMax(RobotMap.CAN.SHOOTER_2, MotorType.kBrushless);
+        motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
+        motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
 
         encoders[ENCODER_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[ENCODER_1] = new CANEncoder(motors[MOTOR_1]);
