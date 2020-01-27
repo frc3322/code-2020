@@ -194,6 +194,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void tankDriveVolts(double leftVolts, double rightVolts) {
+        robotDrive.feed();
         motors[LEFT_FRONT].setVoltage(leftVolts);
         motors[RIGHT_FRONT].setVoltage(-rightVolts);
     }

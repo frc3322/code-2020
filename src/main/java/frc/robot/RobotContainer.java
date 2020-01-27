@@ -155,6 +155,6 @@ public class RobotContainer {
         }, drivetrain);
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> drivetrain.brakeMode()).andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }
