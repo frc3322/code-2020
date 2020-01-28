@@ -8,7 +8,6 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
-import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
@@ -20,8 +19,6 @@ public class Robot extends TimedRobot {
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
     public static Constants.RobotMap.CAN m_can;
-
-    public static SendableChooser<Constants.whichBot> chooseBot = new SendableChooser<>();
 
     @Override
     public void robotInit() {
