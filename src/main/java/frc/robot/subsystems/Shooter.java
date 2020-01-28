@@ -16,32 +16,35 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj.SpeedControllerGroup;
 import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.2;
-    private static double I = 0;
-    private static double D = 0;
+    private static double P = 0.0006;
+    private static double I = 0.0000026;
+    private static double D = 100;
     private static double F = 0;
 
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
-
-    private final int ENCODER_0 = 0, ENCODER_1 = 1;
+    private static SpeedControllerGroup shooter;
 
     CANPIDController controller;
 
     public Shooter() {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
+        motors[MOTOR_0].setInverted(true);
+        motors[MOTOR_1].setInverted(false);
 
-        encoders[ENCODER_0] = new CANEncoder(motors[MOTOR_0]);
-        encoders[ENCODER_1] = new CANEncoder(motors[MOTOR_1]);
+        shooter = new SpeedControllerGroup(motors[MOTOR_0], motors[MOTOR_1]);
 
-        motors[MOTOR_1].follow(motors[MOTOR_0]);
+        encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
+        encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
+
 
         for (CANSparkMax motor : motors) {
             motor.setIdleMode(IdleMode.kCoast);
@@ -65,8 +68,8 @@ public class Shooter extends SubsystemBase {
     }
 
     public double publishRPM() {
-        SmartDashboard.putNumber("Shooter RPM", encoders[ENCODER_0].getVelocity());
-        return encoders[ENCODER_0].getVelocity();
+        SmartDashboard.putNumber("Shooter RPM", encoders[MOTOR_0].getVelocity());
+        return encoders[MOTOR_0].getVelocity();
     }
 
     public void setSpeed(double speed) {
@@ -74,8 +77,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateConstants() {
-        // setSetpoint(SmartDashboard.getNumber("Set Shooter RPM", 3000));
-
+        setSetpoint(SmartDashboard.getNumber("Set Shooter RPM", 3000));
         controller.setP(SmartDashboard.getNumber("Shooter P", 0));
         controller.setI(SmartDashboard.getNumber("Shooter I", 0));
         controller.setD(SmartDashboard.getNumber("Shooter D", 0));
@@ -84,6 +86,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        //setSpeed(SmartDashboard.getNumber("Shooter Speed", 0));
         updateConstants();
+        publishRPM();
     }
 }
