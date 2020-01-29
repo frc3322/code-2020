@@ -76,10 +76,10 @@ public class Shooter extends SubsystemBase {
 
     public void putInitialDash(){
         SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter P", 0.0007);
-        SmartDashboard.putNumber("Shooter I", 0.000001);
-        SmartDashboard.putNumber("Shooter D", 31); 
-        SmartDashboard.putNumber("Shooter F", 0);
+        SmartDashboard.putNumber("Shooter P", P);
+        SmartDashboard.putNumber("Shooter I", I);
+        SmartDashboard.putNumber("Shooter D", D); 
+        SmartDashboard.putNumber("Shooter F", F);
         SmartDashboard.putNumber("Shooter Setpoint", 3000);
     }
 
