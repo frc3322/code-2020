@@ -21,9 +21,9 @@ import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.1;
-    private static double I = 0;
-    private static double D = 0;
+    private static double P = 0.000537;
+    private static double I = 0.000001;
+    private static double D = 35;
     private static double F = 0;
 
     private CANSparkMax[] motors = new CANSparkMax[2];
@@ -37,10 +37,8 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
-        motors[MOTOR_0].setInverted(false);
-        motors[MOTOR_1].setInverted(true);
 
-        shooter = new SpeedControllerGroup(motors[MOTOR_0], motors[MOTOR_1]);
+        motors[MOTOR_1].follow(motors[MOTOR_0], true);
 
         encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
@@ -74,6 +72,15 @@ public class Shooter extends SubsystemBase {
 
     public void stop(){
         motors[MOTOR_0].setVoltage(0);
+    }
+
+    public void putInitialDash(){
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter P", 0.0007);
+        SmartDashboard.putNumber("Shooter I", 0.000001);
+        SmartDashboard.putNumber("Shooter D", 31); 
+        SmartDashboard.putNumber("Shooter F", 0);
+        SmartDashboard.putNumber("Shooter Setpoint", 3000);
     }
 
     public void updateConstants() {

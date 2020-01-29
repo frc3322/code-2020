@@ -12,12 +12,14 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Shooter;
 
 public class Robot extends TimedRobot {
     
     private static RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
+    private Shooter m_shooter;
     public static Constants.RobotMap.CAN m_can;
 
     @Override
@@ -25,18 +27,13 @@ public class Robot extends TimedRobot {
         
 
         m_can = new Constants.RobotMap.CAN();
-
+        m_shooter = new Shooter();
         m_robotContainer = new RobotContainer();
         m_drivetrain = m_robotContainer.getDrivetrain();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
-    
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter P", 0.0007);
-        SmartDashboard.putNumber("Shooter I", 0.000001);
-        SmartDashboard.putNumber("Shooter D", 31); 
-        SmartDashboard.putNumber("Shooter F", 0);
-        SmartDashboard.putNumber("Shooter Setpoint", 3000);
+        m_shooter.putInitialDash();
+        
     }
 
     @Override
