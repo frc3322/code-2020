@@ -80,8 +80,8 @@ public class RobotContainer {
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
 
-        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(3000)))
-                .whenReleased(new InstantCommand(() -> shooter.setSetpoint(0)));
+        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(SmartDashboard.getNumber("Shooter Setpoint", 3000))))
+                .whenReleased(new InstantCommand(() -> shooter.stop()));
 
         button_a_lower.whenPressed(new RunCommand(() -> drivetrain.pidDrive(0.0),
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);

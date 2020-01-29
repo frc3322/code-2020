@@ -21,9 +21,9 @@ import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.0006;
-    private static double I = 0.0000026;
-    private static double D = 100;
+    private static double P = 0.1;
+    private static double I = 0;
+    private static double D = 0;
     private static double F = 0;
 
     private CANSparkMax[] motors = new CANSparkMax[2];
@@ -37,14 +37,13 @@ public class Shooter extends SubsystemBase {
     public Shooter() {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
-        motors[MOTOR_0].setInverted(true);
-        motors[MOTOR_1].setInverted(false);
+        motors[MOTOR_0].setInverted(false);
+        motors[MOTOR_1].setInverted(true);
 
         shooter = new SpeedControllerGroup(motors[MOTOR_0], motors[MOTOR_1]);
 
         encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
-
 
         for (CANSparkMax motor : motors) {
             motor.setIdleMode(IdleMode.kCoast);
@@ -52,13 +51,10 @@ public class Shooter extends SubsystemBase {
 
         controller = motors[MOTOR_0].getPIDController();
 
-        SmartDashboard.putNumber("P", P);
-        SmartDashboard.putNumber("I", I);
-        SmartDashboard.putNumber("D", D);
-        SmartDashboard.putNumber("F", F);
-
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Set Shooter RPM", 3000);
+        controller.setP(P);
+        controller.setI(I);
+        controller.setD(D);
+        controller.setFF(F);
 
         controller.setOutputRange(0, 1);
     }
@@ -76,11 +72,16 @@ public class Shooter extends SubsystemBase {
         motors[MOTOR_0].set(speed);
     }
 
+    public void stop(){
+        motors[MOTOR_0].setVoltage(0);
+    }
+
     public void updateConstants() {
-        controller.setP(SmartDashboard.getNumber("Shooter P", 0));
-        controller.setI(SmartDashboard.getNumber("Shooter I", 0));
-        controller.setD(SmartDashboard.getNumber("Shooter D", 0));
-        controller.setFF(SmartDashboard.getNumber("Shooter F", 0));
+        SmartDashboard.putNumber("A PID value", controller.getP());
+        controller.setP(SmartDashboard.getNumber("Shooter P", P));
+        controller.setI(SmartDashboard.getNumber("Shooter I", I));
+        controller.setD(SmartDashboard.getNumber("Shooter D", D));
+        controller.setFF(SmartDashboard.getNumber("Shooter F", F));
     }
 
     @Override

@@ -30,6 +30,13 @@ public class Robot extends TimedRobot {
         m_drivetrain = m_robotContainer.getDrivetrain();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
+    
+        SmartDashboard.putNumber("Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter P", 0.0007);
+        SmartDashboard.putNumber("Shooter I", 0.000001);
+        SmartDashboard.putNumber("Shooter D", 31); 
+        SmartDashboard.putNumber("Shooter F", 0);
+        SmartDashboard.putNumber("Shooter Setpoint", 3000);
     }
 
     @Override
@@ -60,6 +67,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        
         m_drivetrain.resetForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
