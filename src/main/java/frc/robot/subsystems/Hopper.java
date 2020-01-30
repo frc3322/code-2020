@@ -36,6 +36,7 @@ public class Hopper extends SubsystemBase {
   }
 
   public void cycle() {
+    //TODO: make this a reasonable value instead of this placeholder
     motors[LEFT].set(0.2);
   }
 

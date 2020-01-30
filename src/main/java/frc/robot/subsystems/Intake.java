@@ -40,52 +40,57 @@ public class Intake extends SubsystemBase {
   }
 
   public void intakeStart() {
-    
-}
+    //TODO: make this a reasonable value as well
+    motors[INTAKE_RIGHT].set(0.2);    
+  }
 
-public void intakeStop() {
-    
-}
+  public void outtake() {
+    motors[INTAKE_RIGHT].set(-0.5);
+  }
+
+  public void stop() {
+    motors[INTAKE_RIGHT].set(0);
+  }
 
 
-public void intakeExtend() {
-  intakeExtender.set(DoubleSolenoid.Value.kForward);
-}
+  public void extend() {
+    intakeExtender.set(DoubleSolenoid.Value.kForward);
+  }
 
-public void intakeRetract() {
-  intakeExtender.set(DoubleSolenoid.Value.kReverse);
-}
+  public void retract() {
+    intakeExtender.set(DoubleSolenoid.Value.kReverse);
+  }
 
   public double getVoltage(final int n) {
     return motors[n].getBusVoltage();
-}
-
-public double getMotorHeat(final int n) {
-    return motors[n].getMotorTemperature();
-}
-
-public double getOutputCurrent(final int n) {
-    return motors[n].getOutputCurrent();
-}
-
-public double getEncoder(final int n) {
-    return encoders[n].getPosition();
-}
-
-public double getVelocity(final int n) {
-    return encoders[n].getVelocity();
-}
-
-public void toggleIntake() {
-  if(isIntakeExtended()) {
-      intakeRetract();
-  }else{
-      intakeExtend();
   }
-}
-public boolean isIntakeExtended() {
-  return intakeExtender.get() == Value.kForward;
-}
+
+  public double getMotorHeat(final int n) {
+      return motors[n].getMotorTemperature();
+  }
+
+  public double getOutputCurrent(final int n) {
+      return motors[n].getOutputCurrent();
+  }
+
+  public double getEncoder(final int n) {
+      return encoders[n].getPosition();
+  }
+
+  public double getVelocity(final int n) {
+      return encoders[n].getVelocity();
+  }
+
+  public void toggle() {
+    if (isExtended()) {
+      retract();
+    } else {
+      extend();
+    }
+  }
+  public boolean isExtended() {
+    return intakeExtender.get() == Value.kForward;
+  }
   @Override
   public void periodic() {
     // This method will be called once per scheduler run

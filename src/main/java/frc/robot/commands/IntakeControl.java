@@ -8,39 +8,45 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 
-public class HopperControl extends CommandBase {
-  /**
-   * Creates a new HopperControl.
-   */
-  private final Hopper hopper;
-  public enum hopperMode {
+public class IntakeControl extends CommandBase {
+  public enum intakeMode {
+    INTAKE,
+    OUTTAKE,
     STOP,
-    CYCLE,
+    TOGGLE
   }
-  private hopperMode mode;
-
-  public HopperControl(Hopper hopper, hopperMode mode) {
-    this.hopper = hopper;
+  private intakeMode mode;
+  private Intake intake;
+  public IntakeControl(Intake intake, intakeMode mode) {
+    this.intake = intake;
     this.mode = mode;
-    addRequirements(hopper);
+    addRequirements(intake);
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
+    if (mode == intakeMode.TOGGLE) {
+      intake.toggle();
+    }
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
     switch (mode) {
-      case CYCLE:
-        hopper.cycle();
+      case INTAKE:
+        intake.intakeStart();
         break;
-      case STOP:
-        hopper.stop();
+      case OUTTAKE:
+        intake.outtake();
+        break;
+      case STOP: 
+        intake.stop();
+        break;
+      case TOGGLE:
         break;
     }
   }
@@ -48,12 +54,11 @@ public class HopperControl extends CommandBase {
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {
-    hopper.stop();
   }
 
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return true;
   }
 }
