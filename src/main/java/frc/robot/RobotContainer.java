@@ -50,6 +50,7 @@ public class RobotContainer {
     private final Drivetrain drivetrain = new Drivetrain();
     private final Shooter shooter = new Shooter();
     private final Hopper hopper = new Hopper();
+    private final Intake intake = new Intake();
 
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
@@ -90,6 +91,13 @@ public class RobotContainer {
 
     public Drivetrain getDrivetrain() {
         return drivetrain;
+    }
+    public Hopper getHopper() {
+        return hopper;
+    }
+
+    public Intake getIntake() {
+        return intake;
     }
 
     public Shooter getShooter(){
