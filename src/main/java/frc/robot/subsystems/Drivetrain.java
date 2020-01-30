@@ -140,6 +140,10 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Limelight tx", limelightX);
     }
 
+    public boolean onTarget() {
+        return PID.atSetpoint();
+    }
+
     public void pidDrive(Double speed) {
         limelightX = tx.getDouble(0.0);
         PID.reset();
@@ -167,9 +171,7 @@ public class Drivetrain extends SubsystemBase {
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
 
-    public boolean onTarget() {
-        return PID.atSetpoint();
-    }
+    
 
     public void updateConstants() {
         PID.setP(SmartDashboard.getNumber("Drivetrain P", 0));

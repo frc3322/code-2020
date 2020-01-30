@@ -81,6 +81,7 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter D", D); 
         SmartDashboard.putNumber("Shooter F", F);
         SmartDashboard.putNumber("Shooter Setpoint", 3000);
+        SmartDashboard.putNumber("Robot Distance", 0);
     }
 
     public void updateConstants() {
