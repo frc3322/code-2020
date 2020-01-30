@@ -24,11 +24,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void robotInit() {
-        
-
         m_can = new Constants.RobotMap.CAN();
-        m_shooter = new Shooter();
         m_robotContainer = new RobotContainer();
+        m_shooter = m_robotContainer.getShooter();
         m_drivetrain = m_robotContainer.getDrivetrain();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 

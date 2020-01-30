@@ -21,9 +21,9 @@ import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.000537;
+    private static double P = 0.00051;
     private static double I = 0.000001;
-    private static double D = 35;
+    private static double D = 30;
     private static double F = 0;
 
     private CANSparkMax[] motors = new CANSparkMax[2];

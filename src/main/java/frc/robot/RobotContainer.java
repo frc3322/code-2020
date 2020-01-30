@@ -92,6 +92,10 @@ public class RobotContainer {
         return drivetrain;
     }
 
+    public Shooter getShooter(){
+        return shooter;
+    }
+
     DifferentialDriveVoltageConstraint autoVoltageConstraint =
         new DifferentialDriveVoltageConstraint(
             new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
