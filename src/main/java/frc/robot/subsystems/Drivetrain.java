@@ -140,6 +140,11 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Limelight tx", limelightX);
     }
 
+    public void getLimelightY() {
+        limelightY = ty.getDouble(0.0);
+        SmartDashboard.putNumber("Limelight ty", limelightY);
+    }
+
     public boolean onTarget() {
         return PID.atSetpoint();
     }
@@ -151,6 +156,15 @@ public class Drivetrain extends SubsystemBase {
         drive(speed, PID.calculate(limelightX, 0));
     }
 
+    public double getDistance() {
+        double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
+        double targetAngle = limelightY;
+        double limelightHeight = SmartDashboard.getNumber("Limelight Height", 1/2);
+        double targetHeight = (7 + (5/6));
+
+        return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
+    }
+
     // returns meters traveled
     public double getLeftEncDistance() {
         return encoders[LEFT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;
@@ -159,7 +173,6 @@ public class Drivetrain extends SubsystemBase {
     public double getRightEncDistance() {
         return -encoders[RIGHT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;
     }
-
 
     // returns meters per second
     public double getLeftEncRate() {
@@ -170,8 +183,6 @@ public class Drivetrain extends SubsystemBase {
         double RPS = (encoders[RIGHT_FRONT].getVelocity() * Constants.DriveConstants.GEARING) / 60;
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
     }
-
-    
 
     public void updateConstants() {
         PID.setP(SmartDashboard.getNumber("Drivetrain P", 0));
@@ -213,6 +224,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putString("pose", getPose().toString());
         updateConstants();
         getLimelightX();
+        getLimelightY();
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
                 getRightEncDistance());
             

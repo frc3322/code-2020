@@ -10,9 +10,7 @@ package frc.robot;
 import frc.robot.commands.DriveControl;
 import frc.robot.subsystems.*;
 
-import java.nio.file.Paths;
 import java.util.List;
-import java.util.function.BooleanSupplier;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
@@ -27,14 +25,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryGenerator;
-import edu.wpi.first.wpilibj.trajectory.TrajectoryUtil;
 import edu.wpi.first.wpilibj.trajectory.constraint.DifferentialDriveVoltageConstraint;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.RamseteCommand;
 import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.button.*;
 import frc.robot.Constants.RobotMap;
 
@@ -51,6 +46,7 @@ public class RobotContainer {
     private final Shooter shooter = new Shooter();
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
+    private final Feeder feeder = new Feeder();
 
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
@@ -59,7 +55,11 @@ public class RobotContainer {
         
         configureButtonBindings();
         getAutonomousCommand();
+
         drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
+
+        feeder.putInitialDash();
+        shooter.putInitialDash();
     }
 
     private void configureButtonBindings() {
@@ -80,6 +80,8 @@ public class RobotContainer {
         Button right_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_RIGHT);
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
+        Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
+
 
         button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(SmartDashboard.getNumber("Shooter Setpoint", 3000))))
                 .whenReleased(new InstantCommand(() -> shooter.stop()));
@@ -87,21 +89,12 @@ public class RobotContainer {
         button_a_lower.whenPressed(new RunCommand(() -> drivetrain.pidDrive(0.0),
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
+
+        button_y_lower.whenPressed(new InstantCommand(() -> feeder.feed(0.2)));
     }
 
     public Drivetrain getDrivetrain() {
         return drivetrain;
-    }
-    public Hopper getHopper() {
-        return hopper;
-    }
-
-    public Intake getIntake() {
-        return intake;
-    }
-
-    public Shooter getShooter(){
-        return shooter;
     }
 
     DifferentialDriveVoltageConstraint autoVoltageConstraint =

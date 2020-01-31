@@ -37,8 +37,9 @@ public final class Constants {
     
             public final int INTAKE_RIGHT;
             public final int INTAKE_LEFT;
-            
 
+            public final int FEEDER_1;
+            public final int FEEDER_2;
 
             public final int SHOOTER_1;
             public final int SHOOTER_2;
@@ -53,8 +54,12 @@ public final class Constants {
                         RIGHT_BACK_MOTOR = 0;
         
                         // TODO: give these actual IDs
+                        FEEDER_1 = 20;
+                        FEEDER_2 = 21;
+
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
+
                         INTAKE_RIGHT = 0;
                         INTAKE_LEFT = 0;
                     
@@ -66,6 +71,9 @@ public final class Constants {
                         LEFT_BACK_MOTOR = 45;
                         RIGHT_FRONT_MOTOR = 40;
                         RIGHT_BACK_MOTOR = 36;
+
+                        FEEDER_1 = 20;
+                        FEEDER_2 = 21;
         
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -82,6 +90,9 @@ public final class Constants {
                         LEFT_BACK_MOTOR = 46;
                         RIGHT_FRONT_MOTOR = 37;
                         RIGHT_BACK_MOTOR = 35;
+
+                        FEEDER_1 = 20;
+                        FEEDER_2 = 21;
         
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -100,6 +111,9 @@ public final class Constants {
                         RIGHT_BACK_MOTOR = 35;
     
                         // TODO: give these actual IDs
+                        FEEDER_1 = 20;
+                        FEEDER_2 = 21;
+
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
         

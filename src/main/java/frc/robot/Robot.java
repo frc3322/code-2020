@@ -12,26 +12,20 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
-import frc.robot.subsystems.Shooter;
 
 public class Robot extends TimedRobot {
     
     private static RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
-    private Shooter m_shooter;
     public static Constants.RobotMap.CAN m_can;
 
     @Override
     public void robotInit() {
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
-        m_shooter = m_robotContainer.getShooter();
         m_drivetrain = m_robotContainer.getDrivetrain();
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
-
-        m_shooter.putInitialDash();
-        
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand();        
     }
 
     @Override

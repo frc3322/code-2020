@@ -17,7 +17,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
+
+import frc.robot.RobotContainer;
 import static frc.robot.Robot.m_can;
+
+import java.util.HashMap;
 
 public class Shooter extends SubsystemBase {
 
@@ -29,8 +33,13 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
+    private RobotContainer m_robotContainer = new RobotContainer();
+
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
-    private static SpeedControllerGroup shooter;
+
+    private double[] distances = {0, 1, 2, 3, 4};
+
+    private double[] RPMs = {3000, 3000, 3300, 3100};
 
     CANPIDController controller;
 
@@ -42,10 +51,6 @@ public class Shooter extends SubsystemBase {
 
         encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
-
-        for (CANSparkMax motor : motors) {
-            motor.setIdleMode(IdleMode.kCoast);
-        }
 
         controller = motors[MOTOR_0].getPIDController();
 
@@ -59,6 +64,25 @@ public class Shooter extends SubsystemBase {
 
     public void setSetpoint(double setpoint) {
         controller.setReference(setpoint, ControlType.kVelocity);
+    }
+
+    public double getRPM() {
+        double myNumber = m_robotContainer.getDrivetrain().getDistance();
+        double distance = Math.abs(distances[0] - myNumber);
+        int idx = 0;
+        for(int c = 1; c < distances.length; c++){
+            double cdistance = Math.abs(distances[c] - myNumber);
+            if(cdistance < distance){
+                idx = c;
+                distance = cdistance;
+            }
+        }
+
+        if(idx <= distances.length){
+            return RPMs[idx];
+        } else {
+            return 0;
+        }
     }
 
     public double publishRPM() {
