@@ -44,4 +44,13 @@ public class Feeder extends SubsystemBase {
         SmartDashboard.putNumber("Feed Speed", 0.2);
     }
 
+    public void updateDash() {
+        SmartDashboard.putNumber("IR Value", getIR());
+        SmartDashboard.putNumber("Proximity Value", getProximity());
+    }
+
+    @Override
+    public void periodic() {
+        updateDash();
+    }
 }
