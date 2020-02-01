@@ -33,7 +33,7 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
-    private RobotContainer m_robotContainer = new RobotContainer();
+    //private RobotContainer m_robotContainer = new RobotContainer();
 
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
 
@@ -60,30 +60,32 @@ public class Shooter extends SubsystemBase {
         controller.setFF(F);
 
         controller.setOutputRange(0, 1);
+
+        updateConstants();
     }
 
     public void setSetpoint(double setpoint) {
         controller.setReference(setpoint, ControlType.kVelocity);
     }
 
-    public double getRPM() {
-        double myNumber = m_robotContainer.getDrivetrain().getDistance();
-        double distance = Math.abs(distances[0] - myNumber);
-        int idx = 0;
-        for(int c = 1; c < distances.length; c++){
-            double cdistance = Math.abs(distances[c] - myNumber);
-            if(cdistance < distance){
-                idx = c;
-                distance = cdistance;
-            }
-        }
+    // public double getRPM() {
+    //     double myNumber = m_robotContainer.getDrivetrain().getDistance();
+    //     double distance = Math.abs(distances[0] - myNumber);
+    //     int idx = 0;
+    //     for(int c = 1; c < distances.length; c++){
+    //         double cdistance = Math.abs(distances[c] - myNumber);
+    //         if(cdistance < distance){
+    //             idx = c;
+    //             distance = cdistance;
+    //         }
+    //     }
 
-        if(idx <= distances.length){
-            return RPMs[idx];
-        } else {
-            return 0;
-        }
-    }
+    //     if(idx <= distances.length){
+    //         return RPMs[idx];
+    //     } else {
+    //         return 0;
+    //     }
+    // }
 
     public double publishRPM() {
         SmartDashboard.putNumber("Shooter RPM", encoders[MOTOR_0].getVelocity());
@@ -119,7 +121,6 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         //setSpeed(SmartDashboard.getNumber("Shooter Speed", 0));
-        updateConstants();
         publishRPM();
     }
 }
