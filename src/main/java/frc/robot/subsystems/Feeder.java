@@ -52,5 +52,6 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         updateDash();
+        feed(SmartDashboard.getNumber("Feed Speed", 0));
     }
 }

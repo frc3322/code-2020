@@ -41,6 +41,9 @@ public final class Constants {
             public final int FEEDER_1;
             public final int FEEDER_2;
 
+            public final int CLIMBER_RAISE;
+            public final int CLIMBER_CLIMB;
+
             public final int SHOOTER_1;
             public final int SHOOTER_2;
 
@@ -56,6 +59,9 @@ public final class Constants {
                         // TODO: give these actual IDs
                         FEEDER_1 = 20;
                         FEEDER_2 = 21;
+
+                        CLIMBER_RAISE = 0;
+                        CLIMBER_CLIMB = 1;
 
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -74,6 +80,9 @@ public final class Constants {
 
                         FEEDER_1 = 20;
                         FEEDER_2 = 21;
+
+                        CLIMBER_RAISE = 0;
+                        CLIMBER_CLIMB = 1;
         
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -93,6 +102,9 @@ public final class Constants {
 
                         FEEDER_1 = 20;
                         FEEDER_2 = 21;
+
+                        CLIMBER_RAISE = 0;
+                        CLIMBER_CLIMB = 1;
         
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -113,6 +125,9 @@ public final class Constants {
                         // TODO: give these actual IDs
                         FEEDER_1 = 20;
                         FEEDER_2 = 21;
+
+                        CLIMBER_RAISE = 0;
+                        CLIMBER_CLIMB = 1;
 
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
