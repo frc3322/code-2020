@@ -29,22 +29,45 @@ public class Climber extends SubsystemBase {
     encoders[RAISE] = motors[RAISE].getEncoder();
     encoders[CLIMB] = motors[CLIMB].getEncoder();
   }
- //TODO need to have either mechanical hardstops or stops built in to code 
-  public void raiseClimber(double speed) {
-    motors[RAISE].set(speed);
+ //TODO make the encoder points at the hardstops actual values
+  public void raiseClimber(double speed) {  
+    if (encoders[RAISE].getPosition() < 2000) {
+      motors[RAISE].set(speed);
+    } else {
+      stopClimber();
+    }
   }
 
   public void lowerClimber(double speed) {
-    motors[RAISE].set(-speed);
+    if (encoders[RAISE].getPosition() > 0) {
+      motors[RAISE].set(-speed);
+    } else {
+      stopClimber();
+    }
+  }
+
+  public void stopClimber() {
+    motors[RAISE].set(0);
   }
 
   public void pullWinch(double speed) {
-
-    motors[CLIMB].set(speed);
+    if (encoders[CLIMB].getPosition() > 0) {
+      motors[CLIMB].set(speed);
+    } else {
+      stopWinch();
+    }
   }
 
   public void pushWinch(double speed) {
-    motors[CLIMB].set(speed);
+    if (encoders[CLIMB].getPosition() < 2000) {
+      motors[CLIMB].set(speed);
+    } else {
+      stopWinch();
+    }
+  }
+
+  public void stopWinch() {
+    motors[CLIMB].set(0);
   }
 
   public void extendHook() {
