@@ -14,18 +14,28 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // information, see:
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class LedControl extends InstantCommand {
+  public enum LedMode {
+    OFF,
+    ON
+  }
 
-  private int nextState;
+  private LedMode state;
 
-  public LedControl() {
-    this.nextState = 1;
+  public LedControl(LedMode state) {
+    this.state = state;
     // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    LedData.getInstance().startPattern(this.nextState);
-    this.nextState = this.nextState == 1 ? 0 : 1;
+    switch (this.state) {
+      case OFF:
+        LedData.getInstance().startPattern(0);
+        break;
+      case ON:
+        LedData.getInstance().startPattern(1);
+        break;
+    }
   }
 }
