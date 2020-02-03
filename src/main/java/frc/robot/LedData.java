@@ -11,8 +11,8 @@ public class LedData {
         this.ledController = new I2C(I2C.Port.kOnboard, ArduinoAddress);
     }
 
-    public void startPattern(byte patternId) {
-        byte[] data = {patternId};
+    public void startPattern(int patternId) {
+        byte[] data = {(byte) patternId};
         this.ledController.transaction(data, 1, null, 0);
     }
 
