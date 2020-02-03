@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.commands.DriveControl;
+import frc.robot.commands.LedControl;
 import frc.robot.subsystems.*;
 
 import java.util.List;
@@ -91,6 +92,10 @@ public class RobotContainer {
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
         button_y_lower.whenPressed(new InstantCommand(() -> feeder.feed(0.2)));
+
+        //! Uncomment when testing LedControl 
+        // button_x_upper.whenPressed(new LedControl(LedControl.LedMode.OFF));
+        // button_y_upper.whenPressed(new LedControl(LedControl.LedMode.ON));
     }
 
     public Drivetrain getDrivetrain() {
