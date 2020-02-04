@@ -60,6 +60,7 @@ public class RobotContainer {
 
         feeder.putInitialDash();
         shooter.putInitialDash();
+        hopper.putInitialDash();
     }
 
     private void configureButtonBindings() {

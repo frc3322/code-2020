@@ -27,6 +27,7 @@ public final class Constants {
     
     public static class RobotMap {
         public static class CAN {
+
             public final int LEFT_FRONT_MOTOR;
             public final int LEFT_BACK_MOTOR;
             public final int RIGHT_FRONT_MOTOR;
@@ -51,6 +52,7 @@ public final class Constants {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
                 switch(whichBot.P1){
                     case TEST_BENCH:
+
                         LEFT_FRONT_MOTOR = 36;
                         LEFT_BACK_MOTOR = 0;
                         RIGHT_FRONT_MOTOR = 40;
@@ -73,6 +75,7 @@ public final class Constants {
                         SHOOTER_2 = 45;
                         break;
                     case P1:
+
                         LEFT_FRONT_MOTOR = 33;
                         LEFT_BACK_MOTOR = 45;
                         RIGHT_FRONT_MOTOR = 40;
@@ -94,6 +97,7 @@ public final class Constants {
                         SHOOTER_2 = 7;
                         break;
                     case P2:
+
                         // TODO: set these to be P2 CAN IDs
                         LEFT_FRONT_MOTOR = 34;
                         LEFT_BACK_MOTOR = 46;

@@ -41,7 +41,7 @@ public class Feeder extends SubsystemBase {
     }
 
     public void putInitialDash() {
-        SmartDashboard.putNumber("Feed Speed", 0.2);
+        SmartDashboard.putNumber("Feed Speed", 0);
     }
 
     public void updateDash() {
