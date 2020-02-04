@@ -76,25 +76,25 @@ public final class Constants {
                         break;
                     case P1:
 
-                        LEFT_FRONT_MOTOR = 33;
-                        LEFT_BACK_MOTOR = 45;
-                        RIGHT_FRONT_MOTOR = 40;
-                        RIGHT_BACK_MOTOR = 36;
+                        LEFT_FRONT_MOTOR = 4;
+                        LEFT_BACK_MOTOR = 3;
+                        RIGHT_FRONT_MOTOR = 5;
+                        RIGHT_BACK_MOTOR = 6;
 
-                        FEEDER_1 = 20;
-                        FEEDER_2 = 21;
+                        FEEDER_1 = 9;
+                        FEEDER_2 = 14;
 
                         CLIMBER_RAISE = 0;
-                        CLIMBER_CLIMB = 1;
+                        CLIMBER_CLIMB = 0;
         
-                        LEFT_HOPPER_MOTOR = 2;
-                        RIGHT_HOPPER_MOTOR = 3;
+                        LEFT_HOPPER_MOTOR = 12;
+                        RIGHT_HOPPER_MOTOR = 13;
             
-                        INTAKE_RIGHT = 4;
-                        INTAKE_LEFT = 5;
+                        INTAKE_RIGHT = 0;
+                        INTAKE_LEFT = 0;
                     
-                        SHOOTER_1 = 6;
-                        SHOOTER_2 = 7;
+                        SHOOTER_1 = 10;
+                        SHOOTER_2 = 11;
                         break;
                     case P2:
 

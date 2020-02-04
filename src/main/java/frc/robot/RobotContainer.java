@@ -91,7 +91,6 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
-        button_y_lower.whenPressed(new InstantCommand(() -> feeder.feed(0.2)));
     }
 
     public Drivetrain getDrivetrain() {

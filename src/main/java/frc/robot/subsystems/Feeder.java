@@ -25,11 +25,16 @@ public class Feeder extends SubsystemBase {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
         motors[FEED_2] = new CANSparkMax(m_can.FEEDER_2, MotorType.kBrushless);
 
-        motors[FEED_2].follow(motors[FEED_1]);
+        motors[FEED_1].setSmartCurrentLimit(20, 15);
+        motors[FEED_2].setSmartCurrentLimit(20, 15);
     }
 
-    public void feed(double speed) {
+    public void feedTop(double speed) {
         motors[FEED_1].set(speed);
+    }
+
+    public void feedBottom(double speed) {
+        motors[FEED_2].set(speed);
     }
 
     public double getIR() {
@@ -41,7 +46,8 @@ public class Feeder extends SubsystemBase {
     }
 
     public void putInitialDash() {
-        SmartDashboard.putNumber("Feed Speed", 0);
+        SmartDashboard.putNumber("Feed Speed Top", 0);
+        SmartDashboard.putNumber("Feed Speed Bottom", 0);
     }
 
     public void updateDash() {
@@ -52,6 +58,7 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         updateDash();
-        feed(SmartDashboard.getNumber("Feed Speed", 0));
+        feedTop(SmartDashboard.getNumber("Feed Speed Top", 0));
+        feedBottom(SmartDashboard.getNumber("Feed Speed Bottom", 0));
     }
 }

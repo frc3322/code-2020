@@ -32,6 +32,9 @@ public class Hopper extends SubsystemBase {
 
     encoders[LEFT] = motors[LEFT].getEncoder();
     encoders[RIGHT] = motors[RIGHT].getEncoder();
+
+    motors[LEFT].setSmartCurrentLimit(20, 15);
+    motors[RIGHT].setSmartCurrentLimit(20, 15);
   }
 
   public void putInitialDash() {
