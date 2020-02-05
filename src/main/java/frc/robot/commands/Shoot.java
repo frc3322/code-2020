@@ -45,7 +45,6 @@ public class Shoot extends CommandBase {
         if (!drivetrain.onTarget()) {
             drivetrain.pidDrive(0.0);
         }
-
         if (!shooter.onTarget(setpoint)) {
             shooter.setSetpoint(setpoint);
         }

@@ -209,6 +209,6 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_TOLERANCE = 30;
+        public static final double SHOOTER_TOLERANCE = 30.0;
     }
 }

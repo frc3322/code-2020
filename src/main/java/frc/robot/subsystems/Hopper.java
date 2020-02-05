@@ -11,70 +11,87 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Robot.m_can;
 
 public class Hopper extends SubsystemBase {
-  /**
-   * Creates a new Hopper.
-   */
-  private CANSparkMax[] motors = new CANSparkMax[2];
-  private CANEncoder[] encoders = new CANEncoder[2];
+    /**
+     * Creates a new Hopper.
+     */
+    private CANSparkMax[] motors = new CANSparkMax[2];
+    private CANEncoder[] encoders = new CANEncoder[2];
 
-  private int LEFT = 0, RIGHT = 1;
-
-
-  public Hopper() {
-    motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
-    motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
-
-    encoders[LEFT] = motors[LEFT].getEncoder();
-    encoders[RIGHT] = motors[RIGHT].getEncoder();
-
-    motors[LEFT].setSmartCurrentLimit(20, 15);
-    motors[RIGHT].setSmartCurrentLimit(20, 15);
-  }
-
-  public void putInitialDash() {
-    SmartDashboard.putNumber("Left Hopper Speed", 0);
-    SmartDashboard.putNumber("Right Hopper Speed", 0);
-  }
-
-  public void cycle(double leftSpeed, double rightSpeed) {
-    //TODO: make this a reasonable value instead of this placeholder
-    motors[LEFT].set(leftSpeed);
-    motors[RIGHT].set(rightSpeed);
-  }
-
-  public void stop() {
-    motors[LEFT].set(0);
-  }
+    DigitalInput cellSensor;
   
-  public double getVoltage(int n) {
-    return motors[n].getBusVoltage();
-  }
+    private int LEFT = 0, RIGHT = 1;
 
-  public double getMotorHeat(int n) {
-    return motors[n].getMotorTemperature();
-  }
+    public Hopper() {
+        motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
+        motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
-  public double getOutputCurrent(int n) {
-    return motors[n].getOutputCurrent();
-  }
+        encoders[LEFT] = motors[LEFT].getEncoder();
+        encoders[RIGHT] = motors[RIGHT].getEncoder();
 
-  public double getEncoder(int n) {
-    return encoders[n].getPosition();
-  }
+        motors[LEFT].setSmartCurrentLimit(20, 15);
+        motors[RIGHT].setSmartCurrentLimit(20, 15);
 
-  public double getVelocity(int n) {
-    return encoders[n].getVelocity();
-  }
+        cellSensor = new DigitalInput(Constants.RobotMap.DIO.IR_ID);
+    }
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    cycle(SmartDashboard.getNumber("Left Hopper Speed", 0), SmartDashboard.getNumber("Right Hopper Speed", 0));
-  }
+    public void putInitialDash() {
+        SmartDashboard.putNumber("Left Hopper Speed", 0);
+        SmartDashboard.putNumber("Right Hopper Speed", 0);
+    }
+
+    public void cycle(double leftSpeed, double rightSpeed) {
+        // TODO: make this a reasonable value instead of this placeholder
+        motors[LEFT].set(leftSpeed);
+        motors[RIGHT].set(rightSpeed);
+    }
+
+    public boolean getIR() {
+        return cellSensor.get();
+    }
+
+    public void agitate() {
+        if (!getIR()) {
+            cycle(0.3, 0.3);
+        } else {
+            cycle(0, 0);
+        }
+    }
+
+    public void stop() {
+        motors[LEFT].set(0);
+    }
+
+    public double getVoltage(int n) {
+        return motors[n].getBusVoltage();
+    }
+
+    public double getMotorHeat(int n) {
+        return motors[n].getMotorTemperature();
+    }
+
+    public double getOutputCurrent(int n) {
+        return motors[n].getOutputCurrent();
+    }
+
+    public double getEncoder(int n) {
+        return encoders[n].getPosition();
+    }
+
+    public double getVelocity(int n) {
+        return encoders[n].getVelocity();
+    }
+
+    @Override
+    public void periodic() {
+        cycle(SmartDashboard.getNumber("Left Hopper Speed", 0), SmartDashboard.getNumber("Right Hopper Speed", 0));
+        //agitate();
+    }
 }

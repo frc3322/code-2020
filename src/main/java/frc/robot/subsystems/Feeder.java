@@ -14,8 +14,6 @@ public class Feeder extends SubsystemBase {
 
     CANSparkMax[] motors = new CANSparkMax[2];
 
-    DigitalInput cellSensor;
-
     private final int FEED_1 = 0, FEED_2 = 1;
 
     public Feeder() {
@@ -24,8 +22,6 @@ public class Feeder extends SubsystemBase {
 
         motors[FEED_1].setSmartCurrentLimit(20, 15);
         motors[FEED_2].setSmartCurrentLimit(20, 15);
-
-        cellSensor = new DigitalInput(Constants.RobotMap.DIO.IR_ID);
     }
 
     public void feedTop(double speed) {
@@ -36,17 +32,13 @@ public class Feeder extends SubsystemBase {
         motors[FEED_2].set(speed);
     }
 
-    public boolean getIR() {
-        return cellSensor.get();
-    }
-
     public void putInitialDash() {
         SmartDashboard.putNumber("Feed Speed Top", 0);
         SmartDashboard.putNumber("Feed Speed Bottom", 0);
     }
 
     public void updateDash() {
-        SmartDashboard.putBoolean("IR Value", getIR());
+        
     }
 
     @Override

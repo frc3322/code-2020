@@ -97,7 +97,8 @@ public class RobotContainer {
 
         button_y_lower.whileHeld(shoot);
 
-        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())));
+        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())))
+                        .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));
 
     }
 
