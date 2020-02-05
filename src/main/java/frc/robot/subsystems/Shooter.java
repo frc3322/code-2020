@@ -16,9 +16,11 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableEntry;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.SpeedControllerGroup;
 
-import frc.robot.RobotContainer;
 import static frc.robot.Robot.m_can;
 
 import java.util.HashMap;
@@ -33,13 +35,20 @@ public class Shooter extends SubsystemBase {
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
-    //private RobotContainer m_robotContainer = new RobotContainer();
-
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
 
     private double[] distances = {0, 1, 2, 3, 4};
 
     private double[] RPMs = {3000, 3000, 3300, 3100};
+
+    private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
+    private NetworkTableEntry tx = table.getEntry("tx");
+    private NetworkTableEntry ty = table.getEntry("ty");
+    private NetworkTableEntry ta = table.getEntry("ta");
+
+    private double limelightX = tx.getDouble(0.0);
+    private double limelightY = ty.getDouble(0.0);
+    private double limelightA = ta.getDouble(0.0);
 
     CANPIDController controller;
 
@@ -68,24 +77,33 @@ public class Shooter extends SubsystemBase {
         controller.setReference(setpoint, ControlType.kVelocity);
     }
 
-    // public double getRPM() {
-    //     double myNumber = m_robotContainer.getDrivetrain().getDistance();
-    //     double distance = Math.abs(distances[0] - myNumber);
-    //     int idx = 0;
-    //     for(int c = 1; c < distances.length; c++){
-    //         double cdistance = Math.abs(distances[c] - myNumber);
-    //         if(cdistance < distance){
-    //             idx = c;
-    //             distance = cdistance;
-    //         }
-    //     }
+    public double getDistance() {
+        double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
+        double targetAngle = limelightY;
+        double limelightHeight = SmartDashboard.getNumber("Limelight Height", 1/2);
+        double targetHeight = (7 + (5/6));
 
-    //     if(idx <= distances.length){
-    //         return RPMs[idx];
-    //     } else {
-    //         return 0;
-    //     }
-    // }
+        return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
+    }
+
+    public double getRPM() {
+        double myNumber = getDistance();
+        double distance = Math.abs(distances[0] - myNumber);
+        int idx = 0;
+        for(int c = 1; c < distances.length; c++){
+            double cdistance = Math.abs(distances[c] - myNumber);
+            if(cdistance < distance){
+                idx = c;
+                distance = cdistance;
+            }
+        }
+
+        if(idx <= distances.length && idx <= RPMs.length){
+            return RPMs[idx];
+        } else {
+            return 0;
+        }
+    }
 
     public double publishRPM() {
         SmartDashboard.putNumber("Shooter RPM", encoders[MOTOR_0].getVelocity());

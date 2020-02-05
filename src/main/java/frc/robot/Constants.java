@@ -27,6 +27,7 @@ public final class Constants {
     
     public static class RobotMap {
         public static class CAN {
+
             public final int LEFT_FRONT_MOTOR;
             public final int LEFT_BACK_MOTOR;
             public final int RIGHT_FRONT_MOTOR;
@@ -51,6 +52,7 @@ public final class Constants {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
                 switch(whichBot.P1){
                     case TEST_BENCH:
+
                         LEFT_FRONT_MOTOR = 36;
                         LEFT_BACK_MOTOR = 0;
                         RIGHT_FRONT_MOTOR = 40;
@@ -73,27 +75,29 @@ public final class Constants {
                         SHOOTER_2 = 45;
                         break;
                     case P1:
-                        LEFT_FRONT_MOTOR = 33;
-                        LEFT_BACK_MOTOR = 45;
-                        RIGHT_FRONT_MOTOR = 40;
-                        RIGHT_BACK_MOTOR = 36;
 
-                        FEEDER_1 = 20;
-                        FEEDER_2 = 21;
+                        LEFT_FRONT_MOTOR = 4;
+                        LEFT_BACK_MOTOR = 3;
+                        RIGHT_FRONT_MOTOR = 5;
+                        RIGHT_BACK_MOTOR = 6;
+
+                        FEEDER_1 = 9;
+                        FEEDER_2 = 14;
 
                         CLIMBER_RAISE = 0;
-                        CLIMBER_CLIMB = 1;
+                        CLIMBER_CLIMB = 0;
         
-                        LEFT_HOPPER_MOTOR = 2;
-                        RIGHT_HOPPER_MOTOR = 3;
+                        LEFT_HOPPER_MOTOR = 12;
+                        RIGHT_HOPPER_MOTOR = 13;
             
-                        INTAKE_RIGHT = 4;
-                        INTAKE_LEFT = 5;
+                        INTAKE_RIGHT = 0;
+                        INTAKE_LEFT = 0;
                     
-                        SHOOTER_1 = 6;
-                        SHOOTER_2 = 7;
+                        SHOOTER_1 = 10;
+                        SHOOTER_2 = 11;
                         break;
                     case P2:
+
                         // TODO: set these to be P2 CAN IDs
                         LEFT_FRONT_MOTOR = 34;
                         LEFT_BACK_MOTOR = 46;

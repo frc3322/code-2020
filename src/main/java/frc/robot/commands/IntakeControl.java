@@ -36,6 +36,7 @@ public class IntakeControl extends CommandBase {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    //TODO: this code is probably unnecessary, we can use instant commands to directly call these methods in RobotContainer.java
     switch (mode) {
       case INTAKE:
         intake.intakeStart();
