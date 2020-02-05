@@ -66,6 +66,11 @@ public class Drivetrain extends SubsystemBase {
         motors[LEFT_BACK].follow(motors[LEFT_FRONT]);
         motors[RIGHT_BACK].follow(motors[RIGHT_FRONT]);
 
+        motors[LEFT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[LEFT_BACK].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
+
         encoders[LEFT_BACK] = motors[LEFT_BACK].getEncoder();
         encoders[LEFT_FRONT] = motors[LEFT_FRONT].getEncoder();
         encoders[RIGHT_BACK] = motors[RIGHT_BACK].getEncoder();

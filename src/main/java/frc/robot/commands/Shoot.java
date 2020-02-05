@@ -11,42 +11,62 @@ import edu.wpi.first.wpilibj.command.Subsystem;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
 
 public class Shoot extends CommandBase {
-  Drivetrain drivetrain;
-  Shooter shooter;
+    Drivetrain drivetrain;
+    Shooter shooter;
+    Feeder feeder;
+    Hopper hopper;
 
-  public Shoot(Drivetrain subsystem) {
-    drivetrain = subsystem;
-    addRequirements(subsystem);
+    double setpoint;
 
-    shooter = new Shooter();
-  }
+    public Shoot(Drivetrain d_subsystem, Shooter s_subsystem, Feeder f_subsystem, Hopper h_subsystem) {
+        drivetrain = d_subsystem;
+        addRequirements(d_subsystem);
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    shooter.setSetpoint(3000);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if(!drivetrain.onTarget()){
-      drivetrain.pidDrive(0.0);
+        shooter = s_subsystem;
+        feeder = f_subsystem;
+        hopper = h_subsystem;
     }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        setpoint = shooter.findRPM();
+        shooter.setSetpoint(setpoint);
+    }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        if (!drivetrain.onTarget()) {
+            drivetrain.pidDrive(0.0);
+        }
+
+        if (!shooter.onTarget(setpoint)) {
+            shooter.setSetpoint(setpoint);
+        }
+        if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
+            feeder.feedTop(.3);
+            feeder.feedBottom(.3);
+            hopper.cycle(.3, .3);
+        }
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        feeder.feedTop(0);
+        feeder.feedBottom(0);
+        shooter.stop();
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return !shooter.hasTarget();
+    }
 }

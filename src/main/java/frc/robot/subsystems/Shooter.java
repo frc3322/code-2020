@@ -19,11 +19,9 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import frc.robot.Constants;
 
 import static frc.robot.Robot.m_can;
-
-import java.util.HashMap;
 
 public class Shooter extends SubsystemBase {
 
@@ -45,16 +43,21 @@ public class Shooter extends SubsystemBase {
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
     private NetworkTableEntry ta = table.getEntry("ta");
+    private NetworkTableEntry tv = table.getEntry("tv");
 
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
     private double limelightA = ta.getDouble(0.0);
+    private boolean limelightTarget = tv.getBoolean(false);
 
     CANPIDController controller;
 
     public Shooter() {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
+
+        motors[MOTOR_0].setIdleMode(IdleMode.kCoast);
+        motors[MOTOR_1].setIdleMode(IdleMode.kCoast);
 
         motors[MOTOR_1].follow(motors[MOTOR_0], true);
 
@@ -77,6 +80,11 @@ public class Shooter extends SubsystemBase {
         controller.setReference(setpoint, ControlType.kVelocity);
     }
 
+    public boolean hasTarget() {
+        limelightTarget = tv.getBoolean(false);
+        return limelightTarget;
+    }
+
     public double getDistance() {
         double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
         double targetAngle = limelightY;
@@ -86,7 +94,7 @@ public class Shooter extends SubsystemBase {
         return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
     }
 
-    public double getRPM() {
+    public double findRPM() {
         double myNumber = getDistance();
         double distance = Math.abs(distances[0] - myNumber);
         int idx = 0;
@@ -116,6 +124,10 @@ public class Shooter extends SubsystemBase {
 
     public void stop(){
         motors[MOTOR_0].setVoltage(0);
+    }
+
+    public boolean onTarget(double setpoint) {
+        return Math.abs(encoders[MOTOR_0].getVelocity() - setpoint) < Constants.ShooterConstants.SHOOTER_TOLERANCE;
     }
 
     public void putInitialDash(){

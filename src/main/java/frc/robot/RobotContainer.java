@@ -9,6 +9,7 @@ package frc.robot;
 
 import frc.robot.commands.DriveControl;
 import frc.robot.commands.LedControl;
+import frc.robot.commands.Shoot;
 import frc.robot.subsystems.*;
 
 import java.util.List;
@@ -48,6 +49,8 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
     private final Feeder feeder = new Feeder();
+
+    private final Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
 
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
@@ -92,11 +95,10 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
-        button_y_lower.whenPressed(new InstantCommand(() -> feeder.feed(0.2)));
+        button_y_lower.whileHeld(shoot);
 
-        //! Uncomment when testing LedControl 
-        // button_x_upper.whenPressed(new LedControl(LedControl.LedMode.OFF));
-        // button_y_upper.whenPressed(new LedControl(LedControl.LedMode.ON));
+        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())));
+
     }
 
     public Drivetrain getDrivetrain() {

@@ -147,7 +147,7 @@ public final class Constants {
         }
     
         public static class DIO {
-
+            public static final int IR_ID = 0;
         }
 
         // no real purpose
@@ -202,11 +202,13 @@ public final class Constants {
     }
 
     public static class AutoConstants {
-
 		public static final double kRamseteB = 2;
 		public static final double kRamseteZeta = 0.7;
 		public static double kMaxSpeedMetersPerSecond = 5;
 		public static double kMaxAccelerationMetersPerSecondSquared = 2.5;
+    }
 
+    public static class ShooterConstants {
+        public static final double SHOOTER_TOLERANCE = 30;
     }
 }
