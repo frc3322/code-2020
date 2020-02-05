@@ -13,7 +13,7 @@ public class LedData {
 
     public void startPattern(int patternId) {
         byte[] data = {(byte) patternId};
-        this.ledController.transaction(data, 1, null, 0);
+        this.ledController.writeBulk(data);
     }
 
     public static LedData getInstance() {
