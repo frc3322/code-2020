@@ -23,7 +23,6 @@ public class LedControl extends InstantCommand {
 
   public LedControl(LedMode state) {
     this.state = state;
-    // Use addRequirements() here to declare subsystem dependencies.
   }
 
   // Called when the command is initially scheduled.

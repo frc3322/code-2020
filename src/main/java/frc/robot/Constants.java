@@ -48,9 +48,11 @@ public final class Constants {
             public final int SHOOTER_1;
             public final int SHOOTER_2;
 
+            public final int SPINNER_MOTOR;
+
             public CAN() {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
-                switch(whichBot.P1){
+                switch(whichBot.TEST_BENCH){
                     case TEST_BENCH:
 
                         LEFT_FRONT_MOTOR = 36;
@@ -73,6 +75,9 @@ public final class Constants {
                     
                         SHOOTER_1 = 33;
                         SHOOTER_2 = 45;
+                        
+                        SPINNER_MOTOR = 0;
+
                         break;
                     case P1:
 
@@ -95,6 +100,9 @@ public final class Constants {
                     
                         SHOOTER_1 = 10;
                         SHOOTER_2 = 11;
+
+                        SPINNER_MOTOR = 0;
+
                         break;
                     case P2:
 
@@ -118,6 +126,9 @@ public final class Constants {
                     
                         SHOOTER_1 = 0;
                         SHOOTER_2 = 1;
+
+                        SPINNER_MOTOR = 0;
+
                         break;
                     default:
                         // default IDs are currently Test Bench ones.
@@ -141,6 +152,9 @@ public final class Constants {
                 
                         SHOOTER_1 = 0;
                         SHOOTER_2 = 1;
+
+                        SPINNER_MOTOR = 0;
+
                         break;
                 }
             }

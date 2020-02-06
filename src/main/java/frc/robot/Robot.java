@@ -7,6 +7,9 @@
 
 package frc.robot;
 
+import com.revrobotics.ColorSensorV3;
+
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -18,6 +21,7 @@ public class Robot extends TimedRobot {
     private RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
+    public static final I2C.Port i2cPort = I2C.Port.kOnboard;
     public static Constants.RobotMap.CAN m_can;
 
     @Override
