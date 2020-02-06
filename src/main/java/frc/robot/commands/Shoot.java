@@ -46,6 +46,7 @@ public class Shoot extends CommandBase {
         if (!drivetrain.onTarget()) {
             drivetrain.pidDrive(0.0);
         } else if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
+            drivetrain.drive(0,0);
             feeder.feedTop(.3);
             feeder.feedBottom(.3);
             hopper.cycle(.3, .3);

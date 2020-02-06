@@ -49,18 +49,18 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
     private final Feeder feeder = new Feeder();
-
-    private final Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
-
+    
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
-
+    
+    private final Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
+    private final Command drive = new DriveControl(drivetrain, lowerChassis);
     public RobotContainer() {
         
         configureButtonBindings();
         getAutonomousCommand();
 
-        drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
+        drivetrain.setDefaultCommand(drive);
 
         feeder.putInitialDash();
         shooter.putInitialDash();
@@ -95,7 +95,7 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
-        button_y_lower.whenPressed(shoot);
+        button_y_lower.whenPressed(shoot.andThen(drive));
 
         bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())))
                         .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));
