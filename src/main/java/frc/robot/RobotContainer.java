@@ -95,7 +95,7 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
-        button_y_lower.whileHeld(shoot);
+        button_y_lower.whenPressed(shoot);
 
         bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())))
                         .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));

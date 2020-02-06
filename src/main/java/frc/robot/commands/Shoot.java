@@ -43,7 +43,9 @@ public class Shoot extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
+        if (!drivetrain.onTarget()) {
+            drivetrain.pidDrive(0.0);
+        } else if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
             feeder.feedTop(.3);
             feeder.feedBottom(.3);
             hopper.cycle(.3, .3);
@@ -61,6 +63,6 @@ public class Shoot extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return true;
+        return !shooter.hasTarget();
     }
 }
