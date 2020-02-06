@@ -35,7 +35,7 @@ public class Shooter extends SubsystemBase {
 
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
 
-    private double[] distances = {0, 1, 2, 3, 4};
+    private double[] distances = {0, 1, 2, 3};
 
     private double[] RPMs = {3000, 3000, 3300, 3100};
 
@@ -86,9 +86,11 @@ public class Shooter extends SubsystemBase {
     }
 
     public double getDistance() {
-        double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
+        limelightY = ty.getDouble(0.0);
+        double limelightAngle = 10;
         double targetAngle = limelightY;
-        double limelightHeight = SmartDashboard.getNumber("Limelight Height", 1/2);
+        SmartDashboard.putNumber("Target Angle", targetAngle);
+        double limelightHeight = (2+(1/12));
         double targetHeight = (7 + (5/6));
 
         return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
@@ -106,7 +108,7 @@ public class Shooter extends SubsystemBase {
             }
         }
 
-        if(idx <= distances.length && idx <= RPMs.length){
+        if(idx < distances.length && idx < RPMs.length){
             return RPMs[idx];
         } else {
             return 0;
@@ -137,7 +139,6 @@ public class Shooter extends SubsystemBase {
         SmartDashboard.putNumber("Shooter D", D); 
         SmartDashboard.putNumber("Shooter F", F);
         SmartDashboard.putNumber("Shooter Setpoint", 3000);
-        SmartDashboard.putNumber("Robot Distance", 0);
     }
 
     public void updateConstants() {
@@ -151,6 +152,8 @@ public class Shooter extends SubsystemBase {
     @Override
     public void periodic() {
         //setSpeed(SmartDashboard.getNumber("Shooter Speed", 0));
+        SmartDashboard.putNumber("Limelight Distance", getDistance());
+        SmartDashboard.putNumber("RPM Setpoint", findRPM());
         publishRPM();
     }
 }

@@ -161,15 +161,6 @@ public class Drivetrain extends SubsystemBase {
         drive(speed, PID.calculate(limelightX, 0));
     }
 
-    public double getDistance() {
-        double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
-        double targetAngle = limelightY;
-        double limelightHeight = SmartDashboard.getNumber("Limelight Height", 1/2);
-        double targetHeight = (7 + (5/6));
-
-        return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
-    }
-
     // returns meters traveled
     public double getLeftEncDistance() {
         return encoders[LEFT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;

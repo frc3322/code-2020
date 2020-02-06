@@ -25,7 +25,7 @@ public class Shoot extends CommandBase {
 
     public Shoot(Drivetrain d_subsystem, Shooter s_subsystem, Feeder f_subsystem, Hopper h_subsystem) {
         drivetrain = d_subsystem;
-        addRequirements(d_subsystem);
+        addRequirements(s_subsystem);
 
         shooter = s_subsystem;
         feeder = f_subsystem;
@@ -37,17 +37,12 @@ public class Shoot extends CommandBase {
     public void initialize() {
         setpoint = shooter.findRPM();
         shooter.setSetpoint(setpoint);
+
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (!drivetrain.onTarget()) {
-            drivetrain.pidDrive(0.0);
-        }
-        if (!shooter.onTarget(setpoint)) {
-            shooter.setSetpoint(setpoint);
-        }
         if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
             feeder.feedTop(.3);
             feeder.feedBottom(.3);
@@ -66,6 +61,6 @@ public class Shoot extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return !shooter.hasTarget();
+        return true;
     }
 }
