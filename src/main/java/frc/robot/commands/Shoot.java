@@ -7,8 +7,11 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import frc.robot.Constants;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Feeder;
@@ -20,6 +23,7 @@ public class Shoot extends CommandBase {
     Shooter shooter;
     Feeder feeder;
     Hopper hopper;
+    Boolean feed;
 
     double setpoint;
 
@@ -30,6 +34,8 @@ public class Shoot extends CommandBase {
         shooter = s_subsystem;
         feeder = f_subsystem;
         hopper = h_subsystem;
+
+        feed = false;
     }
 
     // Called when the command is initially scheduled.
@@ -37,20 +43,26 @@ public class Shoot extends CommandBase {
     public void initialize() {
         setpoint = shooter.findRPM();
         shooter.setSetpoint(setpoint);
+        feed = false;
 
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
+        if(shooter.onTarget(setpoint)) {
+            feed = true;
+        }
+
         if (!drivetrain.onTarget()) {
             drivetrain.pidDrive(0.0);
-        } else if (drivetrain.onTarget() && shooter.onTarget(setpoint)) {
+        } else if (drivetrain.onTarget() && feed) {
             drivetrain.drive(0,0);
-            feeder.feedTop(.3);
-            feeder.feedBottom(.3);
-            hopper.cycle(.3, .3);
-        }
+            feeder.feedTop(0.8);
+            feeder.feedBottom(1);
+            hopper.cycle(-1, -1);
+        } 
+        
     }
 
     // Called once the command ends or is interrupted.
@@ -59,11 +71,12 @@ public class Shoot extends CommandBase {
         feeder.feedTop(0);
         feeder.feedBottom(0);
         shooter.stop();
+        feed = false;
     }
 
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return !shooter.hasTarget();
+        return false;
     }
 }

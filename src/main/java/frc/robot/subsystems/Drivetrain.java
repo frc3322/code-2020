@@ -53,9 +53,9 @@ public class Drivetrain extends SubsystemBase {
     private double limelightY = ty.getDouble(0.0);
     private double limelightA = ta.getDouble(0.0);
 
-    private double P = 0.026;
-    private double I = 0.0619;
-    private double D = 0.00075;
+    private double P = 0.01893;
+    private double I = 1.3;
+    private double D = 0.002;
 
     public Drivetrain() {
         motors[LEFT_BACK] = new CANSparkMax(m_can.LEFT_BACK_MOTOR, MotorType.kBrushless);
@@ -151,7 +151,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public boolean onTarget() {
-        return PID.atSetpoint();
+        return Math.abs(limelightX) < 1.7;
     }
 
     public void pidDrive(Double speed) {
@@ -218,6 +218,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("ENC Distance Left m", getLeftEncDistance());
         SmartDashboard.putNumber("ENC Distance Right m", getRightEncDistance());
         SmartDashboard.putString("pose", getPose().toString());
+        SmartDashboard.putBoolean("Drivetrain on Target?", onTarget());
         updateConstants();
         getLimelightX();
         getLimelightY();

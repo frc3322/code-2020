@@ -32,6 +32,11 @@ public class Feeder extends SubsystemBase {
         motors[FEED_2].set(speed);
     }
 
+    public void stop() {
+        feedTop(0.0);
+        feedBottom(0.0);
+    }
+
     public void putInitialDash() {
         SmartDashboard.putNumber("Feed Speed Top", 0);
         SmartDashboard.putNumber("Feed Speed Bottom", 0);
