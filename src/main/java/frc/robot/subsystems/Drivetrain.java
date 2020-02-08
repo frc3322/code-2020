@@ -63,6 +63,9 @@ public class Drivetrain extends SubsystemBase {
         motors[RIGHT_BACK] = new CANSparkMax(m_can.RIGHT_BACK_MOTOR, MotorType.kBrushless);
         motors[RIGHT_FRONT] = new CANSparkMax(m_can.RIGHT_FRONT_MOTOR, MotorType.kBrushless);
 
+        motors[LEFT_FRONT].setInverted(true);
+        motors[RIGHT_FRONT].setInverted(true);
+
         motors[LEFT_BACK].follow(motors[LEFT_FRONT]);
         motors[RIGHT_BACK].follow(motors[RIGHT_FRONT]);
 
@@ -210,16 +213,18 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("ENC Left Position", encoders[LEFT_FRONT].getPosition());
-        SmartDashboard.putNumber("ENC Right Position", encoders[RIGHT_FRONT].getPosition());
-        SmartDashboard.putNumber("ENC Rate Left m/s", getLeftEncRate());
-        SmartDashboard.putNumber("ENC Rate Right m/s", getRightEncRate());
         SmartDashboard.putNumber("Heading", getHeading());
         SmartDashboard.putNumber("ENC Distance Left m", getLeftEncDistance());
         SmartDashboard.putNumber("ENC Distance Right m", getRightEncDistance());
         SmartDashboard.putString("pose", getPose().toString());
+        Translation2d driveTranslation = getPose().getTranslation();
+        double driveX = driveTranslation.getX();
+        double driveY = driveTranslation.getY();
+        SmartDashboard.putNumber("PoseX", driveX);
+        SmartDashboard.putNumber("PoseY", driveX);
+
         SmartDashboard.putBoolean("Drivetrain on Target?", onTarget());
-        updateConstants();
+        //updateConstants();
         getLimelightX();
         getLimelightY();
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),

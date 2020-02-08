@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -53,6 +54,15 @@ public class RobotContainer {
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
 
+    private SendableChooser<auton> autonMode;
+
+    private enum auton {
+        DEFAULT,
+        FIVE,
+        SIX,
+        EIGHT;
+    }
+
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
     
     public RobotContainer() {
@@ -65,6 +75,15 @@ public class RobotContainer {
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
+        
+        autonMode = new SendableChooser<>();
+
+        autonMode.setDefaultOption("Default", auton.DEFAULT);
+        autonMode.addOption("5 Ball", auton.FIVE);
+        autonMode.addOption("6 Ball", auton.SIX);
+        autonMode.addOption("8 Ball", auton.EIGHT);
+
+        SmartDashboard.putData(autonMode);
     }
 
     private void configureButtonBindings() {
@@ -131,7 +150,7 @@ public class RobotContainer {
     config
     );
 
-    public Command getAutonomousCommand() {    
+    public Command getAutonomousCommand() {
         var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
         testTrajectory = testTrajectory.transformBy(transform);
 
@@ -168,6 +187,17 @@ public class RobotContainer {
             m_rightMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().rightMetersPerSecond));
             m_rightReference.setNumber(-rightVolts);
         }, drivetrain);
+
+        switch (autonMode.getSelected()) {
+            case DEFAULT:
+                break;
+            case FIVE:
+                break;
+            case SIX:
+                break;
+            case EIGHT:
+                break;
+        }
 
         // Run path following command, then stop at the end.
         return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));

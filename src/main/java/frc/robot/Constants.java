@@ -193,9 +193,9 @@ public final class Constants {
         public static final double WHEEL_DIAMETER_METERS = WHEEL_DIAMETER_INCHES * 0.0254;
         public static final double WHEEL_CIRCUMFERENCE_METERS = WHEEL_DIAMETER_METERS * Math.PI;
         public static final boolean GYRO_REVERSED = false;
-		public static final double ksVolts = 0.146;
-		public static final double kvVoltSecondsPerMeter = 2.65; //2.65 2.64
-        public static final double kaVoltSecondsSquaredPerMeter = 0.298; //0.339
+		public static final double ksVolts = 0.161; //0.161
+		public static final double kvVoltSecondsPerMeter = 3; //3.05
+        public static final double kaVoltSecondsSquaredPerMeter = 0.44; //0.475
         public static final double kTrackwidthMeters = 0.66; //0.66
 		public static final DifferentialDriveKinematics kDriveKinematics = new DifferentialDriveKinematics(kTrackwidthMeters);
 		public static final double kPDriveVel = 0; //0.4
