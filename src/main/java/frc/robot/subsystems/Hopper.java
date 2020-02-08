@@ -11,6 +11,7 @@ import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Robot.m_can;
@@ -29,15 +30,22 @@ public class Hopper extends SubsystemBase {
     motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
     motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
-    motors[RIGHT].follow(motors[LEFT]);
-
     encoders[LEFT] = motors[LEFT].getEncoder();
     encoders[RIGHT] = motors[RIGHT].getEncoder();
+
+    motors[LEFT].setSmartCurrentLimit(20, 15);
+    motors[RIGHT].setSmartCurrentLimit(20, 15);
   }
 
-  public void cycle() {
+  public void putInitialDash() {
+    SmartDashboard.putNumber("Left Hopper Speed", 0);
+    SmartDashboard.putNumber("Right Hopper Speed", 0);
+  }
+
+  public void cycle(double leftSpeed, double rightSpeed) {
     //TODO: make this a reasonable value instead of this placeholder
-    motors[LEFT].set(0.2);
+    motors[LEFT].set(leftSpeed);
+    motors[RIGHT].set(rightSpeed);
   }
 
   public void stop() {
@@ -67,5 +75,6 @@ public class Hopper extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    cycle(SmartDashboard.getNumber("Left Hopper Speed", 0), SmartDashboard.getNumber("Right Hopper Speed", 0));
   }
 }
