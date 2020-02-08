@@ -32,10 +32,24 @@ public class Spinner extends SubsystemBase {
     Color detectedColor = m_colorSensor.getColor();
 
     double IR = m_colorSensor.getIR();
-
+    /*
     SmartDashboard.putNumber("Red", detectedColor.red);
     SmartDashboard.putNumber("Green", detectedColor.green);
     SmartDashboard.putNumber("Blue", detectedColor.blue);
     SmartDashboard.putNumber("IR", IR);
+    */
+
+    // rough thresholds for color detection
+    if (detectedColor.red > 0.5) {
+      SmartDashboard.putString("Color", "Red");
+    } else if (detectedColor.green > 0.5) {
+      SmartDashboard.putString("Color", "Green");
+    } else if (detectedColor.blue > 0.3) {
+      SmartDashboard.putString("Color", "Blue");
+    } else if (detectedColor.red > 0.35 && detectedColor.green > 0.35) {
+      SmartDashboard.putString("Color", "Yellow");
+    } else {
+      SmartDashboard.putString("Color", "Unsure");
+    }
   }
 }
