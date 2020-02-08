@@ -1,6 +1,7 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.DriverStation;
 
 public class LedData {
     private I2C ledController;
@@ -13,6 +14,21 @@ public class LedData {
 
     public void startPattern(int patternId) {
         byte[] data = {(byte) patternId};
+        this.ledController.writeBulk(data);
+    }
+
+    public void setAlliance() {
+        DriverStation ds;
+        Alliance alliance = ds.getAlliance;
+        int allianceId;
+        if (alliance == DriverStation::kRed) {
+            allianceId = 255;
+        } else if (alliance == DriverStation::kBlue) {
+            allianceId = 254;
+        } else {
+            allianceId = 253;
+        }
+        byte[] data = {(byte) allianceId};
         this.ledController.writeBulk(data);
     }
 

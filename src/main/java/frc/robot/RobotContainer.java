@@ -62,6 +62,8 @@ public class RobotContainer {
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
+        
+        LedData.getInstance().setAlliance();
     }
 
     private void configureButtonBindings() {
