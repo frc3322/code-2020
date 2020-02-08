@@ -15,8 +15,8 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 // https://docs.wpilib.org/en/latest/docs/software/commandbased/convenience-features.html
 public class LedControl extends InstantCommand {
   public enum LedMode {
-    OFF,
-    ON
+    SHOOT,
+    TARGET
   }
 
   private LedMode state;
@@ -30,10 +30,10 @@ public class LedControl extends InstantCommand {
   @Override
   public void initialize() {
     switch (this.state) {
-      case OFF:
+      case SHOOT:
         LedData.getInstance().startPattern(0);
         break;
-      case ON:
+      case TARGET:
         LedData.getInstance().startPattern(1);
         break;
     }
