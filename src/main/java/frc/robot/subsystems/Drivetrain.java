@@ -39,6 +39,7 @@ public class Drivetrain extends SubsystemBase {
     private AHRS navx = new AHRS(SPI.Port.kMXP);
 
     private PIDController PID;
+    private PIDController distancePID;
 
     private DifferentialDriveOdometry odometry;
 
@@ -56,6 +57,10 @@ public class Drivetrain extends SubsystemBase {
     private double P = 0.01893;
     private double I = 1.3;
     private double D = 0.002;
+
+    private double dP = 0;
+    private double dI = 0;
+    private double dD = 0;
 
     public Drivetrain() {
         motors[LEFT_BACK] = new CANSparkMax(m_can.LEFT_BACK_MOTOR, MotorType.kBrushless);
@@ -90,6 +95,12 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Drivetrain P", P);
         SmartDashboard.putNumber("Drivetrain I", I);
         SmartDashboard.putNumber("Drivetrain D", D);
+
+        distancePID.disableContinuousInput();
+        distancePID.setTolerance(30);
+        SmartDashboard.putNumber("Distance P", dP);
+        SmartDashboard.putNumber("Distance I", dI);
+        SmartDashboard.putNumber("Distance D", dD);
     }
 
     public double getVoltage(int n) {
@@ -164,6 +175,16 @@ public class Drivetrain extends SubsystemBase {
         drive(speed, PID.calculate(limelightX, 0));
     }
 
+    public void turnToAngle(double angle) {
+        PID.reset();
+        drive(0, PID.calculate(angle));
+    }
+
+    public void driveDistance(double distance) {
+        distancePID.reset();
+        drive(distancePID.calculate(distance), 0);
+    }
+
     // returns meters traveled
     public double getLeftEncDistance() {
         return encoders[LEFT_FRONT].getPosition() * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS * Constants.DriveConstants.GEARING;
@@ -187,6 +208,10 @@ public class Drivetrain extends SubsystemBase {
         PID.setP(SmartDashboard.getNumber("Drivetrain P", 0));
         PID.setI(SmartDashboard.getNumber("Drivetrain I", 0));
         PID.setD(SmartDashboard.getNumber("Drivetrain D", 0));
+
+        distancePID.setP(SmartDashboard.getNumber("Distance P", 0));
+        distancePID.setI(SmartDashboard.getNumber("Distance I", 0));
+        distancePID.setD(SmartDashboard.getNumber("Distance D", 0));
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
