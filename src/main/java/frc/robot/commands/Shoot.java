@@ -17,6 +17,7 @@ import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drivetrain.PIDMode;
 
 public class Shoot extends CommandBase {
     Drivetrain drivetrain;
@@ -24,17 +25,19 @@ public class Shoot extends CommandBase {
     Feeder feeder;
     Hopper hopper;
     Boolean feed;
+    int timeLimit;
+    int timer;
 
     double setpoint;
 
-    public Shoot(Drivetrain d_subsystem, Shooter s_subsystem, Feeder f_subsystem, Hopper h_subsystem) {
+    public Shoot(Drivetrain d_subsystem, Shooter s_subsystem, Feeder f_subsystem, Hopper h_subsystem, int t_timelimit) {
         drivetrain = d_subsystem;
         addRequirements(s_subsystem);
 
         shooter = s_subsystem;
         feeder = f_subsystem;
         hopper = h_subsystem;
-
+        timeLimit = t_timelimit;
         feed = false;
     }
 
@@ -43,8 +46,9 @@ public class Shoot extends CommandBase {
     public void initialize() {
         setpoint = shooter.findRPM();
         shooter.setSetpoint(setpoint);
+        drivetrain.setUpPID(PIDMode.LIMELIGHT);
+        timer = 0;
         feed = false;
-
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -54,15 +58,16 @@ public class Shoot extends CommandBase {
             feed = true;
         }
 
-        if (!drivetrain.onTarget()) {
+        if (!drivetrain.limelightOnTarget()) {
             drivetrain.pidDrive(0.0);
-        } else if (drivetrain.onTarget() && feed) {
+        } else if (drivetrain.limelightOnTarget() && feed) {
             drivetrain.drive(0,0);
             feeder.feedTop(0.8);
             feeder.feedBottom(1);
             hopper.cycle(-1, -1);
         } 
         
+        timer++;
     }
 
     // Called once the command ends or is interrupted.
@@ -77,6 +82,13 @@ public class Shoot extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        return false;
+        if(timeLimit == 0){
+            return false;
+        } else if (timer > timeLimit){
+            return true;
+        } else {
+            return true;
+        }
+        
     }
 }

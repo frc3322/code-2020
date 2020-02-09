@@ -11,6 +11,7 @@ import frc.robot.commands.DriveControl;
 import frc.robot.commands.LedControl;
 import frc.robot.commands.Shoot;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Drivetrain.PIDMode;
 
 import java.util.List;
 
@@ -57,13 +58,13 @@ public class RobotContainer {
     private SendableChooser<auton> autonMode;
 
     private enum auton {
-        DEFAULT,
         FIVE,
         SIX,
         EIGHT;
     }
 
-    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
+    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, 0);
+    private Command timedShoot;
     
     public RobotContainer() {
         
@@ -78,8 +79,7 @@ public class RobotContainer {
         
         autonMode = new SendableChooser<>();
 
-        autonMode.setDefaultOption("Default", auton.DEFAULT);
-        autonMode.addOption("5 Ball", auton.FIVE);
+        autonMode.setDefaultOption("5 Ball", auton.FIVE);
         autonMode.addOption("6 Ball", auton.SIX);
         autonMode.addOption("8 Ball", auton.EIGHT);
 
@@ -117,7 +117,7 @@ public class RobotContainer {
         button_y_lower.whenPressed(new InstantCommand(() -> shoot.schedule()));
         button_y_lower.whenReleased(new InstantCommand(() -> shoot.cancel()));
         
-        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())))
+        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.start()).alongWith(new InstantCommand(() -> intake.extend())))
                         .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));
 
     }
@@ -126,6 +126,7 @@ public class RobotContainer {
         return drivetrain;
     }
 
+    //Set up auton trajectory
     DifferentialDriveVoltageConstraint autoVoltageConstraint =
         new DifferentialDriveVoltageConstraint(
             new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
@@ -151,6 +152,7 @@ public class RobotContainer {
     );
 
     public Command getAutonomousCommand() {
+        
         var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
         testTrajectory = testTrajectory.transformBy(transform);
 
@@ -189,17 +191,22 @@ public class RobotContainer {
         }, drivetrain);
 
         switch (autonMode.getSelected()) {
-            case DEFAULT:
-                break;
-            case FIVE:
-                break;
-            case SIX:
-                break;
             case EIGHT:
-                break;
+                double angle1 = 180;
+                double angle2 = 56;
+                timedShoot = new Shoot(drivetrain, shooter, feeder, hopper, 500);
+                return new RunCommand(() -> drivetrain.turnToAngle(angle1)).withInterrupt(() -> drivetrain.angleOnTarget(angle1))
+                           .andThen(ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0))).alongWith(new InstantCommand(() -> intake.start()))
+                           .andThen(new RunCommand(() -> drivetrain.turnToAngle(angle2)).withInterrupt(() -> drivetrain.angleOnTarget(angle2)))
+                           .andThen(timedShoot);
+            default:
+                double distance = 300;
+                timedShoot = new Shoot(drivetrain, shooter, feeder, hopper, 300);
+                return timedShoot.andThen(new InstantCommand(() -> drivetrain.setUpPID(PIDMode.DISTANCE))
+                                 .andThen(new RunCommand(() -> drivetrain.driveDistance(distance))).withInterrupt(() -> drivetrain.distanceOnTarget(distance)));
         }
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

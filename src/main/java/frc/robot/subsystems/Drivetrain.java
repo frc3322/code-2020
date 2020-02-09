@@ -39,7 +39,6 @@ public class Drivetrain extends SubsystemBase {
     private AHRS navx = new AHRS(SPI.Port.kMXP);
 
     private PIDController PID;
-    private PIDController distancePID;
 
     private DifferentialDriveOdometry odometry;
 
@@ -61,6 +60,12 @@ public class Drivetrain extends SubsystemBase {
     private double dP = 0;
     private double dI = 0;
     private double dD = 0;
+
+    public enum PIDMode {
+      LIMELIGHT,
+      ANGLE,
+      DISTANCE
+    }
 
     public Drivetrain() {
         motors[LEFT_BACK] = new CANSparkMax(m_can.LEFT_BACK_MOTOR, MotorType.kBrushless);
@@ -87,22 +92,22 @@ public class Drivetrain extends SubsystemBase {
         robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);
 
         PID = new PIDController(P, I, D);
-
-        odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
-
         PID.disableContinuousInput();
-        PID.setTolerance(1);
+
         SmartDashboard.putNumber("Drivetrain P", P);
         SmartDashboard.putNumber("Drivetrain I", I);
         SmartDashboard.putNumber("Drivetrain D", D);
 
-        distancePID.disableContinuousInput();
-        distancePID.setTolerance(30);
         SmartDashboard.putNumber("Distance P", dP);
         SmartDashboard.putNumber("Distance I", dI);
         SmartDashboard.putNumber("Distance D", dD);
+
+        odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
+
+        
     }
 
+    //Motor methods
     public double getVoltage(int n) {
         return motors[n].getBusVoltage();
     }
@@ -120,40 +125,53 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public double getVelocity(int n) {
-        return encoders[n].getVelocity();
+      return encoders[n].getVelocity();
     }
     
-    public void resetForAuto() {
-        encoders[LEFT_FRONT].setPosition(0);
-        encoders[RIGHT_FRONT].setPosition(0);
-        encoders[LEFT_BACK].setPosition(0);
-        encoders[RIGHT_BACK].setPosition(0);
-        navx.zeroYaw();
-
-        Rotation2d originRotation = new Rotation2d(0.0);
-        Pose2d originPose = new Pose2d(0.0, 0.0, originRotation);
-        odometry.resetPosition(originPose, originRotation);
-    }
-
+    //Driving methods
     public void drive(double speed, double rotation) {
-        robotDrive.arcadeDrive(speed, rotation);
-
+      robotDrive.arcadeDrive(speed, rotation);
+    }
+    
+    public void tankDrive(double leftSpeed, double rightSpeed) {
+      robotDrive.tankDrive(leftSpeed, rightSpeed);
+    }
+    
+    //PID Control Methods
+    public void setUpPID(PIDMode mode){
+      switch(mode){
+        case LIMELIGHT:
+          PID.reset();
+          PID.setP(SmartDashboard.getNumber("Drivetrain P", P));
+          PID.setI(SmartDashboard.getNumber("Drivetrain I", I));
+          PID.setD(SmartDashboard.getNumber("Drivetrain D", D));
+          PID.setTolerance(1);
+          break;
+        case ANGLE:
+          PID.reset();
+          PID.setP(SmartDashboard.getNumber("Drivetrain P", P));
+          PID.setI(SmartDashboard.getNumber("Drivetrain I", I));
+          PID.setD(SmartDashboard.getNumber("Drivetrain D", D));
+          PID.setTolerance(1);
+          break;
+        case DISTANCE:
+          PID.reset();
+          PID.setP(SmartDashboard.getNumber("Distance P", dP));
+          PID.setI(SmartDashboard.getNumber("Distance I", dI));
+          PID.setD(SmartDashboard.getNumber("Distance D", dD));
+          PID.setTolerance(1);
+          break;
+        default:
+          PID.reset();
+          PID.setP(SmartDashboard.getNumber("Drivetrain P", P));
+          PID.setI(SmartDashboard.getNumber("Drivetrain I", I));
+          PID.setD(SmartDashboard.getNumber("Drivetrain D", D));
+          PID.setTolerance(1);
+          break;
+      }    
     }
 
-    public void coastMode() {
-        motors[LEFT_FRONT].setIdleMode(IdleMode.kCoast);
-        motors[LEFT_BACK].setIdleMode(IdleMode.kCoast);
-        motors[RIGHT_FRONT].setIdleMode(IdleMode.kCoast);
-        motors[RIGHT_BACK].setIdleMode(IdleMode.kCoast);
-    }
-
-    public void brakeMode(){
-        motors[LEFT_FRONT].setIdleMode(IdleMode.kBrake);
-        motors[LEFT_BACK].setIdleMode(IdleMode.kBrake);
-        motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
-        motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
-    }
-
+    //Limelight PID methods
     public void getLimelightX() {
         limelightX = tx.getDouble(0.0);
         SmartDashboard.putNumber("Limelight tx", limelightX);
@@ -164,25 +182,46 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Limelight ty", limelightY);
     }
 
-    public boolean onTarget() {
+    public boolean limelightOnTarget() {
         return Math.abs(limelightX) < 1.7;
     }
-
+    
     public void pidDrive(Double speed) {
         limelightX = tx.getDouble(0.0);
-        PID.reset();
         SmartDashboard.putNumber("Limelight tx", limelightX);
         drive(speed, PID.calculate(limelightX, 0));
     }
 
+    //Other PID Drive methods
     public void turnToAngle(double angle) {
-        PID.reset();
-        drive(0, PID.calculate(angle));
+        drive(0, PID.calculate(navx.getFusedHeading(), angle));
+    }
+
+    public Boolean angleOnTarget(double angle) {
+        return Math.abs(angle - navx.getFusedHeading()) < 1;
     }
 
     public void driveDistance(double distance) {
-        distancePID.reset();
-        drive(distancePID.calculate(distance), 0);
+        double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
+        drive(PID.calculate(avgDist, distance), 0);
+    }
+
+    public Boolean distanceOnTarget(double distance) {
+        double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
+        return Math.abs(distance - avgDist) < 30;
+    }
+
+    //Methods for Auton
+    public void resetForAuto() {
+      encoders[LEFT_FRONT].setPosition(0);
+      encoders[RIGHT_FRONT].setPosition(0);
+      encoders[LEFT_BACK].setPosition(0);
+      encoders[RIGHT_BACK].setPosition(0);
+      navx.zeroYaw();
+
+      Rotation2d originRotation = new Rotation2d(0.0);
+      Pose2d originPose = new Pose2d(0.0, 0.0, originRotation);
+      odometry.resetPosition(originPose, originRotation);
     }
 
     // returns meters traveled
@@ -202,20 +241,6 @@ public class Drivetrain extends SubsystemBase {
     public double getRightEncRate() {
         double RPS = (encoders[RIGHT_FRONT].getVelocity() * Constants.DriveConstants.GEARING) / 60;
         return RPS * Constants.DriveConstants.WHEEL_CIRCUMFERENCE_METERS;
-    }
-
-    public void updateConstants() {
-        PID.setP(SmartDashboard.getNumber("Drivetrain P", 0));
-        PID.setI(SmartDashboard.getNumber("Drivetrain I", 0));
-        PID.setD(SmartDashboard.getNumber("Drivetrain D", 0));
-
-        distancePID.setP(SmartDashboard.getNumber("Distance P", 0));
-        distancePID.setI(SmartDashboard.getNumber("Distance I", 0));
-        distancePID.setD(SmartDashboard.getNumber("Distance D", 0));
-    }
-
-    public void tankDrive(double leftSpeed, double rightSpeed) {
-        robotDrive.tankDrive(leftSpeed, rightSpeed);
     }
 
     public DifferentialDriveWheelSpeeds getWheelSpeeds() {
@@ -248,8 +273,7 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("PoseX", driveX);
         SmartDashboard.putNumber("PoseY", driveX);
 
-        SmartDashboard.putBoolean("Drivetrain on Target?", onTarget());
-        //updateConstants();
+        SmartDashboard.putBoolean("Limelight on Target?", limelightOnTarget());
         getLimelightX();
         getLimelightY();
         odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
