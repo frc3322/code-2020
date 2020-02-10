@@ -125,33 +125,32 @@ public class RobotContainer {
     public Drivetrain getDrivetrain() {
         return drivetrain;
     }
-
-    //Set up auton trajectory
-    DifferentialDriveVoltageConstraint autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
-                                       Constants.DriveConstants.kvVoltSecondsPerMeter,
-                                       Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-                                       Constants.DriveConstants.kDriveKinematics,
-                                       10);
-
-    TrajectoryConfig config =
-    new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                            .setKinematics(Constants.DriveConstants.kDriveKinematics)
-                            .addConstraint(autoVoltageConstraint);
-
-    Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
-    new Pose2d(0, 0, new Rotation2d(0)),
-    List.of(
-        new Translation2d(1, 1),
-        new Translation2d(2, -1)
-    ),
-    new Pose2d(3, 0, new Rotation2d(0)),
-    config
-    );
-
+    
     public Command getAutonomousCommand() {
+        //Set up auton trajectory
+        DifferentialDriveVoltageConstraint autoVoltageConstraint =
+            new DifferentialDriveVoltageConstraint(
+                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+                                            Constants.DriveConstants.kvVoltSecondsPerMeter,
+                                            Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+                                            Constants.DriveConstants.kDriveKinematics,
+                                            10);
+    
+        TrajectoryConfig config =
+        new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+                                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+                                .setKinematics(Constants.DriveConstants.kDriveKinematics)
+                                .addConstraint(autoVoltageConstraint);
+    
+        Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
+            new Pose2d(0, 0, new Rotation2d(0)),
+            List.of(
+                new Translation2d(1, 1),
+                new Translation2d(2, -1)
+            ),
+            new Pose2d(3, 0, new Rotation2d(0)),
+            config
+        );
         
         var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
         testTrajectory = testTrajectory.transformBy(transform);
