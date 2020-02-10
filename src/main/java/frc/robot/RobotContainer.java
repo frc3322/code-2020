@@ -110,10 +110,6 @@ public class RobotContainer {
         button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
                 .whenReleased(new InstantCommand(() -> shooter.stop()));
 
-        button_a_lower.whenPressed(new RunCommand(() -> drivetrain.pidDrive(0.0),
-                drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
-        button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
-
         button_y_lower.whenPressed(new InstantCommand(() -> shoot.schedule()));
         button_y_lower.whenReleased(new InstantCommand(() -> shoot.cancel()));
         
