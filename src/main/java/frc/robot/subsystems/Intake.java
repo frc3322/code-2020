@@ -39,6 +39,16 @@ public class Intake extends SubsystemBase {
         encoders[INTAKE_LEFT] = motors[INTAKE_LEFT].getEncoder();
     }
 
+    public void begin() {
+        start();
+        extend();
+    }
+
+    public void end() {
+        stop();
+        retract();
+    }
+
     public void start() {
         // TODO: make this a reasonable value as well
         motors[INTAKE_RIGHT].set(0.2);

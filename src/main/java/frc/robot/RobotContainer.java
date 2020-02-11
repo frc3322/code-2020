@@ -51,6 +51,7 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
     private final Feeder feeder = new Feeder();
+    private final Climber climber = new Climber();
     
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
@@ -58,13 +59,12 @@ public class RobotContainer {
     private SendableChooser<auton> autonMode;
 
     private enum auton {
-        FIVE,
+        TRENCH_FIVE,
         SIX,
-        EIGHT;
+        MIDDLE_5;
     }
 
-    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, 0);
-    private Command timedShoot;
+    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     
     public RobotContainer() {
         
@@ -76,12 +76,13 @@ public class RobotContainer {
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
+        climber.putInitialDash();
         
         autonMode = new SendableChooser<>();
 
-        autonMode.setDefaultOption("5 Ball", auton.FIVE);
+        autonMode.setDefaultOption("5 Ball", auton.TRENCH_FIVE);
         autonMode.addOption("6 Ball", auton.SIX);
-        autonMode.addOption("8 Ball", auton.EIGHT);
+        autonMode.addOption("Middle", auton.MIDDLE_5);
 
         SmartDashboard.putData(autonMode);
     }
@@ -185,23 +186,24 @@ public class RobotContainer {
             m_rightReference.setNumber(-rightVolts);
         }, drivetrain);
 
-        switch (autonMode.getSelected()) {
-            case EIGHT:
-                double angle1 = 180;
-                double angle2 = 56;
-                timedShoot = new Shoot(drivetrain, shooter, feeder, hopper, 500);
-                return new RunCommand(() -> drivetrain.turnToAngle(angle1)).withInterrupt(() -> drivetrain.angleOnTarget(angle1))
-                           .andThen(ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0))).alongWith(new InstantCommand(() -> intake.start()))
-                           .andThen(new RunCommand(() -> drivetrain.turnToAngle(angle2)).withInterrupt(() -> drivetrain.angleOnTarget(angle2)))
-                           .andThen(timedShoot);
-            default:
-                double distance = 300;
-                timedShoot = new Shoot(drivetrain, shooter, feeder, hopper, 300);
-                return timedShoot.andThen(new InstantCommand(() -> drivetrain.setUpPID(PIDMode.DISTANCE))
-                                 .andThen(new RunCommand(() -> drivetrain.driveDistance(distance))).withInterrupt(() -> drivetrain.distanceOnTarget(distance)));
-        }
+        // switch (autonMode.getSelected()) {
+        //     case MIDDLE_5: 
+        //         return new RunCommand(() -> drivetrain.driveDistance(2000)).withInterrupt(() -> drivetrain.distanceOnTarget(2000)).alongWith(new InstantCommand(() -> intake.begin()))
+        //                               .andThen(new RunCommand(() -> drivetrain.driveDistance(-500)).withInterrupt(() -> drivetrain.distanceOnTarget(-500))).alongWith(new InstantCommand(() -> intake.end()))
+        //                               .andThen(new RunCommand(() -> drivetrain.turnToAngle(-140)).withInterrupt(() -> drivetrain.angleOnTarget(-140)))
+        //                               .andThen(shoot).withTimeout(5);
+        //     case TRENCH_FIVE:
+        //         return new RunCommand(() -> drivetrain.driveDistance(2000)).withInterrupt(() -> drivetrain.distanceOnTarget(2000))
+        //                               .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170)).withInterrupt(() -> drivetrain.angleOnTarget(-170)))
+        //                               .andThen(shoot).withTimeout(5);
+        //     case SIX:
+                
+        //     default:
+        //         return shoot.withTimeout(3).andThen(new InstantCommand(() -> drivetrain.setUpPID(PIDMode.DISTANCE))
+        //                          .andThen(new RunCommand(() -> drivetrain.driveDistance(-300))).withInterrupt(() -> drivetrain.distanceOnTarget(-300)));
+        // }
 
         // Run path following command, then stop at the end.
-        //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

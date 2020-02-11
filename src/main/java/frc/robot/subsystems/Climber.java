@@ -13,16 +13,16 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Robot.m_can;
 
 public class Climber extends SubsystemBase {
-    private CANSparkMax[] motors;
-    private CANEncoder[] encoders;
-    DoubleSolenoid intakeExtender;
-
     private int RAISE = 0, CLIMB = 1;
+    private CANSparkMax[] motors = new CANSparkMax[2];
+    private CANEncoder[] encoders = new CANEncoder[2];
+    DoubleSolenoid intakeExtender;
 
     public Climber() {
         motors[RAISE] = new CANSparkMax(m_can.CLIMBER_RAISE, MotorType.kBrushless);
@@ -88,11 +88,21 @@ public class Climber extends SubsystemBase {
         }
     }
 
+    public void setSpeed(double speed) {
+        motors[RAISE].set(speed);
+    }
+
     public boolean isExtended() {
         return intakeExtender.get() == Value.kForward;
     }
 
+    public void putInitialDash() {
+        SmartDashboard.putNumber("Climb Speed", 0);
+    }
+
     @Override
     public void periodic() {
+        setSpeed(SmartDashboard.getNumber("Climb Speed", 0));
+        SmartDashboard.putNumber("Climb Encoder", encoders[RAISE].getPosition());
     }
 }

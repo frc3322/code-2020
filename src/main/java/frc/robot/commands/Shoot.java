@@ -25,20 +25,19 @@ public class Shoot extends CommandBase {
     Feeder feeder;
     Hopper hopper;
     Boolean feed;
-    int timeLimit;
-    int timer;
+    boolean alime;
 
     double setpoint;
 
-    public Shoot(Drivetrain d_subsystem, Shooter s_subsystem, Feeder f_subsystem, Hopper h_subsystem, int t_timelimit) {
-        drivetrain = d_subsystem;
-        addRequirements(s_subsystem);
+    public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
+        this.drivetrain = drivetrain;
+        addRequirements(shooter);
 
-        shooter = s_subsystem;
-        feeder = f_subsystem;
-        hopper = h_subsystem;
-        timeLimit = t_timelimit;
+        this.shooter = shooter;
+        this.feeder = feeder;
+        this.hopper = hopper;
         feed = false;
+        this.alime = alime;
     }
 
     // Called when the command is initially scheduled.
@@ -47,7 +46,6 @@ public class Shoot extends CommandBase {
         setpoint = shooter.findRPM();
         shooter.setSetpoint(setpoint);
         drivetrain.setUpPID(PIDMode.LIMELIGHT);
-        timer = 0;
         feed = false;
     }
 
@@ -58,16 +56,21 @@ public class Shoot extends CommandBase {
             feed = true;
         }
 
-        if (!drivetrain.limelightOnTarget()) {
-            drivetrain.pidDrive(0.0);
-        } else if (drivetrain.limelightOnTarget() && feed) {
+        if (alime) {
+            if (!drivetrain.limelightOnTarget()) {
+                drivetrain.pidDrive(0.0);
+            } else if (drivetrain.limelightOnTarget() && feed) {
+                drivetrain.drive(0,0);
+                feeder.feedTop(0.8);
+                feeder.feedBottom(1);
+                hopper.cycle(-1, -1);
+            } 
+        } else {
             drivetrain.drive(0,0);
             feeder.feedTop(0.8);
             feeder.feedBottom(1);
             hopper.cycle(-1, -1);
-        } 
-        
-        timer++;
+        }
     }
 
     // Called once the command ends or is interrupted.
@@ -82,13 +85,6 @@ public class Shoot extends CommandBase {
     // Returns true when the command should end.
     @Override
     public boolean isFinished() {
-        if(timeLimit == 0){
-            return false;
-        } else if (timer > timeLimit){
-            return true;
-        } else {
-            return true;
-        }
-        
+        return false;
     }
 }

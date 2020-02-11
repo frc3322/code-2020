@@ -50,20 +50,20 @@ public final class Constants {
 
             public CAN() {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
-                switch(whichBot.P1){
+                switch(whichBot.TEST_BENCH){
                     case TEST_BENCH:
 
-                        LEFT_FRONT_MOTOR = 36;
+                        LEFT_FRONT_MOTOR = 8;
                         LEFT_BACK_MOTOR = 0;
-                        RIGHT_FRONT_MOTOR = 40;
+                        RIGHT_FRONT_MOTOR = 36;
                         RIGHT_BACK_MOTOR = 0;
         
                         // TODO: give these actual IDs
-                        FEEDER_1 = 20;
-                        FEEDER_2 = 21;
+                        FEEDER_1 = 0;
+                        FEEDER_2 = 0;
 
-                        CLIMBER_RAISE = 0;
-                        CLIMBER_CLIMB = 1;
+                        CLIMBER_RAISE = 40;
+                        CLIMBER_CLIMB = 0;
 
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
@@ -71,8 +71,8 @@ public final class Constants {
                         INTAKE_RIGHT = 0;
                         INTAKE_LEFT = 0;
                     
-                        SHOOTER_1 = 33;
-                        SHOOTER_2 = 45;
+                        SHOOTER_1 = 0;
+                        SHOOTER_2 = 0;
                         break;
                     case P1:
 
