@@ -102,7 +102,9 @@ public class Climber extends SubsystemBase {
 
     @Override
     public void periodic() {
-        setSpeed(SmartDashboard.getNumber("Climb Speed", 0));
+        //setSpeed(SmartDashboard.getNumber("Climb Speed", 0));
         SmartDashboard.putNumber("Climb Encoder", encoders[RAISE].getPosition());
+        //SmartDashboard.putNumber("Voltage Draw Climber", motors[RAISE].getBusVoltage());
+        SmartDashboard.putNumber("Output Current Climber", motors[RAISE].getOutputCurrent());
     }
 }

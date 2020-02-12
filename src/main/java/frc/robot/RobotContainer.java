@@ -111,6 +111,12 @@ public class RobotContainer {
         button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
                 .whenReleased(new InstantCommand(() -> shooter.stop()));
 
+        button_y_upper.whenPressed(new InstantCommand(() -> climber.setSpeed(.2)))
+                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
+
+        button_x_upper.whenPressed(new InstantCommand(() -> climber.setSpeed(-.2)))
+                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
+
         button_y_lower.whenPressed(new InstantCommand(() -> shoot.schedule()));
         button_y_lower.whenReleased(new InstantCommand(() -> shoot.cancel()));
         
