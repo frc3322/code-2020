@@ -67,6 +67,8 @@ public class RobotContainer {
     }
 
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command testDriveDistance = new DriveDistance(drivetrain, 2000);
+    private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
     
     public RobotContainer() {
         
@@ -109,21 +111,30 @@ public class RobotContainer {
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
 
-
+        //upper
         button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
-                .whenReleased(new InstantCommand(() -> shooter.stop()));
+                        .whenReleased(new InstantCommand(() -> shooter.stop()));
 
-        button_y_upper.whenPressed(new InstantCommand(() -> climber.setSpeed(.2)))
-                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
+        button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
+                        .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
+                
+        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
+                        .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
-        button_x_upper.whenPressed(new InstantCommand(() -> climber.setSpeed(-.2)))
-                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
-
-        button_y_lower.whenPressed(new InstantCommand(() -> shoot.schedule()));
-        button_y_lower.whenReleased(new InstantCommand(() -> shoot.cancel()));
-        
         bumper_right_upper.whenPressed(new InstantCommand(() -> intake.start()).alongWith(new InstantCommand(() -> intake.extend())))
-                        .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));
+                            .whenReleased(new InstantCommand(() -> intake.stop()).alongWith(new InstantCommand(() -> intake.retract())));
+
+        //lower
+        button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
+                        .whenReleased(new InstantCommand(() -> shoot.cancel()));
+
+        button_x_lower.whenPressed(new InstantCommand(() -> climber.setSpeed(-.2)))
+                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
+        
+        button_y_lower.whenPressed(new InstantCommand(() -> climber.setSpeed(.2)))
+                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
+        
+        
 
     }
 
