@@ -12,6 +12,7 @@ import com.revrobotics.ColorSensorV3;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Robot;
@@ -20,6 +21,7 @@ import static frc.robot.Robot.m_can;
 
 public class Spinner extends SubsystemBase {
   private CANSparkMax motor;
+  private DoubleSolenoid SpinnerExtender;
   private ColorSensorV3 m_colorSensor;
 
   public Spinner() {
