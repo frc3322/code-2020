@@ -31,6 +31,6 @@ public class DriveDistance extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return drivetrain.distanceOnTarget(distance);
+        return !drivetrain.distanceOnTarget(distance);
     }
 }

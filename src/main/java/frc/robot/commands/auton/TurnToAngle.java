@@ -30,6 +30,6 @@ public class TurnToAngle extends CommandBase {
 
     @Override
     public boolean isFinished(){
-        return drivetrain.distanceOnTarget(angle);
+        return !drivetrain.distanceOnTarget(angle);
     }
 }
