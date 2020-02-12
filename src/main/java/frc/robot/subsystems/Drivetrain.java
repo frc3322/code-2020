@@ -193,6 +193,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     //Other PID Drive methods
+    //for angle
     public void turnToAngle(double angle) {
         drive(0, PID.calculate(navx.getFusedHeading(), angle));
     }
@@ -201,6 +202,11 @@ public class Drivetrain extends SubsystemBase {
         return Math.abs(angle - navx.getFusedHeading()) < 1;
     }
 
+    public void resetNavX(){
+        navx.reset();
+    }
+
+    //for distance
     public void driveDistance(double distance) {
         double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
         drive(PID.calculate(avgDist, distance), 0);
@@ -211,7 +217,17 @@ public class Drivetrain extends SubsystemBase {
         return Math.abs(distance - avgDist) < 30;
     }
 
-    //Methods for Auton
+    public void resetEncoders(){
+        encoders[LEFT_FRONT].setPosition(0);
+        encoders[RIGHT_FRONT].setPosition(0);
+    }
+
+    //to make a run command for delay
+    public void delay(){
+        
+    }
+
+    //Methods for Pathfinding Auton
     public void resetForAuto() {
       encoders[LEFT_FRONT].setPosition(0);
       encoders[RIGHT_FRONT].setPosition(0);

@@ -10,6 +10,8 @@ package frc.robot;
 import frc.robot.commands.DriveControl;
 import frc.robot.commands.LedControl;
 import frc.robot.commands.Shoot;
+import frc.robot.commands.auton.DriveDistance;
+import frc.robot.commands.auton.TurnToAngle;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.PIDMode;
 
@@ -60,8 +62,8 @@ public class RobotContainer {
 
     private enum auton {
         TRENCH_FIVE,
-        SIX,
-        MIDDLE_5;
+        TRENCH_SIX,
+        MIDDLE_FIVE;
     }
 
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
@@ -80,9 +82,9 @@ public class RobotContainer {
         
         autonMode = new SendableChooser<>();
 
-        autonMode.setDefaultOption("5 Ball", auton.TRENCH_FIVE);
-        autonMode.addOption("6 Ball", auton.SIX);
-        autonMode.addOption("Middle", auton.MIDDLE_5);
+        autonMode.setDefaultOption("Trench 5", auton.TRENCH_FIVE);
+        autonMode.addOption("Trench 6", auton.TRENCH_SIX);
+        autonMode.addOption("Middle 5", auton.MIDDLE_FIVE);
 
         SmartDashboard.putData(autonMode);
     }
@@ -192,24 +194,30 @@ public class RobotContainer {
             m_rightReference.setNumber(-rightVolts);
         }, drivetrain);
 
-        // switch (autonMode.getSelected()) {
-        //     case MIDDLE_5: 
-        //         return new RunCommand(() -> drivetrain.driveDistance(2000)).withInterrupt(() -> drivetrain.distanceOnTarget(2000)).alongWith(new InstantCommand(() -> intake.begin()))
-        //                               .andThen(new RunCommand(() -> drivetrain.driveDistance(-500)).withInterrupt(() -> drivetrain.distanceOnTarget(-500))).alongWith(new InstantCommand(() -> intake.end()))
-        //                               .andThen(new RunCommand(() -> drivetrain.turnToAngle(-140)).withInterrupt(() -> drivetrain.angleOnTarget(-140)))
-        //                               .andThen(shoot).withTimeout(5);
-        //     case TRENCH_FIVE:
-        //         return new RunCommand(() -> drivetrain.driveDistance(2000)).withInterrupt(() -> drivetrain.distanceOnTarget(2000))
-        //                               .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170)).withInterrupt(() -> drivetrain.angleOnTarget(-170)))
-        //                               .andThen(shoot).withTimeout(5);
-        //     case SIX:
-                
-        //     default:
-        //         return shoot.withTimeout(3).andThen(new InstantCommand(() -> drivetrain.setUpPID(PIDMode.DISTANCE))
-        //                          .andThen(new RunCommand(() -> drivetrain.driveDistance(-300))).withInterrupt(() -> drivetrain.distanceOnTarget(-300)));
-        // }
+        switch (autonMode.getSelected()) {
+            case MIDDLE_FIVE: 
+                return  new DriveDistance(drivetrain, 2000)
+                            .alongWith(new InstantCommand(() -> intake.begin()))
+                        .andThen(new RunCommand(() -> drivetrain.delay()).withTimeout(1)) /*possibly unnecessary depending on intake speed*/
+                        .andThen(new DriveDistance(drivetrain, -500))
+                            .alongWith(new InstantCommand(() -> intake.end()))
+                        .andThen(new TurnToAngle(drivetrain, 170))
+                        .andThen(shoot).withTimeout(5);
+            case TRENCH_FIVE:
+                return  new DriveDistance(drivetrain, 2000)
+                            .alongWith(new InstantCommand(() -> intake.begin()))
+                        .andThen(new DriveDistance(drivetrain, -1000))
+                            .alongWith(new InstantCommand(() -> intake.begin()))
+                        .andThen(new TurnToAngle(drivetrain, -170))
+                        .andThen(shoot).withTimeout(5);
+            case TRENCH_SIX:
+                return shoot.withTimeout(3);
+            default:
+                return shoot.withTimeout(3)
+                       .andThen(new DriveDistance(drivetrain, -300));
+        }
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        // return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

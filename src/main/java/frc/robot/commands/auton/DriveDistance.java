@@ -2,6 +2,7 @@ package frc.robot.commands.auton;
 
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Drivetrain.PIDMode;
 
 public class DriveDistance extends CommandBase {
 
@@ -18,7 +19,18 @@ public class DriveDistance extends CommandBase {
     }
 
     @Override
+    public void initialize(){
+        drivetrain.setUpPID(PIDMode.DISTANCE);
+        drivetrain.resetEncoders();
+    }
+
+    @Override
     public void execute() {
         drivetrain.driveDistance(distance);
+    }
+
+    @Override
+    public boolean isFinished(){
+        return drivetrain.distanceOnTarget(distance);
     }
 }
