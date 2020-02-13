@@ -36,8 +36,8 @@ public final class Constants {
             public final int LEFT_HOPPER_MOTOR;
             public final int RIGHT_HOPPER_MOTOR;
     
-            public final int INTAKE_RIGHT;
-            public final int INTAKE_LEFT;
+            public final int INTAKE_BOTTOM;
+            public final int INTAKE_TOP;
 
             public final int FEEDER_1;
             public final int FEEDER_2;
@@ -50,7 +50,7 @@ public final class Constants {
 
             public CAN() {
                 // TODO: switch the part of the enum to match robot currently being deployed to (TEST_BENCH, P1, or P2)
-                switch(whichBot.TEST_BENCH){
+                switch(whichBot.P1){
                     case TEST_BENCH:
 
                         LEFT_FRONT_MOTOR = 8;
@@ -68,8 +68,8 @@ public final class Constants {
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
 
-                        INTAKE_RIGHT = 0;
-                        INTAKE_LEFT = 0;
+                        INTAKE_BOTTOM = 0;
+                        INTAKE_TOP = 0;
                     
                         SHOOTER_1 = 0;
                         SHOOTER_2 = 0;
@@ -90,8 +90,8 @@ public final class Constants {
                         LEFT_HOPPER_MOTOR = 12;
                         RIGHT_HOPPER_MOTOR = 13;
             
-                        INTAKE_RIGHT = 0;
-                        INTAKE_LEFT = 0;
+                        INTAKE_BOTTOM = 20;
+                        INTAKE_TOP = 2;
                     
                         SHOOTER_1 = 10;
                         SHOOTER_2 = 11;
@@ -113,8 +113,8 @@ public final class Constants {
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
             
-                        INTAKE_RIGHT = 0;
-                        INTAKE_LEFT = 0;
+                        INTAKE_BOTTOM = 0;
+                        INTAKE_TOP = 0;
                     
                         SHOOTER_1 = 0;
                         SHOOTER_2 = 1;
@@ -136,8 +136,8 @@ public final class Constants {
                         LEFT_HOPPER_MOTOR = 0;
                         RIGHT_HOPPER_MOTOR = 0;
         
-                        INTAKE_RIGHT = 0;
-                        INTAKE_LEFT = 0;
+                        INTAKE_BOTTOM = 0;
+                        INTAKE_TOP = 0;
                 
                         SHOOTER_1 = 0;
                         SHOOTER_2 = 1;
@@ -158,9 +158,9 @@ public final class Constants {
         public static class PCM {
               
             //TODO: need to give these values 
-            public static final int PCM_ID = 1;
-            public static final int INTAKE_EXTEND = 2;
-            public static final int INTAKE_RETRACT = 3;
+            public static final int PCM_ID = 0;
+            public static final int INTAKE_EXTEND = 1;
+            public static final int INTAKE_RETRACT = 0;
             
         }
     

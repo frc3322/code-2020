@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -22,21 +23,26 @@ public class Intake extends SubsystemBase {
     /**
      * Creates a new Intake.
      */
-    private final CANSparkMax[] motors = new CANSparkMax[2];
-    private final CANEncoder[] encoders = new CANEncoder[2];
+    private CANSparkMax[] motors = new CANSparkMax[2];
+    private CANEncoder[] encoders = new CANEncoder[2];
     DoubleSolenoid intakeExtender;
 
-    private final int INTAKE_RIGHT = 0, INTAKE_LEFT = 1;
+    private final int INTAKE_BOTTOM = 0, INTAKE_TOP = 1;
 
     public Intake() {
-        //intakeExtender = new DoubleSolenoid(RobotMap.PCM.PCM_ID, RobotMap.PCM.INTAKE_EXTEND,
-        //        RobotMap.PCM.INTAKE_RETRACT);
-        motors[INTAKE_RIGHT] = new CANSparkMax(m_can.INTAKE_RIGHT, MotorType.kBrushless);
-        motors[INTAKE_LEFT] = new CANSparkMax(m_can.INTAKE_LEFT, MotorType.kBrushless);
-        motors[INTAKE_LEFT].follow(motors[INTAKE_RIGHT]);
+        intakeExtender = new DoubleSolenoid(RobotMap.PCM.PCM_ID, RobotMap.PCM.INTAKE_EXTEND,
+                RobotMap.PCM.INTAKE_RETRACT);
+        motors[INTAKE_BOTTOM] = new CANSparkMax(m_can.INTAKE_BOTTOM, MotorType.kBrushless);
+        motors[INTAKE_TOP] = new CANSparkMax(m_can.INTAKE_TOP, MotorType.kBrushless);
 
-        encoders[INTAKE_RIGHT] = motors[INTAKE_RIGHT].getEncoder();
-        encoders[INTAKE_LEFT] = motors[INTAKE_LEFT].getEncoder();
+        encoders[INTAKE_BOTTOM] = motors[INTAKE_BOTTOM].getEncoder();
+        encoders[INTAKE_TOP] = motors[INTAKE_TOP].getEncoder();
+
+        motors[INTAKE_BOTTOM].setIdleMode(IdleMode.kBrake);
+        motors[INTAKE_TOP].setIdleMode(IdleMode.kBrake);
+
+        motors[INTAKE_BOTTOM].setSmartCurrentLimit(25, 25);
+        motors[INTAKE_TOP].setSmartCurrentLimit(80, 80);
     }
 
     public void begin() {
@@ -50,16 +56,18 @@ public class Intake extends SubsystemBase {
     }
 
     public void start() {
-        // TODO: make this a reasonable value as well
-        motors[INTAKE_RIGHT].set(0.2);
+        motors[INTAKE_BOTTOM].set(1);
+        motors[INTAKE_TOP].set(-1);
     }
 
     public void outtake() {
-        motors[INTAKE_RIGHT].set(-0.5);
+        motors[INTAKE_BOTTOM].set(-0.5);
+        motors[INTAKE_TOP].set(0.5);
     }
 
     public void stop() {
-        motors[INTAKE_RIGHT].set(0);
+        motors[INTAKE_BOTTOM].set(0);
+        motors[INTAKE_TOP].set(0);
     }
 
     public void extend() {
