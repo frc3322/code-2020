@@ -15,9 +15,8 @@ public class DriveDistance extends CommandBase {
         addRequirements(drivetrain);
 
         this.distance = distance;
-        drivetrain.driveDistance(distance);
     }
-
+    
     @Override
     public void initialize(){
         drivetrain.setUpPID(PIDMode.DISTANCE);

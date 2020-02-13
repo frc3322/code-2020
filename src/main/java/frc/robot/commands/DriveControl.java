@@ -41,24 +41,25 @@ public class DriveControl extends CommandBase {
         x = lowerChassis.getRawAxis(RobotMap.XBOX.STICK_R_X_AXIS);
         y = -lowerChassis.getRawAxis(RobotMap.XBOX.STICK_L_Y_AXIS);
 
-        SmartDashboard.putNumber("X", x);
-        SmartDashboard.putNumber("Y", y);
+        // SmartDashboard.putNumber("X", x);
+        // SmartDashboard.putNumber("Y", y);
 
-        double m_x = Math.abs(x);
+        // double m_x = Math.abs(x);
 
-        if(x >= 0){
-            direction = 1;
-        } else {
-            direction = -1;
-        }
+        // if(x >= 0){
+        //     direction = 1;
+        // } else {
+        //     direction = -1;
+        // }
 
-        outputTurn = direction * ((a*Math.pow(m_x, pow1)) + (b*Math.pow(m_x, pow2) + (c * m_x)));
+        // outputTurn = direction * ((a*Math.pow(m_x, pow1)) + (b*Math.pow(m_x, pow2) + (c * m_x)));
 
-        if(Math.abs(y) < 0.37){
-            drivetrain.drive(y, outputTurn);
-        } else {
-            drivetrain.drive(y, x);
-        }
+        // if(Math.abs(y) < 0.37){
+        //     drivetrain.drive(y, outputTurn);
+        // } else {
+        //     drivetrain.drive(y, x);
+        // }
 
+        drivetrain.curvatureDrive(x, y);
     }
 }
