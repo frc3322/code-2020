@@ -60,6 +60,6 @@ public class DriveControl extends CommandBase {
         //     drivetrain.drive(y, x);
         // }
 
-        drivetrain.curvatureDrive(x, y);
+        drivetrain.drive(x, y);
     }
 }

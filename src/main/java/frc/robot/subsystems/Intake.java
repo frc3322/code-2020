@@ -38,11 +38,11 @@ public class Intake extends SubsystemBase {
         encoders[INTAKE_BOTTOM] = motors[INTAKE_BOTTOM].getEncoder();
         encoders[INTAKE_TOP] = motors[INTAKE_TOP].getEncoder();
 
-        motors[INTAKE_BOTTOM].setIdleMode(IdleMode.kBrake);
-        motors[INTAKE_TOP].setIdleMode(IdleMode.kBrake);
+        motors[INTAKE_BOTTOM].setIdleMode(IdleMode.kCoast);
+        motors[INTAKE_TOP].setIdleMode(IdleMode.kCoast);
 
-        motors[INTAKE_BOTTOM].setSmartCurrentLimit(25, 25);
-        motors[INTAKE_TOP].setSmartCurrentLimit(80, 80);
+        motors[INTAKE_BOTTOM].setSmartCurrentLimit(35, 35);
+        // motors[INTAKE_TOP].setSmartCurrentLimit(80, 80);
     }
 
     public void begin() {
@@ -55,14 +55,19 @@ public class Intake extends SubsystemBase {
         retract();
     }
 
+    public void outtakeBegin() {
+        outtake();
+        extend();
+    }
+
     public void start() {
         motors[INTAKE_BOTTOM].set(1);
-        motors[INTAKE_TOP].set(-1);
+        motors[INTAKE_TOP].set(-.6);
     }
 
     public void outtake() {
-        motors[INTAKE_BOTTOM].set(-0.5);
-        motors[INTAKE_TOP].set(0.5);
+        motors[INTAKE_BOTTOM].set(-1);
+        motors[INTAKE_TOP].set(1);
     }
 
     public void stop() {

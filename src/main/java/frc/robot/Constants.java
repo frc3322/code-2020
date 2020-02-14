@@ -91,7 +91,7 @@ public final class Constants {
                         RIGHT_HOPPER_MOTOR = 13;
             
                         INTAKE_BOTTOM = 20;
-                        INTAKE_TOP = 2;
+                        INTAKE_TOP = 1;
                     
                         SHOOTER_1 = 10;
                         SHOOTER_2 = 11;

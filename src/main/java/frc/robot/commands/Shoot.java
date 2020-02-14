@@ -43,16 +43,21 @@ public class Shoot extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        setpoint = shooter.findRPM();
+        if (alime) {
+            setpoint = shooter.findRPM();
+            drivetrain.setUpPID(PIDMode.LIMELIGHT);
+        } else {
+            setpoint = 3300;
+        }
+
         shooter.setSetpoint(setpoint);
-        drivetrain.setUpPID(PIDMode.LIMELIGHT);
         feed = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if(shooter.onTarget(setpoint)) {
+        if (shooter.onTarget(setpoint)) {
             feed = true;
         }
 
@@ -66,10 +71,12 @@ public class Shoot extends CommandBase {
                 hopper.cycle(-1, -1);
             } 
         } else {
-            drivetrain.drive(0,0);
-            feeder.feedTop(0.8);
-            feeder.feedBottom(1);
-            hopper.cycle(-1, -1);
+            if (feed) {
+                drivetrain.drive(0,0);
+                feeder.feedTop(0.8);
+                feeder.feedBottom(1);
+                hopper.cycle(-1, -1);
+            }
         }
     }
 

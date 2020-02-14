@@ -123,25 +123,24 @@ public class RobotContainer {
         button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
                         .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
-        bumper_right_upper.whenPressed(new InstantCommand(() -> intake.begin()))
-                            .whenReleased(new InstantCommand(() -> intake.end()));
-
         //lower
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> hopper.cycle(-.5, -0.5))).andThen(new InstantCommand(() -> hopper.setIntook(true))))
+                            .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> hopper.stop())));
+
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel()));
 
-        button_x_lower.whenPressed(new InstantCommand(() -> climber.setSpeed(-.2)))
-                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
-        
-        button_y_lower.whenPressed(new InstantCommand(() -> climber.setSpeed(.2)))
-                        .whenReleased(new InstantCommand(() -> climber.setSpeed(0)));
-        
-        
+        button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
+                        .whenReleased(new InstantCommand(() -> intake.end()));
 
     }
 
     public Drivetrain getDrivetrain() {
         return drivetrain;
+    }
+
+    public Hopper getHopper() {
+        return hopper;
     }
     
     public Command getAutonomousCommand() {
@@ -207,39 +206,39 @@ public class RobotContainer {
             m_rightReference.setNumber(-rightVolts);
         }, drivetrain);
 
-        auton selected = autonMode.getSelected();
+        //auton selected = autonMode.getSelected();
 
-        switch (selected) {
-            case MIDDLE_FIVE: 
-                return  new DriveDistance(drivetrain, 2000)
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new RunCommand(() -> drivetrain.delay()).withTimeout(1)) /*possibly unnecessary depending on intake speed*/
-                        .andThen(new DriveDistance(drivetrain, -500))
-                            .alongWith(new InstantCommand(() -> intake.end()))
-                        .andThen(new TurnToAngle(drivetrain, 170))
-                        .andThen(shoot).withTimeout(5);
-            case TRENCH_FIVE:
-                return  new DriveDistance(drivetrain, 2000)
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new DriveDistance(drivetrain, -1000))
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new TurnToAngle(drivetrain, -170))
-                        .andThen(shoot).withTimeout(5);
-            case TRENCH_SIX:
-                return  shoot.withTimeout(3)
-                        .andThen(new TurnToAngle(drivetrain, 180))
-                        .andThen(new DriveDistance(drivetrain, 2000)).alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new TurnToAngle(drivetrain, 180)).alongWith(new InstantCommand(() -> intake.end()))
-                        .andThen(shoot.withTimeout(4));
-            case DEFAULT:
-                return  shoot.withTimeout(3)
-                        .andThen(new DriveDistance(drivetrain, -300));
-            default:
-                return  shoot.withTimeout(3)
-                        .andThen(new DriveDistance(drivetrain, -300));
-        }
+        // switch (selected) {
+        //     case MIDDLE_FIVE: 
+        //         return  new DriveDistance(drivetrain, 2000)
+        //                     .alongWith(new InstantCommand(() -> intake.begin()))
+        //                 .andThen(new RunCommand(() -> drivetrain.delay()).withTimeout(1)) /*possibly unnecessary depending on intake speed*/
+        //                 .andThen(new DriveDistance(drivetrain, -500))
+        //                     .alongWith(new InstantCommand(() -> intake.end()))
+        //                 .andThen(new TurnToAngle(drivetrain, 170))
+        //                 .andThen(shoot).withTimeout(5);
+        //     case TRENCH_FIVE:
+        //         return  new DriveDistance(drivetrain, 2000)
+        //                     .alongWith(new InstantCommand(() -> intake.begin()))
+        //                 .andThen(new DriveDistance(drivetrain, -1000))
+        //                     .alongWith(new InstantCommand(() -> intake.begin()))
+        //                 .andThen(new TurnToAngle(drivetrain, -170))
+        //                 .andThen(shoot).withTimeout(5);
+        //     case TRENCH_SIX:
+        //         return  shoot.withTimeout(3)
+        //                 .andThen(new TurnToAngle(drivetrain, 180))
+        //                 .andThen(new DriveDistance(drivetrain, 2000)).alongWith(new InstantCommand(() -> intake.begin()))
+        //                 .andThen(new TurnToAngle(drivetrain, 180)).alongWith(new InstantCommand(() -> intake.end()))
+        //                 .andThen(shoot.withTimeout(4));
+        //     case DEFAULT:
+        //         return  shoot.withTimeout(3)
+        //                 .andThen(new DriveDistance(drivetrain, -300));
+        //     default:
+        //         return  shoot.withTimeout(3)
+        //                 .andThen(new DriveDistance(drivetrain, -300));
+        // }
 
         // Run path following command, then stop at the end.
-        //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

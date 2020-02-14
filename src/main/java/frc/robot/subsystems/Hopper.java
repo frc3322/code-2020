@@ -29,6 +29,10 @@ public class Hopper extends SubsystemBase {
   
     private int LEFT = 0, RIGHT = 1;
 
+    private boolean intook;
+    private int timer = 0;
+    private int timeLimit = 30;
+
     public Hopper() {
         motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
         motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
@@ -57,16 +61,13 @@ public class Hopper extends SubsystemBase {
         return cellSensor.get();
     }
 
-    public void agitate() {
-        if (!getIR()) {
-            cycle(0.3, 0.3);
-        } else {
-            cycle(0, 0);
-        }
+    public void setIntook(boolean ranIntake){
+        intook = ranIntake;
     }
 
     public void stop() {
         motors[LEFT].set(0);
+        motors[RIGHT].set(0);
     }
 
     public double getVoltage(int n) {
@@ -91,7 +92,24 @@ public class Hopper extends SubsystemBase {
 
     @Override
     public void periodic() {
-        cycle(SmartDashboard.getNumber("Left Hopper Speed", 0), SmartDashboard.getNumber("Right Hopper Speed", 0));
         //agitate();
+
+        // if(intook) {
+        //     if(!cellSensor.get()) {
+        //         cycle(-1, -1);
+        //     } else if (cellSensor.get()) {
+        //         stop();
+        //         intook = false;
+        //     } else if (cellSensor == null){
+        //         cycle(-1, -1);
+        //         timer++;
+        //         if(timer > timeLimit){
+        //             stop();
+        //             intook = false;
+        //             timer = 0;
+        //         }
+        //     }
+            
+        // }
     }
 }
