@@ -15,6 +15,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.RobotContainer;
 import frc.robot.Constants.RobotMap;
 
 import static frc.robot.Robot.m_can;
@@ -46,6 +47,7 @@ public class Intake extends SubsystemBase {
     }
 
     public void begin() {
+        RobotContainer.intook = true;
         start();
         extend();
     }

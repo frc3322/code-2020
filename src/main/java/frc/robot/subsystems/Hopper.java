@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.RobotContainer;
 
 import static frc.robot.Robot.m_can;
 
@@ -29,7 +30,6 @@ public class Hopper extends SubsystemBase {
   
     private int LEFT = 0, RIGHT = 1;
 
-    private boolean intook;
     private int timer = 0;
     private int timeLimit = 30;
 
@@ -59,10 +59,6 @@ public class Hopper extends SubsystemBase {
 
     public boolean getIR() {
         return cellSensor.get();
-    }
-
-    public void setIntook(boolean ranIntake){
-        intook = ranIntake;
     }
 
     public void stop() {

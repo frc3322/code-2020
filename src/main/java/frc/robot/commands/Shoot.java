@@ -52,6 +52,8 @@ public class Shoot extends CommandBase {
 
         shooter.setSetpoint(setpoint);
         feed = false;
+
+        RobotContainer.shot = true;
     }
 
     // Called every time the scheduler runs while the command is scheduled.

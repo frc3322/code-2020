@@ -68,6 +68,9 @@ public class RobotContainer {
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command testDriveDistance = new DriveDistance(drivetrain, 2000);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
+
+    public static boolean shot = false;
+    public static boolean intook = false;
     
     public RobotContainer() {
         
@@ -114,7 +117,7 @@ public class RobotContainer {
                         .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
         //lower
-        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> hopper.cycle(-.5, -0.5))).andThen(new InstantCommand(() -> hopper.setIntook(true))))
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> hopper.cycle(-.5, -0.5))))
                             .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> hopper.stop())));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
@@ -127,10 +130,6 @@ public class RobotContainer {
 
     public Drivetrain getDrivetrain() {
         return drivetrain;
-    }
-
-    public Hopper getHopper() {
-        return hopper;
     }
     
     public Command getAutonomousCommand(auton selected) {
