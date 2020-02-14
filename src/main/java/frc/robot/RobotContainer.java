@@ -69,8 +69,8 @@ public class RobotContainer {
     private Command testDriveDistance = new DriveDistance(drivetrain, 2000);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
 
-    public static boolean shot = false;
-    public static boolean intook = false;
+    public static boolean intaking = false;
+    public static boolean shooting = false;
     
     public RobotContainer() {
         

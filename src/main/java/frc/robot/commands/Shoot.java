@@ -53,7 +53,7 @@ public class Shoot extends CommandBase {
         shooter.setSetpoint(setpoint);
         feed = false;
 
-        RobotContainer.shot = true;
+        RobotContainer.shooting = true;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -89,6 +89,7 @@ public class Shoot extends CommandBase {
         feeder.feedBottom(0);
         shooter.stop();
         feed = false;
+        RobotContainer.shooting = false;
     }
 
     // Returns true when the command should end.

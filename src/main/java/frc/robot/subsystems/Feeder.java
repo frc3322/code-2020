@@ -18,9 +18,14 @@ public class Feeder extends SubsystemBase {
     private final int FEED_1 = 0, FEED_2 = 1;
 
     DigitalInput cellSensor;
-    
+
+    private boolean firstTime = true;
+    private boolean shotSinceFed = false;
+    private boolean intookSinceFed = false;
+    private boolean checkedIntake = false;
+    private boolean checkedShooter = false;
+    private boolean checkedCellSensor = false;
     private boolean cellSensorGot = false;
-    private boolean autoFed = false;
     private int timer = 0;
     private int timeLimit = 30;
 
@@ -66,24 +71,43 @@ public class Feeder extends SubsystemBase {
         feedTop(SmartDashboard.getNumber("Feed Speed Top", 0));
         feedBottom(SmartDashboard.getNumber("Feed Speed Bottom", 0));
 
-        // if (RobotContainer.intook && !autoFed) {
-        //     if (cellSensor.get() && !cellSensorGot) {
-        //         cellSensorGot = true;
-        //     }
+        SmartDashboard.putBoolean("AutoFeedTest/Intaking", RobotContainer.intaking);
+        SmartDashboard.putBoolean("AutoFeedTest/Shooting", RobotContainer.shooting);
+        SmartDashboard.putBoolean("AutoFeedTest/CellSensor", cellSensor.get());
+        SmartDashboard.putBoolean("AutoFeedTest/IntookSinceFed", intookSinceFed);
+        SmartDashboard.putBoolean("AutoFeedTest/ShotSinceFed", shotSinceFed);
+        SmartDashboard.putBoolean("AutoFeedTest/CellSensorGot", cellSensorGot);
+        SmartDashboard.putBoolean("AutoFeedTest/FirstTime", firstTime);
+        SmartDashboard.putNumber("AutoFeedTest/Timer", timer);
+        SmartDashboard.putNumber("AutoFeedTest/TimeLimit", timeLimit);
 
-        //     if(cellSensorGot){
-        //         feedTop(0.8);
-        //         feedBottom(1);
-        //         timer++;
-                
-        //         if (timer > timeLimit) {
-        //             stop();
-        //             RobotContainer.intook = false;
-        //             autoFed = true;
-        //             cellSensorGot = false;
-        //             timer = 0;
-        //         }
-        //     }
-        // }
+        if (RobotContainer.intaking && !intookSinceFed) {
+            intookSinceFed = true;
+        }
+
+        if(RobotContainer.shooting && !shotSinceFed) {
+            shotSinceFed = true;
+        }
+
+        if (cellSensor.get() && !cellSensorGot){
+            cellSensorGot = true;
+        }
+
+        if (intookSinceFed) {
+            if(firstTime || shotSinceFed){
+                if (cellSensorGot) {
+                    feedTop(0.8);
+                    feedBottom(1);
+                    timer++;
+                    if(timer > timeLimit) {
+                        stop();
+                        firstTime = false;
+                        intookSinceFed = false;
+                        shotSinceFed = false;
+                        cellSensorGot = false;
+                    }
+                }
+            }
+        }
     }
 }

@@ -47,12 +47,13 @@ public class Intake extends SubsystemBase {
     }
 
     public void begin() {
-        RobotContainer.intook = true;
+        RobotContainer.intaking = true;
         start();
         extend();
     }
 
     public void end() {
+        RobotContainer.intaking = false;
         stop();
         retract();
     }
