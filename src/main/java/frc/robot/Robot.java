@@ -12,6 +12,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import frc.robot.RobotContainer.auton;
 import frc.robot.subsystems.Drivetrain;
 
 public class Robot extends TimedRobot {
@@ -20,13 +21,23 @@ public class Robot extends TimedRobot {
     private static Command m_autonomousCommand;
     private Drivetrain m_drivetrain;
     public static Constants.RobotMap.CAN m_can;
+    private SendableChooser<auton> autonMode;
 
     @Override
     public void robotInit() {
+        autonMode = new SendableChooser<>();
+
+        autonMode.setDefaultOption("Default", auton.DEFAULT);
+        autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
+        autonMode.addOption("Trench 6", auton.TRENCH_SIX);
+        autonMode.addOption("Middle 5", auton.MIDDLE_FIVE);
+
+        SmartDashboard.putData("Auton", autonMode);
+
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
         m_drivetrain = m_robotContainer.getDrivetrain();
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        
         
 
     }
@@ -46,6 +57,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
         m_drivetrain.resetForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
