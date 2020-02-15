@@ -114,18 +114,31 @@ public class RobotContainer {
         
 
         //upper
-        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
-                        .whenReleased(new InstantCommand(() -> shooter.stop()));
+        // button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
+        //                 .whenReleased(new InstantCommand(() -> shooter.stop()));
 
-        button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
-                        .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
+        // button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
+        //                 .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
                 
-        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
-                        .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
+        // button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
+        //                 .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
-        dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
-                    .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        // dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
+        //             .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
+        button_a_upper.whenPressed(new InstantCommand(() -> climber.raiseClimber(.3)))
+                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        button_b_upper.whenPressed(new InstantCommand(() -> climber.lowerClimber(.3)))
+                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        bumper_right_upper.whenPressed(new InstantCommand(() -> climber.toggle()));
+
+        button_y_upper.whenPressed(new InstantCommand(() -> climber.setWinch(.3)))
+                        .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+
+        button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
+                        .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
         bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> cycleHopper.schedule())))
                             .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> cycleHopper.cancel())));

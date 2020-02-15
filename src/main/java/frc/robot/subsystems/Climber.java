@@ -63,6 +63,10 @@ public class Climber extends SubsystemBase {
         }
     }
 
+    public void setWinch(double speed) {
+        motors[CLIMB].set(speed);
+    }
+
     public void stopWinch() {
         motors[CLIMB].set(0);
     }
