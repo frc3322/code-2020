@@ -25,6 +25,7 @@ public class Spinner extends SubsystemBase {
   private CANSparkMax motor;
   private DoubleSolenoid spinnerExtender;
   private ColorSensorV3 m_colorSensor;
+  private char color = 'U';
 
   public Spinner() {
     spinnerExtender = new DoubleSolenoid(RobotMap.PCM.SPINNER_UP, RobotMap.PCM.SPINNER_DOWN);
@@ -54,6 +55,10 @@ public class Spinner extends SubsystemBase {
     } else retract();
   }
 
+  public char getColor() {
+    return color;
+  }
+
   @Override
   public void periodic() {
     Color detectedColor = m_colorSensor.getColor();
@@ -68,14 +73,19 @@ public class Spinner extends SubsystemBase {
 
     // rough thresholds for color detection
     if (detectedColor.red > 0.5) {
+      color = 'R';
       SmartDashboard.putString("Color", "Red");
     } else if (detectedColor.green > 0.5) {
+      color = 'G';
       SmartDashboard.putString("Color", "Green");
     } else if (detectedColor.blue > 0.3) {
+      color = 'B';
       SmartDashboard.putString("Color", "Blue");
     } else if (detectedColor.red > 0.35 && detectedColor.green > 0.35) {
+      color = 'Y';
       SmartDashboard.putString("Color", "Yellow");
     } else {
+      color = 'U';
       SmartDashboard.putString("Color", "Unsure");
     }
   }
