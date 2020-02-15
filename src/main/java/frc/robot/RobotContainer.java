@@ -49,6 +49,7 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
     private final Feeder feeder = new Feeder();
+    private final Spinner spinner = new Spinner();
 
     private final Command shoot = new Shoot(drivetrain, shooter, feeder, hopper);
 
@@ -84,6 +85,7 @@ public class RobotContainer {
         Button left_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_LEFT);
         Button right_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_RIGHT);
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
+        Button button_b_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_B);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
 
@@ -95,6 +97,8 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
+        button_b_lower.whenPressed(new InstantCommand(() -> spinner.spin(0.2))).whenReleased(new InstantCommand(() -> spinner.stop()));
+
         button_y_lower.whileHeld(shoot);
 
         bumper_right_upper.whenPressed(new InstantCommand(() -> intake.intakeStart()).alongWith(new InstantCommand(() -> intake.extend())))
@@ -104,6 +108,10 @@ public class RobotContainer {
 
     public Drivetrain getDrivetrain() {
         return drivetrain;
+    }
+
+    public Spinner getSpinner() {
+        return spinner;
     }
 
     DifferentialDriveVoltageConstraint autoVoltageConstraint =

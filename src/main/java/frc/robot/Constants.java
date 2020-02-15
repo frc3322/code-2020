@@ -175,7 +175,8 @@ public final class Constants {
             public static final int PCM_ID = 1;
             public static final int INTAKE_EXTEND = 2;
             public static final int INTAKE_RETRACT = 3;
-            
+            public static final int SPINNER_UP = 4;
+            public static final int SPINNER_DOWN = 5;    
         }
     
         public static class XBOX {

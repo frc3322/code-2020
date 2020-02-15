@@ -31,7 +31,7 @@ public class Robot extends TimedRobot {
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
         m_drivetrain = m_robotContainer.getDrivetrain();
-        m_spinner = new Spinner();
+        m_spinner = m_robotContainer.getSpinner();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand();        
     }
 
