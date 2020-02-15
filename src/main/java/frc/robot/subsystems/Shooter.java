@@ -89,7 +89,7 @@ public class Shooter extends SubsystemBase {
         limelightY = ty.getDouble(0.0);
         double limelightAngle = 10;
         double targetAngle = limelightY;
-        SmartDashboard.putNumber("Target Angle", targetAngle);
+        SmartDashboard.putNumber("Limelight/Target Angle", targetAngle);
         double limelightHeight = (2+(1/12));
         double targetHeight = (7 + (5/6));
 
@@ -116,7 +116,7 @@ public class Shooter extends SubsystemBase {
     }
 
     public double publishRPM() {
-        SmartDashboard.putNumber("Shooter RPM", encoders[MOTOR_0].getVelocity());
+        SmartDashboard.putNumber("Shooter/Shooter RPM", encoders[MOTOR_0].getVelocity());
         return encoders[MOTOR_0].getVelocity();
     }
 
@@ -133,16 +133,15 @@ public class Shooter extends SubsystemBase {
     }
 
     public void putInitialDash(){
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter P", P);
-        SmartDashboard.putNumber("Shooter I", I);
-        SmartDashboard.putNumber("Shooter D", D); 
-        SmartDashboard.putNumber("Shooter F", F);
-        SmartDashboard.putNumber("Shooter Setpoint", 3000);
+        SmartDashboard.putNumber("Shooter/Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter P", P);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter I", I);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter D", D); 
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter F", F);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
     }
 
     public void updateConstants() {
-        SmartDashboard.putNumber("A PID value", controller.getP());
         controller.setP(SmartDashboard.getNumber("Shooter P", P));
         controller.setI(SmartDashboard.getNumber("Shooter I", I));
         controller.setD(SmartDashboard.getNumber("Shooter D", D));
@@ -151,7 +150,6 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //setSpeed(SmartDashboard.getNumber("Shooter Speed", 0));
         SmartDashboard.putNumber("Limelight Distance", getDistance());
         SmartDashboard.putNumber("RPM Setpoint", findRPM());
         publishRPM();

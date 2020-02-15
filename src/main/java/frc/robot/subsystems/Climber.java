@@ -34,7 +34,9 @@ public class Climber extends SubsystemBase {
         armExtender = new DoubleSolenoid(Constants.RobotMap.PCM.ARM_EXTEND, Constants.RobotMap.PCM.ARM_RETRACT);
     }
 
-    // TODO make the encoder points at the hardstops actual values
+    public boolean atBottom() {
+        return encoders[RAISE].getPosition() < Constants.ClimberContants.CLIMBER_ARM_BOTTOM_THRESHOLD;
+    }
     public void raiseClimber(double speed) {
         motors[RAISE].set(speed);
     }
@@ -106,8 +108,9 @@ public class Climber extends SubsystemBase {
     @Override
     public void periodic() {
         //setSpeed(SmartDashboard.getNumber("Climb Speed", 0));
-        SmartDashboard.putNumber("Climb Encoder", encoders[RAISE].getPosition());
+        SmartDashboard.putNumber("Climber/Climb Encoder", encoders[RAISE].getPosition());
         //SmartDashboard.putNumber("Voltage Draw Climber", motors[RAISE].getBusVoltage());
-        SmartDashboard.putNumber("Output Current Climber", motors[RAISE].getOutputCurrent());
+        SmartDashboard.putNumber("Climber/Output Current Climber", motors[RAISE].getOutputCurrent());
+        SmartDashboard.putBoolean("Climber/At Bottom", atBottom());
     }
 }

@@ -19,7 +19,6 @@ public class Robot extends TimedRobot {
     
     private RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
-    private Drivetrain m_drivetrain;
     public static Constants.RobotMap.CAN m_can;
     private SendableChooser<auton> autonMode;
 
@@ -36,9 +35,8 @@ public class Robot extends TimedRobot {
 
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
-        m_drivetrain = m_robotContainer.getDrivetrain();
         
-        
+        m_robotContainer.putInitialDashes();
 
     }
 
@@ -58,7 +56,7 @@ public class Robot extends TimedRobot {
     @Override
     public void autonomousInit() {
         m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
-        m_drivetrain.resetForAuto();
+        m_robotContainer.resetDriveForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -72,7 +70,7 @@ public class Robot extends TimedRobot {
     @Override
     public void teleopInit() {
         //m_shooter.setSetpoint(2000);
-        m_drivetrain.resetForAuto();
+        m_robotContainer.resetDriveForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }

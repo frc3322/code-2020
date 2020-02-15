@@ -82,12 +82,11 @@ public class RobotContainer {
 
         drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
 
+        drivetrain.putInitialDash();
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
         climber.putInitialDash();
-        
-        
     }
 
     private void configureButtonBindings() {
@@ -108,6 +107,7 @@ public class RobotContainer {
         Button left_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_LEFT);
         Button right_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_RIGHT);
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
+        Button button_b_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_B);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
         DPadButton dpad_up_lower = new DPadButton(lowerChassis, DPadButton.Direction.UP);
@@ -146,6 +146,8 @@ public class RobotContainer {
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel()));
 
+        button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom()));
+
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));
 
@@ -157,8 +159,16 @@ public class RobotContainer {
 
     }
 
-    public Drivetrain getDrivetrain() {
-        return drivetrain;
+    public void resetDriveForAuto() {
+        drivetrain.resetForAuto();
+    }
+    
+    public void putInitialDashes() {
+        drivetrain.putInitialDash();
+        feeder.putInitialDash();
+        shooter.putInitialDash();
+        hopper.putInitialDash();
+        climber.putInitialDash();
     }
     
     public Command getAutonomousCommand(auton selected) {

@@ -68,18 +68,18 @@ public class Feeder extends SubsystemBase {
     @Override
     public void periodic() {
         updateDash();
-        feedTop(SmartDashboard.getNumber("Feed Speed Top", 0));
-        feedBottom(SmartDashboard.getNumber("Feed Speed Bottom", 0));
+        feedTop(SmartDashboard.getNumber("Feeder/Feed Speed Top", 0));
+        feedBottom(SmartDashboard.getNumber("Feeder/Feed Speed Bottom", 0));
 
-        SmartDashboard.putBoolean("AutoFeedTest/Intaking", RobotContainer.intaking);
-        SmartDashboard.putBoolean("AutoFeedTest/Shooting", RobotContainer.shooting);
-        SmartDashboard.putBoolean("AutoFeedTest/CellSensor", cellSensor.get());
-        SmartDashboard.putBoolean("AutoFeedTest/IntookSinceFed", intookSinceFed);
-        SmartDashboard.putBoolean("AutoFeedTest/ShotSinceFed", shotSinceFed);
-        SmartDashboard.putBoolean("AutoFeedTest/CellSensorGot", cellSensorGot);
-        SmartDashboard.putBoolean("AutoFeedTest/FirstTime", firstTime);
-        SmartDashboard.putNumber("AutoFeedTest/Timer", timer);
-        SmartDashboard.putNumber("AutoFeedTest/TimeLimit", timeLimit);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/Intaking", RobotContainer.intaking);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/Shooting", RobotContainer.shooting);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensor", cellSensor.get());
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/IntookSinceFed", intookSinceFed);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/ShotSinceFed", shotSinceFed);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensorGot", cellSensorGot);
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/FirstTime", firstTime);
+        SmartDashboard.putNumber("Feeder/AutoFeedTest/Timer", timer);
+        SmartDashboard.putNumber("Feeder/AutoFeedTest/TimeLimit", timeLimit);
 
         if (RobotContainer.intaking) {
             intookSinceFed = true;

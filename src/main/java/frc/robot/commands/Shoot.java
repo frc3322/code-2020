@@ -43,6 +43,7 @@ public class Shoot extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
+        shooter.updateConstants();
         if (alime) {
             setpoint = shooter.findRPM();
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
@@ -65,7 +66,7 @@ public class Shoot extends CommandBase {
 
         if (alime) {
             if (!drivetrain.limelightOnTarget()) {
-                drivetrain.pidDrive(0.0);
+                drivetrain.alime(0.0);
             } else if (drivetrain.limelightOnTarget() && feed) {
                 drivetrain.drive(0,0);
                 feeder.feedTop(0.8);
