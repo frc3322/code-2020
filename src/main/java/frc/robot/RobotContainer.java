@@ -8,6 +8,7 @@
 package frc.robot;
 
 import frc.robot.commands.DriveControl;
+import frc.robot.commands.ExtendArm;
 import frc.robot.commands.LedControl;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auton.DriveDistance;
@@ -19,6 +20,7 @@ import java.util.List;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay.Direction;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -68,6 +70,8 @@ public class RobotContainer {
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command testDriveDistance = new DriveDistance(drivetrain, 2000);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
+    private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
+    private Command extendArm = new ExtendArm(climber);
 
     public static boolean intaking = false;
     public static boolean shooting = false;
@@ -95,6 +99,7 @@ public class RobotContainer {
         Button bumper_right_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUMPER_RIGHT);
         Button button_back_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_BACK);
         Button button_start_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_START);
+        DPadButton dpad_down_upper = new DPadButton(upperChassis, DPadButton.Direction.DOWN);
 
         Button bumper_left_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUMPER_LEFT);
         Button bumper_right_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUMPER_RIGHT);
@@ -105,6 +110,8 @@ public class RobotContainer {
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
+        DPadButton dpad_up_lower = new DPadButton(lowerChassis, DPadButton.Direction.UP);
+        
 
         //upper
         button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
@@ -116,15 +123,24 @@ public class RobotContainer {
         button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
                         .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
+        dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
+                    .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+
         //lower
-        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> hopper.cycle(-.5, -0.5))))
-                            .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> hopper.stop())));
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> cycleHopper.schedule())))
+                            .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> cycleHopper.cancel())));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel()));
 
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));
+
+        button_y_lower.whenPressed(new InstantCommand(() -> extendArm.schedule()))
+                        .whenReleased(new InstantCommand(() -> extendArm.cancel()));
+
+        dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(0.3)))
+                .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
     }
 

@@ -78,7 +78,7 @@ public final class Constants {
 
                         LEFT_FRONT_MOTOR = 4;
                         LEFT_BACK_MOTOR = 3;
-                        RIGHT_FRONT_MOTOR = 5;
+                        RIGHT_FRONT_MOTOR = 15;
                         RIGHT_BACK_MOTOR = 6;
 
                         FEEDER_1 = 9;
@@ -161,6 +161,8 @@ public final class Constants {
             public static final int PCM_ID = 0;
             public static final int INTAKE_EXTEND = 1;
             public static final int INTAKE_RETRACT = 0;
+            public static final int ARM_EXTEND = 2;
+            public static final int ARM_RETRACT = 3;
             
         }
     
@@ -210,5 +212,12 @@ public final class Constants {
 
     public static class ShooterConstants {
         public static final double SHOOTER_TOLERANCE = 30.0;
+    }
+
+    public static class ClimberContants {
+        public static final double CLIMBER_ARM_TOP_LIMIT = 2000;
+        public static final double CLIMBER_ARM_BOTTOM_THRESHOLD = 1;
+        public static final double ARM_EXTEND_SPEED = 0.3;
+        public static final double WINCH_EXTEND_SPEED = ARM_EXTEND_SPEED * -2;
     }
 }

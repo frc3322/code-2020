@@ -81,33 +81,34 @@ public class Feeder extends SubsystemBase {
         SmartDashboard.putNumber("AutoFeedTest/Timer", timer);
         SmartDashboard.putNumber("AutoFeedTest/TimeLimit", timeLimit);
 
-        // if (RobotContainer.intaking && !intookSinceFed) {
-        //     intookSinceFed = true;
-        // }
+        if (RobotContainer.intaking) {
+            intookSinceFed = true;
+        }
 
-        // if(RobotContainer.shooting && !shotSinceFed) {
-        //     shotSinceFed = true;
-        // }
+        if (RobotContainer.shooting) {
+            shotSinceFed = true;
+        }
 
-        // if (cellSensor.get() && !cellSensorGot){
-        //     cellSensorGot = true;
-        // }
+        if (cellSensor.get()) {
+            cellSensorGot = true;
+        }
 
-        // if (intookSinceFed) {
-        //     if(firstTime || shotSinceFed){
-        //         if (cellSensorGot) {
-        //             feedTop(0.8);
-        //             feedBottom(1);
-        //             timer++;
-        //             if(timer > timeLimit) {
-        //                 stop();
-        //                 firstTime = false;
-        //                 intookSinceFed = false;
-        //                 shotSinceFed = false;
-        //                 cellSensorGot = false;
-        //             }
-        //         }
-        //     }
-        // }
+        if (intookSinceFed) {
+            if (firstTime || shotSinceFed) {
+                feedTop(0.8);
+                feedBottom(1);
+                if (cellSensorGot) {
+                    timer++;
+                    if (timer > timeLimit) {
+                        stop();
+                        firstTime = false;
+                        intookSinceFed = false;
+                        shotSinceFed = false;
+                        cellSensorGot = false;
+                        timer = 0;
+                    }
+                }
+            }
+        }
     }
 }

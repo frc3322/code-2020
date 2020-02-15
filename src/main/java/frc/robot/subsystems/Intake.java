@@ -14,6 +14,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.RobotContainer;
 import frc.robot.Constants.RobotMap;
@@ -117,9 +118,10 @@ public class Intake extends SubsystemBase {
     public boolean isExtended() {
         return intakeExtender.get() == Value.kForward;
     }
-
+    
     @Override
     public void periodic() {
-        // This method will be called once per scheduler run
+        SmartDashboard.putNumber("Current Draw Intake Bottom", motors[INTAKE_BOTTOM].getOutputCurrent());
+        SmartDashboard.putNumber("Current Draw Intake Top", motors[INTAKE_TOP].getOutputCurrent());
     }
 }

@@ -15,6 +15,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid;
 import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 import static frc.robot.Robot.m_can;
 
@@ -22,30 +23,24 @@ public class Climber extends SubsystemBase {
     private int RAISE = 0, CLIMB = 1;
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
-    DoubleSolenoid intakeExtender;
+    DoubleSolenoid armExtender;
 
     public Climber() {
         motors[RAISE] = new CANSparkMax(m_can.CLIMBER_RAISE, MotorType.kBrushless);
         motors[CLIMB] = new CANSparkMax(m_can.CLIMBER_CLIMB, MotorType.kBrushless);
         encoders[RAISE] = motors[RAISE].getEncoder();
         encoders[CLIMB] = motors[CLIMB].getEncoder();
+
+        armExtender = new DoubleSolenoid(Constants.RobotMap.PCM.ARM_EXTEND, Constants.RobotMap.PCM.ARM_RETRACT);
     }
 
     // TODO make the encoder points at the hardstops actual values
     public void raiseClimber(double speed) {
-        if (encoders[RAISE].getPosition() < 2000) {
-            motors[RAISE].set(speed);
-        } else {
-            stopClimber();
-        }
+        motors[RAISE].set(speed);
     }
 
     public void lowerClimber(double speed) {
-        if (encoders[RAISE].getPosition() > 0) {
-            motors[RAISE].set(-speed);
-        } else {
-            stopClimber();
-        }
+        motors[RAISE].set(-speed);
     }
 
     public void stopClimber() {
@@ -72,20 +67,24 @@ public class Climber extends SubsystemBase {
         motors[CLIMB].set(0);
     }
 
-    public void extendHook() {
-        intakeExtender.set(DoubleSolenoid.Value.kForward);
+    public void extendArm() {
+        armExtender.set(DoubleSolenoid.Value.kForward);
     }
 
-    public void retractHook() {
-        intakeExtender.set(DoubleSolenoid.Value.kReverse);
+    public void retractArm() {
+        armExtender.set(DoubleSolenoid.Value.kReverse);
     }
 
     public void toggle() {
         if (isExtended()) {
-            retractHook();
+            retractArm();
         } else {
-            extendHook();
+            extendArm();
         }
+    }
+
+    public double getEncoder(int encoder) {
+        return encoders[encoder].getPosition();
     }
 
     public void setSpeed(double speed) {
@@ -93,7 +92,7 @@ public class Climber extends SubsystemBase {
     }
 
     public boolean isExtended() {
-        return intakeExtender.get() == Value.kForward;
+        return armExtender.get() == Value.kForward;
     }
 
     public void putInitialDash() {

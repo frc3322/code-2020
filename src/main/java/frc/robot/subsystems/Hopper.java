@@ -30,8 +30,9 @@ public class Hopper extends SubsystemBase {
   
     private int LEFT = 0, RIGHT = 1;
 
-    private int timer = 0;
-    private int timeLimit = 30;
+    private double timer = 0;
+    private double timerSeconds = timer/50;
+    private double timeLimit = 5;
 
     public Hopper() {
         motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
@@ -51,8 +52,16 @@ public class Hopper extends SubsystemBase {
         SmartDashboard.putNumber("Right Hopper Speed", 0);
     }
 
-    public void cycle(double leftSpeed, double rightSpeed) {
-        // TODO: make this a reasonable value instead of this placeholder
+    public void cycle(double m_leftSpeed, double m_rightSpeed) {
+        double leftSpeed = 0;
+        double rightSpeed = 0;
+        timer++;
+        if ((timer/50) > 2){
+            timer = 0;
+        } else if ((timer/50) > 1) {
+            leftSpeed = m_leftSpeed;
+            rightSpeed = m_rightSpeed;
+        } 
         motors[LEFT].set(leftSpeed);
         motors[RIGHT].set(rightSpeed);
     }
