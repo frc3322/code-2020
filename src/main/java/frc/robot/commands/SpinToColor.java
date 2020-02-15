@@ -14,9 +14,20 @@ import frc.robot.RobotContainer;
 import frc.robot.subsystems.Spinner;
 
 public class SpinToColor extends CommandBase {
-  Spinner spinner;
-  char desiredColor;
+  private Spinner spinner;
+  private char desiredColor;
+  private char startColor;
+  private int spinCount;
+  private boolean checkedColor = true;
+  private boolean finished = false;
   public SpinToColor(Spinner spinner) {
+    this.spinner = spinner;
+    addRequirements(spinner);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
     switch (DriverStation.getInstance().getGameSpecificMessage().charAt(0)) {
       case 'R':
         desiredColor = 'B';
@@ -32,20 +43,28 @@ public class SpinToColor extends CommandBase {
         break;
       default:
         desiredColor = 'U';
+        startColor = spinner.getColor();
+        spinCount = 0;
         break;
     }
-    this.spinner = spinner;
-    addRequirements(spinner);
-  }
-
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    if (desiredColor == 'U') {
+      if (spinner.getColor() == startColor && !checkedColor){
+        spinCount++;
+      } else if (spinner.getColor() != startColor){
+        checkedColor = false;
+      }
+
+      if (spinCount > 7) {
+        finished = true;
+      }
+    } else if (spinner.getColor() == desiredColor) {
+      finished = true;
+    }
     spinner.spin(0.2);
   }
 
@@ -58,6 +77,6 @@ public class SpinToColor extends CommandBase {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return spinner.getColor() == desiredColor;
+    return finished;
   }
 }

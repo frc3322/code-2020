@@ -100,7 +100,7 @@ public class RobotContainer {
 
         button_b_lower.whenPressed(new InstantCommand(() -> spinner.spin(0.2))).whenReleased(new InstantCommand(() -> spinner.stop()));
 
-        start_button_lower.whenPressed(new InstantCommand(() -> spinner.toggle()));
+        bumper_left_lower.whenPressed(new InstantCommand(() -> spinner.extend())).whenReleased(new InstantCommand(() -> spinner.retract()));
 
         button_y_lower.whileHeld(shoot);
 
