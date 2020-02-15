@@ -56,9 +56,9 @@ public final class Constants {
                     case TEST_BENCH:
 
                         LEFT_FRONT_MOTOR = 36;
-                        LEFT_BACK_MOTOR = 0;
-                        RIGHT_FRONT_MOTOR = 40;
-                        RIGHT_BACK_MOTOR = 0;
+                        LEFT_BACK_MOTOR = 40;
+                        RIGHT_FRONT_MOTOR = 45;
+                        RIGHT_BACK_MOTOR = 8;
         
                         // TODO: give these actual IDs
                         FEEDER_1 = 20;
@@ -67,16 +67,16 @@ public final class Constants {
                         CLIMBER_RAISE = 0;
                         CLIMBER_CLIMB = 1;
 
-                        LEFT_HOPPER_MOTOR = 0;
-                        RIGHT_HOPPER_MOTOR = 0;
+                        LEFT_HOPPER_MOTOR = 5;
+                        RIGHT_HOPPER_MOTOR = 4;
 
-                        INTAKE_RIGHT = 0;
-                        INTAKE_LEFT = 0;
+                        INTAKE_RIGHT = 6;
+                        INTAKE_LEFT = 7;
                     
                         SHOOTER_1 = 33;
                         SHOOTER_2 = 45;
                         
-                        SPINNER_MOTOR = 0;
+                        SPINNER_MOTOR = 2;
 
                         break;
                     case P1:
@@ -172,11 +172,11 @@ public final class Constants {
         public static class PCM {
               
             //TODO: need to give these values 
-            public static final int PCM_ID = 1;
+            public static final int PCM_ID = 0;
             public static final int INTAKE_EXTEND = 2;
             public static final int INTAKE_RETRACT = 3;
-            public static final int SPINNER_UP = 4;
-            public static final int SPINNER_DOWN = 5;    
+            public static final int SPINNER_UP = 0;
+            public static final int SPINNER_DOWN = 1;    
         }
     
         public static class XBOX {

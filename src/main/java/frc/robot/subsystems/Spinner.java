@@ -28,7 +28,7 @@ public class Spinner extends SubsystemBase {
   private char color = 'U';
 
   public Spinner() {
-    spinnerExtender = new DoubleSolenoid(RobotMap.PCM.SPINNER_UP, RobotMap.PCM.SPINNER_DOWN);
+    spinnerExtender = new DoubleSolenoid(RobotMap.PCM.PCM_ID, RobotMap.PCM.SPINNER_UP, RobotMap.PCM.SPINNER_DOWN);
     motor = new CANSparkMax(m_can.SPINNER_MOTOR, MotorType.kBrushless);
     m_colorSensor = new ColorSensorV3(Robot.i2cPort);
   }
