@@ -186,6 +186,8 @@ public final class Constants {
             public static final int STICK_R_Y_AXIS = 5;
             public static final int TRIGGER_L_AXIS = 2;
             public static final int TRIGGER_R_AXIS = 3;
+
+            public static final double DEADZONE = 0.15;
         }
     }
 
