@@ -65,7 +65,7 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if (alime) {
-                drivetrain.alime(0);
+                drivetrain.alime(0.0);
                 
                 if (drivetrain.limelightOnTarget()) {
                     timer++;

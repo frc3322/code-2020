@@ -63,7 +63,7 @@ public class DriveControl extends CommandBase {
         SmartDashboard.putNumber("Drivetrain/x", x);
         SmartDashboard.putNumber("Drivetrain/y", y);
 
-        double deadzone = Constants.RobotMap.XBOX.DEADZONE;
+        double deadzone = RobotMap.XBOX.DEADZONE;
         
         if (Math.abs(x) < deadzone) {
             x = 0.0;
@@ -73,7 +73,7 @@ public class DriveControl extends CommandBase {
             y = 0.0;
         }
 
-        if (y === 0.0) {
+        if (y == 0.0) {
             drivetrain.curvatureDrive(0, x, true);
         } else {
             drivetrain.curvatureDrive(y, x, false);
