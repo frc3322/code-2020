@@ -68,7 +68,8 @@ public class RobotContainer {
     }
 
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
-    private Command testDriveDistance = new DriveDistance(drivetrain, 2000);
+    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
+    private Command testDriveDistance = new DriveDistance(drivetrain, 1);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber);
@@ -156,6 +157,9 @@ public class RobotContainer {
 
         dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(0.3)))
                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+
+        bumper_left_lower.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
+                            .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
 
     }
 
@@ -265,8 +269,8 @@ public class RobotContainer {
                         .andThen(new TurnToAngle(drivetrain, 180)).alongWith(new InstantCommand(() -> intake.end()))
                         .andThen(shoot.withTimeout(4));
             case DEFAULT:
-                return  shoot.withTimeout(3)
-                        .andThen(new DriveDistance(drivetrain, -300));
+                return  shoot.withTimeout(3.0)
+                        .andThen(new DriveDistance(drivetrain, -2.0));
             default:
                 return  shoot.withTimeout(3)
                         .andThen(new DriveDistance(drivetrain, -300));

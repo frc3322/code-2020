@@ -53,9 +53,9 @@ public class Drivetrain extends SubsystemBase {
     private double limelightY = ty.getDouble(0.0);
     private double limelightA = ta.getDouble(0.0);
 
-    private double lP = 0.01893;
-    private double lI = 1.3;
-    private double lD = 0.002;
+    private double lP = 0.07;
+    private double lI = 0.02;
+    private double lD = 0;
 
     private double aP = 0.01893;
     private double aI = 1.3;
@@ -207,7 +207,7 @@ public class Drivetrain extends SubsystemBase {
     public void alime(Double speed) {
         limelightX = tx.getDouble(0.0);
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);
-        drive(speed, PID.calculate(limelightX, 0));
+        drive(speed, PID.calculate(-limelightX, 0));
     }
 
     // Other PID Drive methods
@@ -226,13 +226,13 @@ public class Drivetrain extends SubsystemBase {
 
     // for distance
     public void driveDistance(double distance) {
-        double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
+        double avgDist = (getLeftEncDistance() + getRightEncDistance()) / 2;
         drive(PID.calculate(avgDist, distance), 0);
     }
 
     public Boolean distanceOnTarget(double distance) {
         double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
-        return Math.abs(distance - avgDist) < 30;
+        return Math.abs(distance - avgDist) < 0.1;
     }
 
     public void resetEncoders() {
@@ -303,6 +303,9 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Heading", getHeading());
         SmartDashboard.putNumber("Drivetrain/Encoders/ENC Distance Left m", getLeftEncDistance());
         SmartDashboard.putNumber("Drivetrain/Encoders/ENC Distance Right m", getRightEncDistance());
+        SmartDashboard.putNumber("Drivetrain/Encoders/Avg Distance", (getLeftEncDistance() + getRightEncDistance()) / 2);
+        SmartDashboard.putNumber("Drivetrain/NavX", navx.getFusedHeading());
+        SmartDashboard.putBoolean("Drivetrain/OnTarget", distanceOnTarget(1));
         // SmartDashboard.putString("pose", getPose().toString());
         // Translation2d driveTranslation = getPose().getTranslation();
         // double driveX = driveTranslation.getX();
