@@ -65,8 +65,8 @@ public class Intake extends SubsystemBase {
     }
 
     public void start() {
-        motors[INTAKE_BOTTOM].set(1);
-        motors[INTAKE_TOP].set(-.6);
+        motors[INTAKE_BOTTOM].set(.8);
+        motors[INTAKE_TOP].set(-.4);
     }
 
     public void outtake() {

@@ -43,22 +43,21 @@ public class Hopper extends SubsystemBase {
 
         motors[LEFT].setSmartCurrentLimit(20, 15);
         motors[RIGHT].setSmartCurrentLimit(20, 15);
-
-        cellSensor = new DigitalInput(Constants.RobotMap.DIO.IR_ID);
     }
 
     public void putInitialDash() {
         SmartDashboard.putNumber("Left Hopper Speed", 0);
         SmartDashboard.putNumber("Right Hopper Speed", 0);
+        
     }
 
     public void cycle(double m_leftSpeed, double m_rightSpeed) {
         double leftSpeed = 0;
         double rightSpeed = 0;
         timer++;
-        if ((timer/50) > 2){
+        if ((timer/50) > 1){
             timer = 0;
-        } else if ((timer/50) > 1) {
+        } else if ((timer/50) > 0.5) {
             leftSpeed = m_leftSpeed;
             rightSpeed = m_rightSpeed;
         } 
@@ -97,24 +96,6 @@ public class Hopper extends SubsystemBase {
 
     @Override
     public void periodic() {
-        //agitate();
 
-        // if(intook) {
-        //     if(!cellSensor.get()) {
-        //         cycle(-1, -1);
-        //     } else if (cellSensor.get()) {
-        //         stop();
-        //         intook = false;
-        //     } else if (cellSensor == null){
-        //         cycle(-1, -1);
-        //         timer++;
-        //         if(timer > timeLimit){
-        //             stop();
-        //             intook = false;
-        //             timer = 0;
-        //         }
-        //     }
-            
-        // }
     }
 }

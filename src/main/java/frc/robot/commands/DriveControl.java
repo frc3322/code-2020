@@ -60,6 +60,10 @@ public class DriveControl extends CommandBase {
         //     drivetrain.drive(y, x);
         // }
 
-        drivetrain.drive(x, y);
+        SmartDashboard.putNumber("Drivetrain/x", x);
+        SmartDashboard.putNumber("Drivetrain/y", y);
+        
+        drivetrain.drive(y,x);
+        
     }
 }

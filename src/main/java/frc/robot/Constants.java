@@ -76,8 +76,8 @@ public final class Constants {
                         break;
                     case P1:
 
-                        LEFT_FRONT_MOTOR = 4;
-                        LEFT_BACK_MOTOR = 3;
+                        LEFT_FRONT_MOTOR = 3;
+                        LEFT_BACK_MOTOR = 4;
                         RIGHT_FRONT_MOTOR = 15;
                         RIGHT_BACK_MOTOR = 6;
 
@@ -91,7 +91,7 @@ public final class Constants {
                         RIGHT_HOPPER_MOTOR = 13;
             
                         INTAKE_BOTTOM = 20;
-                        INTAKE_TOP = 1;
+                        INTAKE_TOP = 40;
                     
                         SHOOTER_1 = 10;
                         SHOOTER_2 = 11;

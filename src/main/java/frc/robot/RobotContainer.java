@@ -140,11 +140,11 @@ public class RobotContainer {
         button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
                         .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
-        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()).alongWith(new InstantCommand(() -> cycleHopper.schedule())))
-                            .whenReleased(new InstantCommand(() -> intake.end()).alongWith(new InstantCommand(() -> cycleHopper.cancel())));
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))//.alongWith(new InstantCommand(() -> cycleHopper.schedule())))
+                            .whenReleased(new InstantCommand(() -> intake.end()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
-                        .whenReleased(new InstantCommand(() -> shoot.cancel()));
+                        .whenReleased(new InstantCommand(() -> shoot.cancel()).alongWith(new InstantCommand(() -> hopper.stop())));
 
         button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom()));
 
@@ -169,6 +169,14 @@ public class RobotContainer {
         shooter.putInitialDash();
         hopper.putInitialDash();
         climber.putInitialDash();
+    }
+
+    public void setGotFalse() {
+        feeder.setGotFalse();
+    }
+
+    public void setDrivetrainBrake() {
+        drivetrain.setBrakeMode();
     }
     
     public Command getAutonomousCommand(auton selected) {

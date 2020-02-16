@@ -115,6 +115,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Motor methods
+    public void setBrakeMode() {
+        motors[LEFT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[LEFT_BACK].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
+    }
+
     public double getVoltage(int n) {
         return motors[n].getBusVoltage();
     }
@@ -140,8 +147,8 @@ public class Drivetrain extends SubsystemBase {
         robotDrive.arcadeDrive(speed, rotation);
     }
 
-    public void curvatureDrive(double speed, double rotation) {
-        robotDrive.curvatureDrive(speed, rotation, false);
+    public void curvatureDrive(double speed, double rotation, boolean quickTurn) {
+        robotDrive.curvatureDrive(speed, rotation, quickTurn);
     }
 
     public void tankDrive(double leftSpeed, double rightSpeed) {

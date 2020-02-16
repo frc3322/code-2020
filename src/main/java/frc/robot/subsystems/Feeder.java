@@ -26,8 +26,8 @@ public class Feeder extends SubsystemBase {
     private boolean checkedShooter = false;
     private boolean checkedCellSensor = false;
     private boolean cellSensorGot = false;
-    private int timer = 0;
-    private int timeLimit = 30;
+    //private int timer = 0;
+    //private int timeLimit = 1;
 
     public Feeder() {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
@@ -41,6 +41,10 @@ public class Feeder extends SubsystemBase {
     
     public boolean getIR() {
             return cellSensor.get();
+    }
+
+    public void setGotFalse() {
+        cellSensorGot = false;
     }
 
     public void feedTop(double speed) {
@@ -59,6 +63,7 @@ public class Feeder extends SubsystemBase {
     public void putInitialDash() {
         SmartDashboard.putNumber("Feed Speed Top", 0);
         SmartDashboard.putNumber("Feed Speed Bottom", 0);
+        setGotFalse();
     }
 
     public void updateDash() {
@@ -73,13 +78,13 @@ public class Feeder extends SubsystemBase {
 
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/Intaking", RobotContainer.intaking);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/Shooting", RobotContainer.shooting);
-        SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensor", cellSensor.get());
+        SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensor", !cellSensor.get());
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/IntookSinceFed", intookSinceFed);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/ShotSinceFed", shotSinceFed);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensorGot", cellSensorGot);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/FirstTime", firstTime);
-        SmartDashboard.putNumber("Feeder/AutoFeedTest/Timer", timer);
-        SmartDashboard.putNumber("Feeder/AutoFeedTest/TimeLimit", timeLimit);
+        // SmartDashboard.putNumber("Feeder/AutoFeedTest/Timer", timer);
+        // SmartDashboard.putNumber("Feeder/AutoFeedTest/TimeLimit", timeLimit);
 
         if (RobotContainer.intaking) {
             intookSinceFed = true;
@@ -89,24 +94,24 @@ public class Feeder extends SubsystemBase {
             shotSinceFed = true;
         }
 
-        if (cellSensor.get()) {
+        if (!cellSensor.get()) {
             cellSensorGot = true;
         }
 
         if (intookSinceFed) {
             if (firstTime || shotSinceFed) {
-                feedTop(0.8);
-                feedBottom(1);
+                feedTop(0.5);
+                feedBottom(.5);
                 if (cellSensorGot) {
-                    timer++;
-                    if (timer > timeLimit) {
+                    //timer++;
+                    //if (timer > timeLimit) {
                         stop();
                         firstTime = false;
                         intookSinceFed = false;
                         shotSinceFed = false;
                         cellSensorGot = false;
-                        timer = 0;
-                    }
+                        //timer = 0;
+                    //}
                 }
             }
         }
