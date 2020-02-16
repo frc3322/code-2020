@@ -24,8 +24,11 @@ public class Shoot extends CommandBase {
     Shooter shooter;
     Feeder feeder;
     Hopper hopper;
-    Boolean feed;
+    boolean feed;
     boolean alime;
+
+    int timer = 0;
+    int timeLimit = 30;
 
     double setpoint;
 
@@ -60,26 +63,27 @@ public class Shoot extends CommandBase {
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
-        if (shooter.onTarget(setpoint)) {
-            feed = true;
-        }
-
-        if (alime) {
-            if (!drivetrain.limelightOnTarget()) {
-                drivetrain.alime(0.0);
-            } else if (drivetrain.limelightOnTarget() && feed) {
-                drivetrain.drive(0,0);
-                feeder.feedTop(0.8);
-                feeder.feedBottom(1);
-                hopper.cycle(-1, -1);
-            } 
-        } else {
-            if (feed) {
-                drivetrain.drive(0,0);
-                feeder.feedTop(0.8);
-                feeder.feedBottom(1);
-                hopper.cycle(-1, -1);
+        if (!feed) {
+            if (alime) {
+                drivetrain.alime(0);
+                
+                if (drivetrain.limelightOnTarget()) {
+                    timer++;
+                    if (shooter.onTarget(setpoint) && timer > timeLimit) {
+                        feed = true;
+                    }
+                }
+                
+            } else {
+                if (shooter.onTarget(setpoint)) {
+                    feed = true;
+                }         
             }
+        } else {
+            drivetrain.drive(0,0);
+            feeder.feedTop(0.8);
+            feeder.feedBottom(1);
+            hopper.cycle(-1, -1);
         }
     }
 
@@ -89,6 +93,7 @@ public class Shoot extends CommandBase {
         feeder.feedTop(0);
         feeder.feedBottom(0);
         shooter.stop();
+        timer = 0;
         feed = false;
         RobotContainer.shooting = false;
     }
