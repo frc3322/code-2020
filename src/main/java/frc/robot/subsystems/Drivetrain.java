@@ -226,8 +226,7 @@ public class Drivetrain extends SubsystemBase {
 
     // for distance
     public void driveDistance(double distance) {
-        double avgDist = (getLeftEncDistance() + getRightEncDistance()) / 2;
-        drive(PID.calculate(avgDist, distance), 0);
+        tankDrive(PID.calculate(getLeftEncDistance(), distance), PID.calculate(getRightEncDistance(), distance));
     }
 
     public Boolean distanceOnTarget(double distance) {
