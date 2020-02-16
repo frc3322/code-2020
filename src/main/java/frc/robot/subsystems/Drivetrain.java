@@ -230,8 +230,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Boolean distanceOnTarget(double distance) {
-        double avgDist = (encoders[LEFT_FRONT].getPosition() + encoders[RIGHT_FRONT].getPosition()) / 2;
-        return Math.abs(distance - avgDist) < 0.1;
+        return Math.abs(Math.abs(getRightEncDistance()) - Math.abs(distance)) < 0.1 && Math.abs(Math.abs(getLeftEncDistance()) - Math.abs(distance)) < 0.1;
     }
 
     public void resetEncoders() {

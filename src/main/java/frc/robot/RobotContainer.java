@@ -62,18 +62,19 @@ public class RobotContainer {
 
     public enum auton {
         DEFAULT,
-        TRENCH_FIVE,
-        TRENCH_SIX,
-        MIDDLE_FIVE;
+        TRENCH_SIX;
     }
 
+    //commands
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
-    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
-    private Command testDriveDistance = new DriveDistance(drivetrain, 1);
-    private Command testTurnToAngle = new TurnToAngle(drivetrain, 180);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber);
 
+    //test commands
+    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
+    private Command testDriveDistance = new DriveDistance(drivetrain, 1);
+    private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
+    
     public static boolean intaking = false;
     public static boolean shooting = false;
     
@@ -246,34 +247,26 @@ public class RobotContainer {
             m_rightReference.setNumber(-rightVolts);
         }, drivetrain);
 
+        Command trenchSixAuton = 
+            shoot.withTimeout(3.0)
+            .andThen(new TurnToAngle(drivetrain, 180.0).withInterrupt(() -> drivetrain.angleOnTarget(180.0)))
+            .andThen(new DriveDistance(drivetrain, 3.0).withInterrupt(() -> drivetrain.distanceOnTarget(3.0)))
+                .alongWith(new InstantCommand(() -> intake.begin()))
+            .andThen(new TurnToAngle(drivetrain, 180.0).withInterrupt(() -> drivetrain.angleOnTarget(180.0)))
+                .alongWith(new InstantCommand(() -> intake.end()))
+            .andThen(shoot.withTimeout(4.0));
+
+        Command defaultAuton = 
+            shoot.withTimeout(3.0)
+            .andThen(new DriveDistance(drivetrain, -2.0).withInterrupt(() -> drivetrain.distanceOnTarget(-2.0)));
+
         switch (selected) {
-            case MIDDLE_FIVE: 
-                return  new DriveDistance(drivetrain, 2000)
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new RunCommand(() -> drivetrain.delay()).withTimeout(1)) /*possibly unnecessary depending on intake speed*/
-                        .andThen(new DriveDistance(drivetrain, -500))
-                            .alongWith(new InstantCommand(() -> intake.end()))
-                        .andThen(new TurnToAngle(drivetrain, 170))
-                        .andThen(shoot).withTimeout(5);
-            case TRENCH_FIVE:
-                return  new DriveDistance(drivetrain, 2000)
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new DriveDistance(drivetrain, -1000))
-                            .alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new TurnToAngle(drivetrain, -170))
-                        .andThen(shoot).withTimeout(5);
             case TRENCH_SIX:
-                return  shoot.withTimeout(3)
-                        .andThen(new TurnToAngle(drivetrain, 180))
-                        .andThen(new DriveDistance(drivetrain, 2000)).alongWith(new InstantCommand(() -> intake.begin()))
-                        .andThen(new TurnToAngle(drivetrain, 180)).alongWith(new InstantCommand(() -> intake.end()))
-                        .andThen(shoot.withTimeout(4));
+                return  trenchSixAuton;
             case DEFAULT:
-                return  shoot.withTimeout(3.0)
-                        .andThen(new DriveDistance(drivetrain, -2.0));
+                return defaultAuton; 
             default:
-                return  shoot.withTimeout(3)
-                        .andThen(new DriveDistance(drivetrain, -300));
+                return defaultAuton;
         }
 
         // Run path following command, then stop at the end.

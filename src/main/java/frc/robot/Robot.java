@@ -27,9 +27,7 @@ public class Robot extends TimedRobot {
         autonMode = new SendableChooser<>();
 
         autonMode.setDefaultOption("Default", auton.DEFAULT);
-        autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
         autonMode.addOption("Trench 6", auton.TRENCH_SIX);
-        autonMode.addOption("Middle 5", auton.MIDDLE_FIVE);
 
         SmartDashboard.putData("Auton", autonMode);
 
