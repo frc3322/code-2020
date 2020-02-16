@@ -98,7 +98,7 @@ public class RobotContainer {
                 drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
         button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
 
-        button_b_lower.whenPressed(new InstantCommand(() -> spinner.spin(0.2))).whenReleased(new InstantCommand(() -> spinner.stop()));
+        button_b_lower.whenPressed(new InstantCommand(() -> spinner.spin(0.6))).whenReleased(new InstantCommand(() -> spinner.stop()));
 
         bumper_left_lower.whenPressed(new InstantCommand(() -> spinner.extend())).whenReleased(new InstantCommand(() -> spinner.retract()));
 
