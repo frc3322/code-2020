@@ -244,11 +244,12 @@ public class Drivetrain extends SubsystemBase {
     // for distance
     public void driveDistance(double distance, double initAngle) {
         double avgDist = getLeftEncDistance() + getRightEncDistance() / 2;
-        drive(PID1.calculate(avgDist, distance), PID2.calculate(navx.getFusedHeading(), initAngle));
+        curvatureDrive(PID1.calculate(avgDist, distance), PID2.calculate(navx.getFusedHeading(), initAngle), false);
     }
 
     public Boolean distanceOnTarget(double distance) {
-        return Math.abs(Math.abs(getRightEncDistance()) - Math.abs(distance)) < 0.1 && Math.abs(Math.abs(getLeftEncDistance()) - Math.abs(distance)) < 0.1;
+        double avgDist = getLeftEncDistance() + getRightEncDistance() / 2;
+        return Math.abs(avgDist) - Math.abs(distance) < 0.1;
     }
 
     public void resetEncoders() {
