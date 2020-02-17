@@ -9,6 +9,7 @@ public class DriveDistance extends CommandBase {
     Drivetrain drivetrain;
 
     private double distance;
+    private double initAngle;
 
     public DriveDistance(Drivetrain d_subsystem, double distance) {
         drivetrain = d_subsystem;
@@ -20,12 +21,15 @@ public class DriveDistance extends CommandBase {
     @Override
     public void initialize(){
         drivetrain.setUpPID(PIDMode.DISTANCE);
+        drivetrain.setUpPID(PIDMode.STRAIGHTEN);
         drivetrain.resetEncoders();
+
+        initAngle = drivetrain.getHeading();
     }
 
     @Override
     public void execute() {
-        drivetrain.driveDistance(distance);
+        drivetrain.driveDistance(distance, initAngle);
     }
 
     @Override

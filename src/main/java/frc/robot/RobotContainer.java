@@ -249,16 +249,16 @@ public class RobotContainer {
 
         Command trenchSixAuton = 
             shoot.withTimeout(3.0)
-            .andThen(new TurnToAngle(drivetrain, 180.0).withInterrupt(() -> drivetrain.angleOnTarget(180.0)))
-            .andThen(new DriveDistance(drivetrain, 3.0).withInterrupt(() -> drivetrain.distanceOnTarget(3.0)))
+            .andThen(new TurnToAngle(drivetrain, 180.0))
+            .andThen(new DriveDistance(drivetrain, 3.0))
                 .alongWith(new InstantCommand(() -> intake.begin()))
-            .andThen(new TurnToAngle(drivetrain, 180.0).withInterrupt(() -> drivetrain.angleOnTarget(180.0)))
+            .andThen(new TurnToAngle(drivetrain, 180.0))
                 .alongWith(new InstantCommand(() -> intake.end()))
             .andThen(shoot.withTimeout(4.0));
 
         Command defaultAuton = 
             shoot.withTimeout(3.0)
-            .andThen(new DriveDistance(drivetrain, -2.0).withInterrupt(() -> drivetrain.distanceOnTarget(-2.0)));
+            .andThen(new DriveDistance(drivetrain, -2.0));
 
         switch (selected) {
             case TRENCH_SIX:

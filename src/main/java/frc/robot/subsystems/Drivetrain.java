@@ -38,7 +38,8 @@ public class Drivetrain extends SubsystemBase {
 
     private AHRS navx = new AHRS(SPI.Port.kMXP);
 
-    private PIDController PID;
+    private PIDController PID1;
+    private PIDController PID2;
 
     private DifferentialDriveOdometry odometry;
 
@@ -65,8 +66,12 @@ public class Drivetrain extends SubsystemBase {
     private double dI = 0;
     private double dD = 0;
 
+    private double sP = 0;
+    private double sI =  0;
+    private double sD = 0;
+
     public enum PIDMode {
-        LIMELIGHT, ANGLE, DISTANCE
+        LIMELIGHT, ANGLE, DISTANCE, STRAIGHTEN
     }
 
     public Drivetrain() {
@@ -93,8 +98,10 @@ public class Drivetrain extends SubsystemBase {
 
         robotDrive = new DifferentialDrive(motors[LEFT_FRONT], motors[RIGHT_FRONT]);
 
-        PID = new PIDController(lP, lI, lD);
-        PID.disableContinuousInput();
+        PID1 = new PIDController(lP, lI, lD);
+        PID1.disableContinuousInput();
+
+        PID2 = new PIDController(aP, aI, aD);
 
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -112,6 +119,10 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Distance P", dP);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Distance I", dI);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Distance D", dD);
+
+        SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Straighten P", sP);
+        SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Straighten I", sI);
+        SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Strighten D", sD);
     }
 
     // Motor methods
@@ -159,32 +170,38 @@ public class Drivetrain extends SubsystemBase {
     public void setUpPID(PIDMode mode) {
         switch (mode) {
         case LIMELIGHT:
-            PID.reset();
-            PID.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
-            PID.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
-            PID.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
-            PID.setTolerance(1);
+            PID1.reset();
+            PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
+            PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
+            PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
+            PID1.setTolerance(1);
             break;
         case ANGLE:
-            PID.reset();
-            PID.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle P", aP));
-            PID.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle I", aI));
-            PID.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle D", aD));
-            PID.setTolerance(1);
+            PID1.reset();
+            PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle P", aP));
+            PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle I", aI));
+            PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle D", aD));
+            PID1.setTolerance(1);
             break;
         case DISTANCE:
-            PID.reset();
-            PID.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance P", dP));
-            PID.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance I", dI));
-            PID.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance D", dD));
-            PID.setTolerance(1);
+            PID1.reset();
+            PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance P", dP));
+            PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance I", dI));
+            PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance D", dD));
+            PID1.setTolerance(1);
             break;
+        case STRAIGHTEN:
+            PID2.reset();
+            PID2.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance P", sP));
+            PID2.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance I", sI));
+            PID2.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance D", sD));
+            PID2.setTolerance(1);
         default:
-            PID.reset();
-            PID.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
-            PID.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
-            PID.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
-            PID.setTolerance(1);
+            PID1.reset();
+            PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
+            PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
+            PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
+            PID1.setTolerance(1);
             break;
         }
     }
@@ -207,13 +224,13 @@ public class Drivetrain extends SubsystemBase {
     public void alime(Double speed) {
         limelightX = tx.getDouble(0.0);
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);
-        drive(speed, PID.calculate(-limelightX, 0));
+        drive(speed, PID1.calculate(-limelightX, 0));
     }
 
     // Other PID Drive methods
     // for angle
     public void turnToAngle(double angle) {
-        drive(0, PID.calculate(navx.getFusedHeading(), angle));
+        drive(0, PID1.calculate(navx.getFusedHeading(), angle));
     }
 
     public Boolean angleOnTarget(double angle) {
@@ -225,8 +242,9 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // for distance
-    public void driveDistance(double distance) {
-        tankDrive(PID.calculate(getLeftEncDistance(), distance), PID.calculate(getRightEncDistance(), distance));
+    public void driveDistance(double distance, double initAngle) {
+        double avgDist = getLeftEncDistance() + getRightEncDistance() / 2;
+        drive(PID1.calculate(avgDist, distance), PID2.calculate(navx.getFusedHeading(), initAngle));
     }
 
     public Boolean distanceOnTarget(double distance) {
