@@ -14,6 +14,9 @@ import frc.robot.subsystems.Climber;
 public class ExtendArm extends CommandBase {
   private Climber climber;
   private int RAISE = 0, CLIMB = 1;
+
+  private int timer;
+  private int timeLimit = 50;
   
 
   public ExtendArm(Climber climber) {
@@ -24,24 +27,28 @@ public class ExtendArm extends CommandBase {
   @Override
   public void initialize() {
     climber.extendArm();
+    climber.resetEncoders();
   }
 
   @Override
   public void execute() {
-    if (climber.getEncoder(RAISE) < Constants.ClimberContants.CLIMBER_ARM_TOP_LIMIT){
-        climber.raiseClimber(Constants.ClimberContants.ARM_EXTEND_SPEED);
-        climber.pushWinch(Constants.ClimberContants.WINCH_EXTEND_SPEED);
-    } else {
-        climber.stopClimber();
-        climber.stopWinch();
-    }
-    
+    timer++;
+    if(timer > timeLimit) {
+      if (climber.getEncoder(RAISE) < Constants.ClimberContants.CLIMBER_ARM_TOP_LIMIT){
+          climber.raiseClimber(Constants.ClimberContants.ARM_EXTEND_SPEED);
+          climber.pushWinch(Constants.ClimberContants.WINCH_EXTEND_SPEED);
+      } else {
+          climber.stopClimber();
+          climber.stopWinch();
+      }
+  }
   }
 
   @Override
   public void end(boolean interrupted) {
     climber.stopClimber();
     climber.stopWinch();
+    timer = 0;
   }
 
   @Override

@@ -72,7 +72,7 @@ public class RobotContainer {
 
     //test commands
     private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
-    private Command testDriveDistance = new DriveDistance(drivetrain, 1);
+    private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
     
     public static boolean intaking = false;
@@ -116,31 +116,31 @@ public class RobotContainer {
         
 
         //upper
-        // button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
-        //                 .whenReleased(new InstantCommand(() -> shooter.stop()));
+        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
+                        .whenReleased(new InstantCommand(() -> shooter.stop()));
 
-        // button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
-        //                 .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
+        button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
+                        .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
                 
-        // button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
-        //                 .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
+        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
+                        .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
-        // dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
-        //             .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
+                    .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
-        button_a_upper.whenPressed(new InstantCommand(() -> climber.raiseClimber(.3)))
-                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+        // button_a_upper.whenPressed(new InstantCommand(() -> climber.raiseClimber(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopClimber()));
 
-        button_b_upper.whenPressed(new InstantCommand(() -> climber.lowerClimber(.3)))
-                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+        // button_b_upper.whenPressed(new InstantCommand(() -> climber.lowerClimber(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopClimber()));
 
-        bumper_right_upper.whenPressed(new InstantCommand(() -> climber.toggle()));
+        // bumper_right_upper.whenPressed(new InstantCommand(() -> climber.toggle()));
 
-        button_y_upper.whenPressed(new InstantCommand(() -> climber.setWinch(.3)))
-                        .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        // button_y_upper.whenPressed(new InstantCommand(() -> climber.setWinch(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
-        button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
-                        .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        // button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
         bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))//.alongWith(new InstantCommand(() -> cycleHopper.schedule())))
                             .whenReleased(new InstantCommand(() -> intake.end()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
@@ -148,7 +148,9 @@ public class RobotContainer {
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel()).alongWith(new InstantCommand(() -> hopper.stop())));
 
-        button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom()));
+        button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom())
+                        .andThen(() -> climber.stopClimber())
+                        .andThen(() -> climber.retractArm()));
 
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));
@@ -176,12 +178,12 @@ public class RobotContainer {
         climber.putInitialDash();
     }
 
-    public void setGotFalse() {
-        feeder.setGotFalse();
-    }
-
-    public void setDrivetrainBrake() {
+    public void setInitPos() {
         drivetrain.setBrakeMode();
+        drivetrain.resetNavX();
+        climber.initPos();
+        climber.resetEncoders();
+        feeder.setGotFalse();
     }
     
     public Command getAutonomousCommand(auton selected) {

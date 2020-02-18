@@ -31,12 +31,20 @@ public class Climber extends SubsystemBase {
         encoders[RAISE] = motors[RAISE].getEncoder();
         encoders[CLIMB] = motors[CLIMB].getEncoder();
 
+        motors[RAISE].setInverted(true);
+        motors[RAISE].setSmartCurrentLimit(20);
+
         armExtender = new DoubleSolenoid(Constants.RobotMap.PCM.ARM_EXTEND, Constants.RobotMap.PCM.ARM_RETRACT);
     }
 
     public boolean atBottom() {
         return encoders[RAISE].getPosition() < Constants.ClimberContants.CLIMBER_ARM_BOTTOM_THRESHOLD;
     }
+
+    public void resetEncoders(){
+        encoders[RAISE].setPosition(0.0);
+    }
+
     public void raiseClimber(double speed) {
         motors[RAISE].set(speed);
     }
@@ -103,6 +111,11 @@ public class Climber extends SubsystemBase {
 
     public void putInitialDash() {
         SmartDashboard.putNumber("Climb Speed", 0);
+    }
+
+    public void initPos() {
+        retractArm();
+        resetEncoders();
     }
 
     @Override

@@ -84,7 +84,7 @@ public final class Constants {
                         FEEDER_1 = 9;
                         FEEDER_2 = 14;
 
-                        CLIMBER_RAISE = 0;
+                        CLIMBER_RAISE = 5;
                         CLIMBER_CLIMB = 0;
         
                         LEFT_HOPPER_MOTOR = 12;
@@ -159,10 +159,10 @@ public final class Constants {
               
             //TODO: need to give these values 
             public static final int PCM_ID = 0;
-            public static final int INTAKE_EXTEND = 1;
-            public static final int INTAKE_RETRACT = 0;
-            public static final int ARM_EXTEND = 2;
-            public static final int ARM_RETRACT = 3;
+            public static final int INTAKE_EXTEND = 2;
+            public static final int INTAKE_RETRACT = 3;
+            public static final int ARM_EXTEND = 1;
+            public static final int ARM_RETRACT = 0;
             
         }
     
@@ -218,7 +218,7 @@ public final class Constants {
 
     public static class ClimberContants {
         public static final double CLIMBER_ARM_TOP_LIMIT = 2000;
-        public static final double CLIMBER_ARM_BOTTOM_THRESHOLD = 1;
+        public static final double CLIMBER_ARM_BOTTOM_THRESHOLD = 0.5;
         public static final double ARM_EXTEND_SPEED = 0.3;
         public static final double WINCH_EXTEND_SPEED = ARM_EXTEND_SPEED * -2;
     }
