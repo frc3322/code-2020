@@ -67,7 +67,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        //m_shooter.setSetpoint(2000);
         m_robotContainer.resetDriveForAuto();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();

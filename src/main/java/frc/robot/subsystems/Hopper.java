@@ -45,6 +45,10 @@ public class Hopper extends SubsystemBase {
         motors[RIGHT].setSmartCurrentLimit(20, 15);
     }
 
+    public void initPos() {
+        stop();
+    }
+
     public void putInitialDash() {
         SmartDashboard.putNumber("Left Hopper Speed", 0);
         SmartDashboard.putNumber("Right Hopper Speed", 0);

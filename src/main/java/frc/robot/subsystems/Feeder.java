@@ -38,6 +38,11 @@ public class Feeder extends SubsystemBase {
 
         cellSensor = new DigitalInput(Constants.RobotMap.DIO.IR_ID);
     }
+
+    public void initPos() {
+        stop();
+        setGotFalse();
+    }
     
     public boolean getIR() {
             return cellSensor.get();

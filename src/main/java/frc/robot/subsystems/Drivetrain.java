@@ -107,6 +107,10 @@ public class Drivetrain extends SubsystemBase {
 
     }
 
+    public void initPos() {
+        setBrakeMode();
+    }
+
     public void putInitialDash(){
         SmartDashboard.putNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI);

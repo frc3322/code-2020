@@ -47,6 +47,10 @@ public class Intake extends SubsystemBase {
         // motors[INTAKE_TOP].setSmartCurrentLimit(80, 80);
     }
 
+    public void initPos() {
+        end();
+    }
+
     public void begin() {
         RobotContainer.intaking = true;
         start();

@@ -76,6 +76,10 @@ public class Shooter extends SubsystemBase {
         updateConstants();
     }
 
+    public void initPos() {
+        stop();
+    }
+
     public void setSetpoint(double setpoint) {
         controller.setReference(setpoint, ControlType.kVelocity);
     }

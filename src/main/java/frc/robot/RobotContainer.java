@@ -179,11 +179,12 @@ public class RobotContainer {
     }
 
     public void setInitPos() {
-        drivetrain.setBrakeMode();
-        drivetrain.resetNavX();
         climber.initPos();
-        climber.resetEncoders();
-        feeder.setGotFalse();
+        drivetrain.initPos();
+        feeder.initPos();
+        hopper.initPos();
+        intake.initPos();
+        shooter.initPos();
     }
     
     public Command getAutonomousCommand(auton selected) {
