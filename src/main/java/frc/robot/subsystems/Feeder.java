@@ -83,7 +83,9 @@ public class Feeder extends SubsystemBase {
 
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/Intaking", RobotContainer.intaking);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/Shooting", RobotContainer.shooting);
-        SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensor", !cellSensor.get());
+        if(cellSensor.get() == true || cellSensor.get() == false){
+            SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensor", !cellSensor.get());
+        }
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/IntookSinceFed", intookSinceFed);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/ShotSinceFed", shotSinceFed);
         SmartDashboard.putBoolean("Feeder/AutoFeedTest/CellSensorGot", cellSensorGot);
@@ -99,8 +101,10 @@ public class Feeder extends SubsystemBase {
             shotSinceFed = true;
         }
 
-        if (!cellSensor.get()) {
-            cellSensorGot = true;
+        if(cellSensor.get() == true || cellSensor.get() == false){
+            if (!cellSensor.get()) {
+                cellSensorGot = true;
+            }
         }
 
         if (intookSinceFed) {
