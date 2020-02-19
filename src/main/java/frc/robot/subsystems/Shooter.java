@@ -50,6 +50,9 @@ public class Shooter extends SubsystemBase {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
 
+        motors[MOTOR_0].restoreFactoryDefaults();
+        motors[MOTOR_1].restoreFactoryDefaults();
+
         motors[MOTOR_0].setInverted(false);
         motors[MOTOR_1].setInverted(false);
 

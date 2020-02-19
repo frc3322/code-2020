@@ -38,6 +38,9 @@ public class Intake extends SubsystemBase {
         motors[INTAKE_BOTTOM] = new CANSparkMax(m_can.INTAKE_BOTTOM, MotorType.kBrushless);
         motors[INTAKE_TOP] = new CANSparkMax(m_can.INTAKE_TOP, MotorType.kBrushless);
 
+        motors[INTAKE_BOTTOM].restoreFactoryDefaults();
+        motors[INTAKE_TOP].restoreFactoryDefaults();
+
         motors[INTAKE_BOTTOM].setInverted(false);
         motors[INTAKE_TOP].setInverted(false);
 

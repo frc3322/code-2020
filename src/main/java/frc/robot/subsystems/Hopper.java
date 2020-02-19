@@ -35,6 +35,9 @@ public class Hopper extends SubsystemBase {
         motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
         motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
+        motors[LEFT].restoreFactoryDefaults();
+        motors[RIGHT].restoreFactoryDefaults();
+
         motors[LEFT].setInverted(false);
         motors[RIGHT].setInverted(false);
 

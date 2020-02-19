@@ -31,6 +31,9 @@ public class Feeder extends SubsystemBase {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
         motors[FEED_2] = new CANSparkMax(m_can.FEEDER_2, MotorType.kBrushless);
 
+        motors[FEED_1].restoreFactoryDefaults();
+        motors[FEED_2].restoreFactoryDefaults();
+
         motors[FEED_1].setInverted(false);
         motors[FEED_2].setInverted(false);
 

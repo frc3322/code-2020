@@ -29,6 +29,9 @@ public class Climber extends SubsystemBase {
     public Climber() {
         motors[RAISE] = new CANSparkMax(m_can.CLIMBER_RAISE, MotorType.kBrushless);
         motors[CLIMB] = new CANSparkMax(m_can.CLIMBER_CLIMB, MotorType.kBrushless);
+        
+        motors[RAISE].restoreFactoryDefaults();
+        motors[CLIMB].restoreFactoryDefaults();
 
         motors[RAISE].setInverted(true);
         motors[CLIMB].setInverted(false);
