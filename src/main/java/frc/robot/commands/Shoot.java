@@ -26,6 +26,8 @@ public class Shoot extends CommandBase {
     Hopper hopper;
     boolean feed;
     boolean alime;
+    double initAngle;
+    double initTX;
 
     int timer = 0;
     int timeLimit = 30;
@@ -50,6 +52,8 @@ public class Shoot extends CommandBase {
         if (alime) {
             setpoint = shooter.findRPM();
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
+            initAngle = drivetrain.getHeading();
+            initTX = drivetrain.getLimelightX();
         } else {
             setpoint = 3300;
         }
@@ -65,9 +69,10 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if (alime) {
-                drivetrain.alime(0.0);
+                SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.angleOnTarget(initTX));
+                drivetrain.alime(initAngle, initTX);
                 
-                if (drivetrain.limelightOnTarget()) {
+                if (drivetrain.angleOnTarget(initTX)) {
                     timer++;
                     if (shooter.onTarget(setpoint) && timer > timeLimit) {
                         feed = true;

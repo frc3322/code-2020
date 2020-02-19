@@ -212,34 +212,32 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Limelight PID methods
-    public void getLimelightX() {
+    public double getLimelightX() {
         limelightX = tx.getDouble(0.0);
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);
+        return limelightX;
     }
 
-    public void getLimelightY() {
+    public double getLimelightY() {
         limelightY = ty.getDouble(0.0);
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight ty", limelightY);
+        return limelightY;
     }
 
-    public boolean limelightOnTarget() {
-        return Math.abs(limelightX) < 1.7;
-    }
-
-    public void alime(Double speed) {
-        limelightX = tx.getDouble(0.0);
+    public void alime(Double initAngle, Double initTX) {
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);
-        drive(speed, PID1.calculate(-limelightX, 0));
+        double setpoint = initAngle - initTX;
+        drive(0, PID1.calculate(getHeading(), setpoint));
     }
 
     // Other PID Drive methods
     // for angle
     public void turnToAngle(double angle) {
-        drive(0, PID1.calculate(navx.getFusedHeading(), angle));
+        drive(0, PID1.calculate(getHeading(), angle));
     }
 
     public Boolean angleOnTarget(double angle) {
-        return Math.abs(angle - navx.getFusedHeading()) < 1;
+        return Math.abs(angle - getHeading()) < 1;
     }
 
     public void resetNavX() {
@@ -335,7 +333,7 @@ public class Drivetrain extends SubsystemBase {
         // SmartDashboard.putNumber("PoseX", driveX);
         // SmartDashboard.putNumber("PoseY", driveX);
 
-        SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", limelightOnTarget());
+        SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", angleOnTarget(1));
         getLimelightX();
         getLimelightY();
         // odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),
