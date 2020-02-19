@@ -22,9 +22,6 @@ public class Feeder extends SubsystemBase {
     private boolean firstTime = true;
     private boolean shotSinceFed = false;
     private boolean intookSinceFed = false;
-    private boolean checkedIntake = false;
-    private boolean checkedShooter = false;
-    private boolean checkedCellSensor = false;
     private boolean cellSensorGot = false;
     //private int timer = 0;
     //private int timeLimit = 1;

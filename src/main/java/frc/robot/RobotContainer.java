@@ -125,6 +125,9 @@ public class RobotContainer {
         button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
                         .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
+        bumper_left_upper.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
+                            .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
+
         dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
                     .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
@@ -160,9 +163,6 @@ public class RobotContainer {
 
         dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(0.3)))
                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
-
-        bumper_left_lower.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
-                            .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
 
     }
 

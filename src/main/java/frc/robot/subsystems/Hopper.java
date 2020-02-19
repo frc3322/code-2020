@@ -14,8 +14,6 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import frc.robot.RobotContainer;
 
 import static frc.robot.Robot.m_can;
 
@@ -31,8 +29,6 @@ public class Hopper extends SubsystemBase {
     private int LEFT = 0, RIGHT = 1;
 
     private double timer = 0;
-    private double timerSeconds = timer/50;
-    private double timeLimit = 5;
 
     public Hopper() {
         motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);

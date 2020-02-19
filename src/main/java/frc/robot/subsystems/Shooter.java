@@ -40,15 +40,9 @@ public class Shooter extends SubsystemBase {
     private double[] RPMs = {3100, 3400, 4000};
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
-    private NetworkTableEntry ta = table.getEntry("ta");
-    private NetworkTableEntry tv = table.getEntry("tv");
 
-    private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
-    private double limelightA = ta.getDouble(0.0);
-    private boolean limelightTarget = tv.getBoolean(false);
 
     CANPIDController controller;
 
@@ -82,11 +76,6 @@ public class Shooter extends SubsystemBase {
 
     public void setSetpoint(double setpoint) {
         controller.setReference(setpoint, ControlType.kVelocity);
-    }
-
-    public boolean hasTarget() {
-        limelightTarget = tv.getBoolean(false);
-        return limelightTarget;
     }
 
     public double getDistance() {
