@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -34,11 +35,20 @@ public class Hopper extends SubsystemBase {
         motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
         motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
+        motors[LEFT].setInverted(false);
+        motors[RIGHT].setInverted(false);
+
+        motors[LEFT].setSmartCurrentLimit(20, 30);
+        motors[RIGHT].setSmartCurrentLimit(20, 30);
+
+        motors[LEFT].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT].setIdleMode(IdleMode.kBrake);
+
+        motors[LEFT].burnFlash();
+        motors[RIGHT].burnFlash();
+
         encoders[LEFT] = motors[LEFT].getEncoder();
         encoders[RIGHT] = motors[RIGHT].getEncoder();
-
-        motors[LEFT].setSmartCurrentLimit(20, 15);
-        motors[RIGHT].setSmartCurrentLimit(20, 15);
     }
 
     public void initPos() {

@@ -9,6 +9,7 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DoubleSolenoid;
@@ -28,11 +29,21 @@ public class Climber extends SubsystemBase {
     public Climber() {
         motors[RAISE] = new CANSparkMax(m_can.CLIMBER_RAISE, MotorType.kBrushless);
         motors[CLIMB] = new CANSparkMax(m_can.CLIMBER_CLIMB, MotorType.kBrushless);
-        encoders[RAISE] = motors[RAISE].getEncoder();
-        encoders[CLIMB] = motors[CLIMB].getEncoder();
 
         motors[RAISE].setInverted(true);
-        motors[RAISE].setSmartCurrentLimit(20);
+        motors[CLIMB].setInverted(false);
+
+        motors[RAISE].setSmartCurrentLimit(50, 30);
+        motors[CLIMB].setSmartCurrentLimit(50, 40);
+
+        motors[RAISE].setIdleMode(IdleMode.kBrake);
+        motors[CLIMB].setIdleMode(IdleMode.kBrake);
+        
+        motors[RAISE].burnFlash();
+        motors[CLIMB].burnFlash();
+
+        encoders[RAISE] = motors[RAISE].getEncoder();
+        encoders[CLIMB] = motors[CLIMB].getEncoder();
 
         armExtender = new DoubleSolenoid(Constants.RobotMap.PCM.ARM_EXTEND, Constants.RobotMap.PCM.ARM_RETRACT);
     }
@@ -67,7 +78,7 @@ public class Climber extends SubsystemBase {
 
     public void pushWinch(double speed) {
         if (encoders[CLIMB].getPosition() < 2000) {
-            motors[CLIMB].set(speed);
+            motors[CLIMB].set(-speed);
         } else {
             stopWinch();
         }

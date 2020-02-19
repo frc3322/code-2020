@@ -50,10 +50,19 @@ public class Shooter extends SubsystemBase {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
 
+        motors[MOTOR_0].setInverted(false);
+        motors[MOTOR_1].setInverted(false);
+
         motors[MOTOR_0].setIdleMode(IdleMode.kCoast);
         motors[MOTOR_1].setIdleMode(IdleMode.kCoast);
 
+        motors[MOTOR_0].setSmartCurrentLimit(50, 40);
+        motors[MOTOR_1].setSmartCurrentLimit(50, 40);
+
         motors[MOTOR_1].follow(motors[MOTOR_0], true);
+        
+        motors[MOTOR_0].burnFlash();
+        motors[MOTOR_1].burnFlash();
 
         encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);

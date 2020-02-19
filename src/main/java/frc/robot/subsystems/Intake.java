@@ -34,17 +34,26 @@ public class Intake extends SubsystemBase {
     public Intake() {
         intakeExtender = new DoubleSolenoid(RobotMap.PCM.PCM_ID, RobotMap.PCM.INTAKE_EXTEND,
                 RobotMap.PCM.INTAKE_RETRACT);
+        
         motors[INTAKE_BOTTOM] = new CANSparkMax(m_can.INTAKE_BOTTOM, MotorType.kBrushless);
         motors[INTAKE_TOP] = new CANSparkMax(m_can.INTAKE_TOP, MotorType.kBrushless);
 
-        encoders[INTAKE_BOTTOM] = motors[INTAKE_BOTTOM].getEncoder();
-        encoders[INTAKE_TOP] = motors[INTAKE_TOP].getEncoder();
+        motors[INTAKE_BOTTOM].setInverted(false);
+        motors[INTAKE_TOP].setInverted(false);
 
         motors[INTAKE_BOTTOM].setIdleMode(IdleMode.kCoast);
         motors[INTAKE_TOP].setIdleMode(IdleMode.kCoast);
 
-        motors[INTAKE_BOTTOM].setSmartCurrentLimit(35, 35);
-        // motors[INTAKE_TOP].setSmartCurrentLimit(80, 80);
+        motors[INTAKE_BOTTOM].setSmartCurrentLimit(20, 30);
+        motors[INTAKE_TOP].setSmartCurrentLimit(60, 70);
+
+        motors[INTAKE_BOTTOM].burnFlash();
+        motors[INTAKE_TOP].burnFlash();
+
+        encoders[INTAKE_BOTTOM] = motors[INTAKE_BOTTOM].getEncoder();
+        encoders[INTAKE_TOP] = motors[INTAKE_TOP].getEncoder();
+
+
     }
 
     public void initPos() {

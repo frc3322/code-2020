@@ -1,6 +1,7 @@
 package frc.robot.subsystems;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -30,8 +31,17 @@ public class Feeder extends SubsystemBase {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
         motors[FEED_2] = new CANSparkMax(m_can.FEEDER_2, MotorType.kBrushless);
 
-        motors[FEED_1].setSmartCurrentLimit(20, 15);
-        motors[FEED_2].setSmartCurrentLimit(20, 15);
+        motors[FEED_1].setInverted(false);
+        motors[FEED_2].setInverted(false);
+
+        motors[FEED_1].setSmartCurrentLimit(20, 30);
+        motors[FEED_2].setSmartCurrentLimit(20, 25);
+
+        motors[FEED_1].setIdleMode(IdleMode.kBrake);
+        motors[FEED_2].setIdleMode(IdleMode.kBrake);
+
+        motors[FEED_1].burnFlash();
+        motors[FEED_2].burnFlash();
 
         cellSensor = new DigitalInput(Constants.RobotMap.DIO.IR_ID);
     }

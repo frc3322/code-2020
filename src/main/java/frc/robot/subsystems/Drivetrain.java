@@ -88,6 +88,16 @@ public class Drivetrain extends SubsystemBase {
         motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
         motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
 
+        motors[LEFT_FRONT].setSmartCurrentLimit(70, 60);
+        motors[LEFT_BACK].setSmartCurrentLimit(70, 60);
+        motors[RIGHT_FRONT].setSmartCurrentLimit(70, 60);
+        motors[RIGHT_BACK].setSmartCurrentLimit(70, 60);
+
+        motors[LEFT_FRONT].burnFlash();
+        motors[LEFT_BACK].burnFlash();
+        motors[RIGHT_FRONT].burnFlash();
+        motors[RIGHT_BACK].burnFlash();
+
         encoders[LEFT_BACK] = motors[LEFT_BACK].getEncoder();
         encoders[LEFT_FRONT] = motors[LEFT_FRONT].getEncoder();
         encoders[RIGHT_BACK] = motors[RIGHT_BACK].getEncoder();
@@ -105,7 +115,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void initPos() {
-        setBrakeMode();
     }
 
     public void putInitialDash(){
@@ -263,7 +272,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Methods for Pathfinding Auton
-    public void resetForAuto() {
+    public void reset() {
         encoders[LEFT_FRONT].setPosition(0);
         encoders[RIGHT_FRONT].setPosition(0);
         encoders[LEFT_BACK].setPosition(0);

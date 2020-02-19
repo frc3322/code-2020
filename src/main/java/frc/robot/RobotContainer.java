@@ -166,8 +166,8 @@ public class RobotContainer {
 
     }
 
-    public void resetDriveForAuto() {
-        drivetrain.resetForAuto();
+    public void resetDrive() {
+        drivetrain.reset();
     }
     
     public void putInitialDashes() {
