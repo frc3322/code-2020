@@ -48,6 +48,8 @@ public class Drivetrain extends SubsystemBase {
     private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
 
+    private boolean slowMode = false;
+
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
@@ -120,6 +122,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void initPos() {
+
     }
 
     public void putInitialDash(){
@@ -141,13 +144,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Motor methods
-    public void setBrakeMode() {
-        motors[LEFT_FRONT].setIdleMode(IdleMode.kBrake);
-        motors[LEFT_BACK].setIdleMode(IdleMode.kBrake);
-        motors[RIGHT_FRONT].setIdleMode(IdleMode.kBrake);
-        motors[RIGHT_BACK].setIdleMode(IdleMode.kBrake);
-    }
-
     public double getVoltage(int n) {
         return motors[n].getBusVoltage();
     }
@@ -179,6 +175,13 @@ public class Drivetrain extends SubsystemBase {
 
     public void tankDrive(double leftSpeed, double rightSpeed) {
         robotDrive.tankDrive(leftSpeed, rightSpeed);
+    }
+
+    public void setSlowMode(boolean mode){
+        slowMode = mode;
+    }
+    public boolean getSlowMode(){
+        return slowMode;
     }
 
     // PID Control Methods

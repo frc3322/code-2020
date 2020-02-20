@@ -189,6 +189,7 @@ public final class Constants {
 
             public static final double MIN_DEADZONE = 0.13;
             public static final double MAX_DEADZONE = 0.15;
+            public static final double SLOW_MODE_MULTIPLIER = 0.5;
         }
     }
 

@@ -69,7 +69,7 @@ public class RobotContainer {
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
-    private Command extendArm = new ExtendArm(climber);
+    private Command extendArm = new ExtendArm(climber, drivetrain);
 
     //test commands
     private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
@@ -154,7 +154,8 @@ public class RobotContainer {
 
         button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom())
                         .andThen(() -> climber.stopClimber())
-                        .andThen(() -> climber.retractArm()));
+                        .andThen(() -> climber.retractArm())
+                        .andThen(() -> drivetrain.setSlowMode(false)));
 
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));

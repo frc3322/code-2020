@@ -85,6 +85,11 @@ public class DriveControl extends CommandBase {
             y = 0.0;
         }
 
+        if(drivetrain.getSlowMode()){
+            x *= RobotMap.XBOX.SLOW_MODE_MULTIPLIER;
+            y *= RobotMap.XBOX.SLOW_MODE_MULTIPLIER;
+        }
+
         if (y == 0.0) {
             drivetrain.curvatureDrive(0, x, true);
         } else {

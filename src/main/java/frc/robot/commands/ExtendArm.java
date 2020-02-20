@@ -10,22 +10,26 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
+import frc.robot.subsystems.Drivetrain;
 
 public class ExtendArm extends CommandBase {
   private Climber climber;
+  private Drivetrain drivetrain;
   private int RAISE = 0, CLIMB = 1;
 
   private int timer;
   private int timeLimit = 50;
   
 
-  public ExtendArm(Climber climber) {
+  public ExtendArm(Climber climber, Drivetrain drivetrain) {
+    this.drivetrain = drivetrain;
     this.climber = climber;
     addRequirements(climber);
   }
 
   @Override
   public void initialize() {
+    drivetrain.setSlowMode(true);
     climber.extendArm();
     climber.resetEncoders();
   }
