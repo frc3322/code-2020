@@ -19,7 +19,9 @@ public class ExtendArm extends CommandBase {
 
   private int timer;
   private int timeLimit = 50;
-  
+
+  private boolean extend = false;  
+  private boolean extendedAtStart = false;
 
   public ExtendArm(Climber climber, Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
@@ -29,6 +31,7 @@ public class ExtendArm extends CommandBase {
 
   @Override
   public void initialize() {
+    extendedAtStart = climber.isExtended();
     drivetrain.setSlowMode(true);
     climber.extendArm();
     climber.resetEncoders();
@@ -36,8 +39,16 @@ public class ExtendArm extends CommandBase {
 
   @Override
   public void execute() {
-    timer++;
-    if(timer > timeLimit) {
+    if(!extendedAtStart){
+      timer++;
+      if(timer > timeLimit) {
+        extend = true;
+      }
+    } else {
+      extend = true;
+    }
+
+    if (extend) {
       if (climber.getEncoder(RAISE) < Constants.ClimberContants.CLIMBER_ARM_TOP_LIMIT){
           climber.raiseClimber(Constants.ClimberContants.ARM_EXTEND_SPEED);
           climber.pushWinch(Constants.ClimberContants.WINCH_EXTEND_SPEED);
@@ -45,7 +56,7 @@ public class ExtendArm extends CommandBase {
           climber.stopClimber();
           climber.stopWinch();
       }
-  }
+    }
   }
 
   @Override
