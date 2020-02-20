@@ -47,12 +47,13 @@ public class Shoot extends CommandBase {
     public void initialize() {
         shooter.updateConstants();
         if (alime) {
-            setpoint = shooter.findRPM();
+            //setpoint = shooter.findRPM();
+            setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
             initAngle = drivetrain.getHeading();
             initTX = drivetrain.getLimelightX();
         } else {
-            setpoint = 3300;
+            setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
         }
 
         shooter.setSetpoint(setpoint);
@@ -85,7 +86,7 @@ public class Shoot extends CommandBase {
             drivetrain.drive(0,0);
             feeder.feedTop(0.8);
             feeder.feedBottom(1);
-            hopper.cycle(-1, -1);
+            hopper.cycle(-0.5, -0.5);
         }
     }
 
@@ -97,6 +98,7 @@ public class Shoot extends CommandBase {
         shooter.stop();
         timer = 0;
         feed = false;
+        hopper.cycle(0, 0);
         RobotContainer.shooting = false;
     }
 

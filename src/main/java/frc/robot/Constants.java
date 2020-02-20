@@ -76,7 +76,7 @@ public final class Constants {
                         break;
                     case P1:
 
-                        LEFT_FRONT_MOTOR = 3;
+                        LEFT_FRONT_MOTOR = 45;
                         LEFT_BACK_MOTOR = 4;
                         RIGHT_FRONT_MOTOR = 15;
                         RIGHT_BACK_MOTOR = 6;
@@ -187,7 +187,8 @@ public final class Constants {
             public static final int TRIGGER_L_AXIS = 2;
             public static final int TRIGGER_R_AXIS = 3;
 
-            public static final double DEADZONE = 0.15;
+            public static final double MIN_DEADZONE = 0.13;
+            public static final double MAX_DEADZONE = 0.15;
         }
     }
 
@@ -213,7 +214,7 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_TOLERANCE = 30.0;
+        public static final double SHOOTER_TOLERANCE = 100.0;
     }
 
     public static class ClimberContants {

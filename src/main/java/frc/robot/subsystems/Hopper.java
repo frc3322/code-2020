@@ -65,17 +65,17 @@ public class Hopper extends SubsystemBase {
     }
 
     public void cycle(double m_leftSpeed, double m_rightSpeed) {
-        double leftSpeed = 0;
-        double rightSpeed = 0;
-        timer++;
-        if ((timer/50) > 1){
-            timer = 0;
-        } else if ((timer/50) > 0.5) {
-            leftSpeed = m_leftSpeed;
-            rightSpeed = m_rightSpeed;
-        } 
-        motors[LEFT].set(leftSpeed);
-        motors[RIGHT].set(rightSpeed);
+        // double leftSpeed = 0;
+        // double rightSpeed = 0;
+        // timer++;
+        // if ((timer/50) > 1){
+        //     timer = 0;
+        // } else if ((timer/50) > 0.5) {
+        //     leftSpeed = m_leftSpeed;
+        //     rightSpeed = m_rightSpeed;
+        // } 
+        motors[LEFT].set(m_leftSpeed);
+        motors[RIGHT].set(m_rightSpeed);
     }
 
     public boolean getIR() {
