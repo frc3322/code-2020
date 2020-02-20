@@ -64,6 +64,7 @@ public class ExtendArm extends CommandBase {
     climber.stopClimber();
     climber.stopWinch();
     timer = 0;
+    extendedAtStart = false;
   }
 
   @Override
