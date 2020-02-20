@@ -67,6 +67,7 @@ public class RobotContainer {
 
     //commands
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber);
 
@@ -251,17 +252,17 @@ public class RobotContainer {
         }, drivetrain);
 
         Command trenchSixAuton = 
-            shoot.withTimeout(3.0)
+            timeoutShoot.withTimeout(3.0)
             .andThen(new TurnToAngle(drivetrain, 180.0))
             .andThen(new DriveDistance(drivetrain, 3.0))
                 .alongWith(new InstantCommand(() -> intake.begin()))
             .andThen(new TurnToAngle(drivetrain, 180.0))
                 .alongWith(new InstantCommand(() -> intake.end()))
-            .andThen(shoot.withTimeout(4.0));
+            .andThen(timeoutShoot.withTimeout(4.0));
 
         Command defaultAuton = 
-            shoot.withTimeout(3.0)
-            .andThen(new DriveDistance(drivetrain, -2.0));
+            
+            timeoutShoot.andThen(new DriveDistance(drivetrain, -2.0));
 
         switch (selected) {
             case TRENCH_SIX:
