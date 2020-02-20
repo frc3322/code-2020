@@ -63,8 +63,20 @@ public class DriveControl extends CommandBase {
         SmartDashboard.putNumber("Drivetrain/x", x);
         SmartDashboard.putNumber("Drivetrain/y", y);
 
-        double deadzone = RobotMap.XBOX.DEADZONE;
+        double deadzone = RobotMap.XBOX.MAX_DEADZONE;
+
+        if(Math.abs(x) >= RobotMap.XBOX.MAX_DEADZONE){
+            deadzone = RobotMap.XBOX.MIN_DEADZONE;
+        } else if (Math.abs(x) <= RobotMap.XBOX.MIN_DEADZONE) {
+            deadzone = RobotMap.XBOX.MAX_DEADZONE;
+        }
         
+        if(Math.abs(y) >= RobotMap.XBOX.MAX_DEADZONE){
+            deadzone = RobotMap.XBOX.MIN_DEADZONE;
+        } else if (Math.abs(y) <= RobotMap.XBOX.MIN_DEADZONE) {
+            deadzone = RobotMap.XBOX.MAX_DEADZONE;
+        }
+
         if (Math.abs(x) < deadzone) {
             x = 0.0;
         }
