@@ -10,8 +10,8 @@ public class TurnToAngle extends CommandBase {
 
     private double angle;
 
-    public TurnToAngle(Drivetrain d_subsystem, double angle) {
-        drivetrain = d_subsystem;
+    public TurnToAngle(Drivetrain drivetrain, double angle) {
+        this.drivetrain = drivetrain;
         addRequirements(drivetrain);
 
         this.angle = angle;

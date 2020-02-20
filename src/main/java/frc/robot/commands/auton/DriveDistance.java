@@ -12,8 +12,8 @@ public class DriveDistance extends CommandBase {
     private double distance;
     private double initAngle;
 
-    public DriveDistance(Drivetrain d_subsystem, double distance) {
-        drivetrain = d_subsystem;
+    public DriveDistance(Drivetrain drivetrain, double distance) {
+        this.drivetrain = drivetrain;
         addRequirements(drivetrain);
 
         this.distance = distance;
