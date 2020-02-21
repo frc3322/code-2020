@@ -25,7 +25,9 @@ public class Feeder extends SubsystemBase {
     private boolean intookSinceFed = false;
     private boolean cellSensorGot = false;
     private int timer = 0;
-    protected int timeLimit = 9;
+    private int timeLimit = 9;
+    private int feederTimeoutTimer = 0;
+    private int feederTimeout = 30;
 
     public Feeder() {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
@@ -105,6 +107,12 @@ public class Feeder extends SubsystemBase {
 
         if (RobotContainer.intaking) {
             intookSinceFed = true;
+        } else {
+            feederTimeoutTimer++;
+            if(feederTimeoutTimer > feederTimeout){
+                stop();
+                feederTimeoutTimer = 0;
+            }
         }
 
         if (RobotContainer.shooting) {
