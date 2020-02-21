@@ -25,19 +25,19 @@ import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.00051;
-    private static double I = 0.000001;
-    private static double D = 30;
-    private static double F = 0;
+    private static double P = 0.00024;
+    private static double I = 0.0000002;
+    private static double D = 2;
+    private static double F = 0.00012;
 
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
 
-    private double[] distances = {10};
+    private double[] distances = {10, 16, 20, 25};
 
-    private double[] RPMs = {3200};
+    private double[] RPMs = {3200, 3400, 3500, 3800};
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry ty = table.getEntry("ty");
@@ -147,10 +147,10 @@ public class Shooter extends SubsystemBase {
     }
 
     public void updateConstants() {
-        controller.setP(SmartDashboard.getNumber("Shooter P", P));
-        controller.setI(SmartDashboard.getNumber("Shooter I", I));
-        controller.setD(SmartDashboard.getNumber("Shooter D", D));
-        controller.setFF(SmartDashboard.getNumber("Shooter F", F));
+        controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter P", P));
+        controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter I", I));
+        controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter D", D));
+        controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter F", F));
     }
 
     @Override

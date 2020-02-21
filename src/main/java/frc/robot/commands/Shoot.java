@@ -26,8 +26,11 @@ public class Shoot extends CommandBase {
     double initAngle;
     double initTX;
 
-    int timer = 0;
-    int timeLimit = 30;
+    int limeTimer = 0;
+    int limeTimeLimit = 30;
+
+    int feedTimer = 0;
+    int feedTimeLimit = 8;
 
     double setpoint;
 
@@ -71,21 +74,27 @@ public class Shoot extends CommandBase {
                 drivetrain.alime(initAngle, initTX);
                 
                 if (drivetrain.angleOnTarget(initTX)) {
-                    timer++;
-                    if (shooter.onTarget(setpoint) && timer > timeLimit) {
-                        feed = true;
+                    limeTimer++;
+                    if (shooter.onTarget(setpoint) && limeTimer > limeTimeLimit) {
+                        feedTimer++;
+                        if(feedTimer > feedTimeLimit){
+                            feed = true;
+                        }
                     }
                 }
                 
             } else {
                 if (shooter.onTarget(setpoint)) {
-                    feed = true;
+                    feedTimer++;
+                    if(feedTimer > feedTimeLimit){
+                        feed = true;
+                    }
                 }         
             }
         } else {
             drivetrain.drive(0,0);
-            feeder.feedTop(0.6);
-            feeder.feedBottom(0.8);
+            feeder.feedTop(0.4);
+            feeder.feedBottom(0.6);
             hopper.cycle(-0.5, -0.5);
         }
     }
@@ -93,10 +102,10 @@ public class Shoot extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
-        feeder.feedTop(0);
-        feeder.feedBottom(0);
+        feeder.stop();
         shooter.stop();
-        timer = 0;
+        limeTimer = 0;
+        feedTimer = 0;
         feed = false;
         hopper.cycle(0, 0);
         RobotContainer.shooting = false;

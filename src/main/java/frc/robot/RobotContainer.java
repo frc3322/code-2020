@@ -150,7 +150,8 @@ public class RobotContainer {
                             .whenReleased(new InstantCommand(() -> intake.end()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
-                        .whenReleased(new InstantCommand(() -> shoot.cancel()).alongWith(new InstantCommand(() -> hopper.stop())));
+                        .whenReleased(new InstantCommand(() -> shoot.cancel())
+                        .alongWith(new InstantCommand(() -> hopper.stop())));
 
         button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom())
                         .andThen(() -> climber.stopClimber())

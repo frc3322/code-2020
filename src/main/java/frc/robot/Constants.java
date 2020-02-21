@@ -84,7 +84,7 @@ public final class Constants {
                         FEEDER_1 = 9;
                         FEEDER_2 = 14;
 
-                        CLIMBER_RAISE = 5;
+                        CLIMBER_RAISE = 2;
                         CLIMBER_CLIMB = 0;
         
                         LEFT_HOPPER_MOTOR = 12;
