@@ -30,12 +30,13 @@ public class Shoot extends CommandBase {
     int limeTimer = 0;
     int limeTimeLimit = 10; //50 per second
 
-    int feedTimer = 0;
-    int feedTimeLimit = 10;
+    int shootTimer = 0;
+    int shootTimeLimit = 10;
 
     double shootSetpoint;
 
-    boolean runTimer;
+    boolean limelightAligned = false;
+    boolean shooterSped = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
         this.drivetrain = drivetrain;
@@ -46,7 +47,6 @@ public class Shoot extends CommandBase {
         this.hopper = hopper;
         feed = false;
         this.alime = alime;
-        runTimer = false;
     }
 
     // Called when the command is initially scheduled.
@@ -66,7 +66,6 @@ public class Shoot extends CommandBase {
 
         shooter.setSetpoint(shootSetpoint);
         feed = false;
-        runTimer = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -76,30 +75,42 @@ public class Shoot extends CommandBase {
             if (alime) {
                 SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", shooter.onTarget(shootSetpoint));
                 SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
-                //SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", shooter.onTarget(shootSetpoint));
+
+                //Align with limelight
                 drivetrain.alime(initAngle, initTX);
 
+                //Check if robot is aligned to target for given time
                 if (drivetrain.alimeOnTarget()) {
                     limeTimer++;
                     if(limeTimer > limeTimeLimit){
                         drivetrain.drive(0,0);
-                        if (shooter.onTarget(shootSetpoint)) {
-                            feedTimer++;
-                            if(feedTimer > feedTimeLimit){
-                                feed = true;
-                            }
-                        } else {
-                            feedTimer = 0;
-                        }
+                        limelightAligned = true;
                     }
+
                 } else {
                     limeTimer = 0;
+                }
+
+                //Check if shooter is at speed for given time
+                if (shooter.onTarget(shootSetpoint)) {
+                    shootTimer++;
+                    if(shootTimer > shootTimeLimit){
+                        shooterSped = true;
+                    }
+
+                } else {
+                    shootTimer = 0;
+                }
+
+                //Feed if both robot is aligned and shooter is at speed
+                if(limelightAligned && shooterSped){
+                    feed = true;
                 }
                 
             } else {
                 if (shooter.onTarget(shootSetpoint)) {
-                    feedTimer++;
-                    if(feedTimer > feedTimeLimit){
+                    shootTimer++;
+                    if(shootTimer > shootTimeLimit){
                         feed = true;
                     }
                 }         
@@ -118,11 +129,12 @@ public class Shoot extends CommandBase {
         feeder.stop();
         shooter.stop();
         limeTimer = 0;
-        feedTimer = 0;
+        shootTimer = 0;
         feed = false;
-        runTimer = false;
         hopper.cycle(0, 0);
         feeder.setShotSinceFed(true);
+        limelightAligned = false;
+        shooterSped = false;
     }
 
     // Returns true when the command should end.
