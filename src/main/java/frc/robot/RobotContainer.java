@@ -67,12 +67,12 @@ public class RobotContainer {
 
     //commands
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
     private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber, drivetrain);
 
     //test commands
-    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
     private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
     
@@ -146,9 +146,13 @@ public class RobotContainer {
         // button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
         //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
-        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))//.alongWith(new InstantCommand(() -> cycleHopper.schedule())))
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))
                             .whenReleased(new InstantCommand(() -> intake.end())
-                            .andThen(new InstantCommand()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
+                            .andThen(new RunCommand(() -> intake.start()).withTimeout(0.1)
+                            .andThen(new InstantCommand(() -> intake.stop()))));
+
+        bumper_left_lower.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
+                            .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel())
@@ -263,9 +267,9 @@ public class RobotContainer {
                 .alongWith(new InstantCommand(() -> intake.end()))
             .andThen(timeoutShoot.withTimeout(4.0));
 
-        Command defaultAuton = 
-            
-            timeoutShoot.andThen(new DriveDistance(drivetrain, -2.0));
+        Command defaultAuton = timeoutShoot.withTimeout(3)
+                                .andThen(new RunCommand(() -> drivetrain.drive(-0.3, 0.0)).withTimeout(1))
+                                .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 
         switch (selected) {
             case TRENCH_SIX:

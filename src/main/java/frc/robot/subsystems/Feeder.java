@@ -111,12 +111,6 @@ public class Feeder extends SubsystemBase {
 
         if (RobotContainer.intaking) {
             intookSinceFed = true;
-        } else {
-            feederTimeoutTimer++;
-            if(feederTimeoutTimer > feederTimeout){
-                stop();
-                feederTimeoutTimer = 0;
-            }
         }
       
         if (intookSinceFed) {

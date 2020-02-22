@@ -61,7 +61,7 @@ public class Shoot extends CommandBase {
             initTX = drivetrain.getLimelightX();
             angleSetpoint = initAngle - initTX;
         } else {
-            shootSetpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
+            shootSetpoint = shooter.findRPM();
         }
 
         shooter.setSetpoint(shootSetpoint);
@@ -138,7 +138,7 @@ public class Shoot extends CommandBase {
         limeTimer = 0;
         shootTimer = 0;
         feed = false;
-        hopper.cycle(0, 0);
+        hopper.stop();
         feeder.setShotSinceFed(true);
         limelightAligned = false;
         shooterSped = false;
