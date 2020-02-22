@@ -29,11 +29,17 @@ public class DriveControl extends CommandBase {
     private double pow1 = 1.66736;
     private double pow2 = 1.6674;
     private double direction = 1.0;
+    private double deadzone = RobotMap.XBOX.MIN_DEADZONE;
 
     public DriveControl(Drivetrain subsystem, Joystick joystick) {
         drivetrain = subsystem;
         lowerChassis = joystick;
         addRequirements(subsystem);
+    }
+
+    @Override
+    public void initialize() {
+        super.initialize();
     }
 
     @Override
@@ -62,8 +68,6 @@ public class DriveControl extends CommandBase {
 
         SmartDashboard.putNumber("Drivetrain/x", x);
         SmartDashboard.putNumber("Drivetrain/y", y);
-
-        double deadzone = RobotMap.XBOX.MAX_DEADZONE;
 
         if(Math.abs(x) >= RobotMap.XBOX.MAX_DEADZONE){
             deadzone = RobotMap.XBOX.MIN_DEADZONE;

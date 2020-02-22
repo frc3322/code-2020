@@ -71,6 +71,8 @@ public class Drivetrain extends SubsystemBase {
     private double sI =  0;
     private double sD = 0;
 
+    private double threshold = 2;
+
     public enum PIDMode {
         LIMELIGHT, ANGLE, DISTANCE, STRAIGHTEN
     }
@@ -263,7 +265,13 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public boolean alimeOnTarget() {
-        return Math.abs(limelightX) < 1;
+        if (Math.abs(limelightX) < 2) {
+            threshold = 3;
+        } else if(Math.abs(limelightX) > 3) {
+            threshold = 2;
+        }
+
+        return Math.abs(getLimelightX()) < threshold;
     }
 
     // Other PID Drive methods

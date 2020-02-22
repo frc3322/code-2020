@@ -28,10 +28,10 @@ public class Shoot extends CommandBase {
     double angleSetpoint;
 
     int limeTimer = 0;
-    int limeTimeLimit = 25; //50 per second
+    int limeTimeLimit = 10; //50 per second
 
     int feedTimer = 0;
-    int feedTimeLimit = 8;
+    int feedTimeLimit = 10;
 
     double shootSetpoint;
 
@@ -74,18 +74,23 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if (alime) {
+                SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", false);
                 SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
                 //SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", shooter.onTarget(shootSetpoint));
                 drivetrain.alime(initAngle, initTX);
-                
-                if (drivetrain.alimeOnTarget()) {
-                    runTimer = true;
-                }
 
-                if (runTimer) {
+                if (drivetrain.alimeOnTarget()) {
                     limeTimer++;
-                    if (shooter.onTarget(shootSetpoint) && limeTimer > limeTimeLimit) {
-                        feed = true;
+                    if(limeTimer > limeTimeLimit){
+                        if (shooter.onTarget(shootSetpoint)) {
+                            
+                            feedTimer++;
+                            if(feedTimer > feedTimeLimit){
+                                feed = true;
+                            }
+                        } else {
+                            feedTimer = 0;
+                        }
                     }
                 } else {
                     limeTimer = 0;
