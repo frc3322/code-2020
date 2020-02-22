@@ -102,22 +102,24 @@ public class Shooter extends SubsystemBase {
     }
 
     public double findRPM() {
-        double myNumber = getDistance();
-        double distance = Math.abs(distances[0] - myNumber);
-        int idx = 0;
-        for(int c = 1; c < distances.length; c++){
-            double cdistance = Math.abs(distances[c] - myNumber);
-            if(cdistance < distance){
-                idx = c;
-                distance = cdistance;
-            }
-        }
+        // double myNumber = getDistance();
+        // double distance = Math.abs(distances[0] - myNumber);
+        // int idx = 0;
+        // for(int c = 1; c < distances.length; c++){
+        //     double cdistance = Math.abs(distances[c] - myNumber);
+        //     if(cdistance < distance){
+        //         idx = c;
+        //         distance = cdistance;
+        //     }
+        // }
 
-        if(idx < distances.length && idx < RPMs.length){
-            return RPMs[idx];
-        } else {
-            return 0;
-        }
+        // if(idx < distances.length && idx < RPMs.length){
+        //     return RPMs[idx];
+        // } else {
+        //     return 0;
+        // }
+
+        return (39 * getDistance()) + 2810;
     }
 
     public double publishRPM() {
