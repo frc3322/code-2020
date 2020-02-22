@@ -74,7 +74,7 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if (alime) {
-                SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", false);
+                SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", shooter.onTarget(shootSetpoint));
                 SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
                 //SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", shooter.onTarget(shootSetpoint));
                 drivetrain.alime(initAngle, initTX);
@@ -82,8 +82,8 @@ public class Shoot extends CommandBase {
                 if (drivetrain.alimeOnTarget()) {
                     limeTimer++;
                     if(limeTimer > limeTimeLimit){
+                        drivetrain.drive(0,0);
                         if (shooter.onTarget(shootSetpoint)) {
-                            
                             feedTimer++;
                             if(feedTimer > feedTimeLimit){
                                 feed = true;
