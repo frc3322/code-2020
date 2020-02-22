@@ -33,8 +33,8 @@ public class Climber extends SubsystemBase {
         motors[RAISE].restoreFactoryDefaults();
         motors[CLIMB].restoreFactoryDefaults();
 
-        motors[RAISE].setInverted(true);
-        motors[CLIMB].setInverted(false);
+        motors[RAISE].setInverted(false);
+        motors[CLIMB].setInverted(true);
 
         motors[RAISE].setSmartCurrentLimit(50, 30);
         motors[CLIMB].setSmartCurrentLimit(50, 40);
@@ -72,19 +72,11 @@ public class Climber extends SubsystemBase {
     }
 
     public void pullWinch(double speed) {
-        if (encoders[CLIMB].getPosition() > 0) {
-            motors[CLIMB].set(speed);
-        } else {
-            stopWinch();
-        }
+        motors[CLIMB].set(speed);
     }
 
     public void pushWinch(double speed) {
-        if (encoders[CLIMB].getPosition() < 2000) {
-            motors[CLIMB].set(-speed);
-        } else {
-            stopWinch();
-        }
+        motors[CLIMB].set(-speed);
     }
 
     public void setWinch(double speed) {

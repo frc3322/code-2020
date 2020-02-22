@@ -47,7 +47,7 @@ public class Intake extends SubsystemBase {
         motors[INTAKE_BOTTOM].setIdleMode(IdleMode.kCoast);
         motors[INTAKE_TOP].setIdleMode(IdleMode.kCoast);
 
-        motors[INTAKE_BOTTOM].setSmartCurrentLimit(20, 30);
+        motors[INTAKE_BOTTOM].setSmartCurrentLimit(25, 35);
         motors[INTAKE_TOP].setSmartCurrentLimit(60, 70);
 
         motors[INTAKE_BOTTOM].burnFlash();
@@ -82,7 +82,7 @@ public class Intake extends SubsystemBase {
 
     public void start() {
         motors[INTAKE_BOTTOM].set(.8);
-        motors[INTAKE_TOP].set(-.4);
+        motors[INTAKE_TOP].set(-.8);
     }
 
     public void outtake() {

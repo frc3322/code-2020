@@ -50,11 +50,13 @@ public class Drivetrain extends SubsystemBase {
 
     private boolean slowMode = false;
 
+    private boolean useLimelight = false;
+
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
-    private double lP = 0.07;
-    private double lI = 0.02;
+    private double lP = -0.07;
+    private double lI = 0.000026;
     private double lD = 0;
 
     private double aP = 0.01893;
@@ -141,6 +143,9 @@ public class Drivetrain extends SubsystemBase {
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Straighten P", sP);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Straighten I", sI);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Distance/Strighten D", sD);
+
+        SmartDashboard.putNumber("Drivetrain/DrivePID/Limelight/Setpoint", 0);
+        SmartDashboard.putBoolean("Drivetrain/DrivePID/Using Limelight", false);
     }
 
     // Motor methods
@@ -239,9 +244,26 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void alime(Double initAngle, Double initTX) {
+        useLimelight = false;
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);
-        double setpoint = initAngle - initTX;
-        drive(0, PID1.calculate(getHeading(), setpoint));
+        double setpoint = (initAngle - initTX);
+        SmartDashboard.putNumber("Drivetrain/DrivePID/Limelight/Setpoint", setpoint);
+
+        if (getLimelightX() < 4) {
+            useLimelight = true;
+        }
+
+        if (useLimelight) {
+            SmartDashboard.putBoolean("Drivetrain/DrivePID/Using Limelight", true);
+            drive(0, PID1.calculate(getLimelightX(), 0));
+        } else {
+            SmartDashboard.putBoolean("Drivetrain/DrivePID/Using Limelight", false);
+            drive(0, PID1.calculate(getHeading(), setpoint));
+        }
+    }
+
+    public boolean alimeOnTarget() {
+        return Math.abs(limelightX) < 1;
     }
 
     // Other PID Drive methods
@@ -250,7 +272,7 @@ public class Drivetrain extends SubsystemBase {
         drive(0, PID1.calculate(getHeading(), angle));
     }
 
-    public Boolean angleOnTarget(double angle) {
+    public boolean angleOnTarget(double angle) {
         return Math.abs(angle - getHeading()) < 1;
     }
 
@@ -347,7 +369,7 @@ public class Drivetrain extends SubsystemBase {
         // SmartDashboard.putNumber("PoseX", driveX);
         // SmartDashboard.putNumber("PoseY", driveX);
 
-        SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", angleOnTarget(1));
+        SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", alimeOnTarget());
         getLimelightX();
         getLimelightY();
         // odometry.update(Rotation2d.fromDegrees(getHeading()), getLeftEncDistance(),

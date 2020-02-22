@@ -65,8 +65,6 @@ public class DriveControl extends CommandBase {
 
         double deadzone = RobotMap.XBOX.MAX_DEADZONE;
 
-        double scaledX = Math.copySign((2 * Math.pow(x, 3)) - (2.3 * Math.pow(x, 2)) + (1.2 * x), x);
-
         if(Math.abs(x) >= RobotMap.XBOX.MAX_DEADZONE){
             deadzone = RobotMap.XBOX.MIN_DEADZONE;
         } else if (Math.abs(x) <= RobotMap.XBOX.MIN_DEADZONE) {
@@ -87,13 +85,23 @@ public class DriveControl extends CommandBase {
             y = 0.0;
         }
 
+        double sign;
+
+        // if(x >= 0){
+        //     sign = 1;
+        // } else {
+        //     sign = -1;
+        // }
+
+        // double scaledX = sign * (2.6 * Math.pow(x, 3)) - (2.6 * Math.pow(x, 2)) + (1.0 * x);
+
         if(drivetrain.getSlowMode()){
             x *= RobotMap.XBOX.SLOW_MODE_MULTIPLIER;
             y *= RobotMap.XBOX.SLOW_MODE_MULTIPLIER;
         }
 
         if (y == 0.0) {
-            drivetrain.curvatureDrive(0, scaledX, true);
+            drivetrain.curvatureDrive(0, x, true);
         } else {
             drivetrain.curvatureDrive(y, x, false);
         }

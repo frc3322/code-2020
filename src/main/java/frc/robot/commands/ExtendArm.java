@@ -7,6 +7,7 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
@@ -18,7 +19,7 @@ public class ExtendArm extends CommandBase {
   private int RAISE = 0, CLIMB = 1;
 
   private int timer;
-  private int timeLimit = 50;
+  private int timeLimit = 200;
 
   private boolean extend = false;  
   private boolean extendedAtStart = false;
@@ -39,6 +40,7 @@ public class ExtendArm extends CommandBase {
 
   @Override
   public void execute() {
+    SmartDashboard.putBoolean("extended at start?", extendedAtStart);
     if(!extendedAtStart){
       timer++;
       if(timer > timeLimit) {
@@ -51,7 +53,6 @@ public class ExtendArm extends CommandBase {
     if (extend) {
       if (climber.getEncoder(RAISE) < Constants.ClimberContants.CLIMBER_ARM_TOP_LIMIT){
           climber.raiseClimber(Constants.ClimberContants.ARM_EXTEND_SPEED);
-          climber.pushWinch(Constants.ClimberContants.WINCH_EXTEND_SPEED);
       } else {
           climber.stopClimber();
           climber.stopWinch();

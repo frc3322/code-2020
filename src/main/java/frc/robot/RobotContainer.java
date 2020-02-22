@@ -147,7 +147,8 @@ public class RobotContainer {
         //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
         bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))//.alongWith(new InstantCommand(() -> cycleHopper.schedule())))
-                            .whenReleased(new InstantCommand(() -> intake.end()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
+                            .whenReleased(new InstantCommand(() -> intake.end())
+                            .andThen(new InstantCommand()));//.alongWith(new InstantCommand(() -> cycleHopper.cancel()).alongWith(new InstantCommand(() -> hopper.stop()))));
 
         button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
                         .whenReleased(new InstantCommand(() -> shoot.cancel())
@@ -164,7 +165,7 @@ public class RobotContainer {
         button_y_lower.whenPressed(new InstantCommand(() -> extendArm.schedule()))
                         .whenReleased(new InstantCommand(() -> extendArm.cancel()));
 
-        dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(0.3)))
+        dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(1)))
                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
     }

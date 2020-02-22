@@ -77,6 +77,10 @@ public class Feeder extends SubsystemBase {
         feedBottom(0.0);
     }
 
+    public void setShotSinceFed(boolean shot) {
+        shotSinceFed = shot;
+    }
+
     public void putInitialDash() {
         SmartDashboard.putNumber("Feed Speed Top", 0);
         SmartDashboard.putNumber("Feed Speed Bottom", 0);
@@ -113,10 +117,6 @@ public class Feeder extends SubsystemBase {
                 stop();
                 feederTimeoutTimer = 0;
             }
-        }
-
-        if (RobotContainer.shooting) {
-            shotSinceFed = true;
         }
       
         if (intookSinceFed) {

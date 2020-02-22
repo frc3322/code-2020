@@ -25,14 +25,17 @@ public class Shoot extends CommandBase {
     boolean alime;
     double initAngle;
     double initTX;
+    double angleSetpoint;
 
     int limeTimer = 0;
-    int limeTimeLimit = 30;
+    int limeTimeLimit = 25; //50 per second
 
     int feedTimer = 0;
     int feedTimeLimit = 8;
 
-    double setpoint;
+    double shootSetpoint;
+
+    boolean runTimer;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
         this.drivetrain = drivetrain;
@@ -43,6 +46,7 @@ public class Shoot extends CommandBase {
         this.hopper = hopper;
         feed = false;
         this.alime = alime;
+        runTimer = false;
     }
 
     // Called when the command is initially scheduled.
@@ -50,19 +54,19 @@ public class Shoot extends CommandBase {
     public void initialize() {
         shooter.updateConstants();
         if (alime) {
-            //setpoint = shooter.findRPM();
-            setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
+            shootSetpoint = shooter.findRPM();
+            //setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
             initAngle = drivetrain.getHeading();
             initTX = drivetrain.getLimelightX();
+            angleSetpoint = initAngle - initTX;
         } else {
-            setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
+            shootSetpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
         }
 
-        shooter.setSetpoint(setpoint);
+        shooter.setSetpoint(shootSetpoint);
         feed = false;
-
-        RobotContainer.shooting = true;
+        runTimer = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -70,21 +74,25 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if (alime) {
-                SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.angleOnTarget(initTX));
+                SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
+                //SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", shooter.onTarget(shootSetpoint));
                 drivetrain.alime(initAngle, initTX);
                 
-                if (drivetrain.angleOnTarget(initTX)) {
+                if (drivetrain.alimeOnTarget()) {
+                    runTimer = true;
+                }
+
+                if (runTimer) {
                     limeTimer++;
-                    if (shooter.onTarget(setpoint) && limeTimer > limeTimeLimit) {
-                        feedTimer++;
-                        if(feedTimer > feedTimeLimit){
-                            feed = true;
-                        }
+                    if (shooter.onTarget(shootSetpoint) && limeTimer > limeTimeLimit) {
+                        feed = true;
                     }
+                } else {
+                    limeTimer = 0;
                 }
                 
             } else {
-                if (shooter.onTarget(setpoint)) {
+                if (shooter.onTarget(shootSetpoint)) {
                     feedTimer++;
                     if(feedTimer > feedTimeLimit){
                         feed = true;
@@ -107,8 +115,9 @@ public class Shoot extends CommandBase {
         limeTimer = 0;
         feedTimer = 0;
         feed = false;
+        runTimer = false;
         hopper.cycle(0, 0);
-        RobotContainer.shooting = false;
+        feeder.setShotSinceFed(true);
     }
 
     // Returns true when the command should end.

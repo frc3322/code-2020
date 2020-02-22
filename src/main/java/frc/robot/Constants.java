@@ -85,7 +85,7 @@ public final class Constants {
                         FEEDER_2 = 14;
 
                         CLIMBER_RAISE = 2;
-                        CLIMBER_CLIMB = 0;
+                        CLIMBER_CLIMB = 36;
         
                         LEFT_HOPPER_MOTOR = 12;
                         RIGHT_HOPPER_MOTOR = 13;
@@ -215,7 +215,7 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_TOLERANCE = 100.0;
+        public static final double SHOOTER_TOLERANCE = 50.0;
     }
 
     public static class ClimberContants {
