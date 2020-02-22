@@ -111,9 +111,16 @@ public class Shoot extends CommandBase {
                 if (shooter.onTarget(shootSetpoint)) {
                     shootTimer++;
                     if(shootTimer > shootTimeLimit){
-                        feed = true;
+                        shooterSped = true;
                     }
-                }         
+
+                } else {
+                    shootTimer = 0;
+                }
+                
+                if(shooterSped){
+                    feed = true;
+                }
             }
         } else {
             drivetrain.drive(0,0);
