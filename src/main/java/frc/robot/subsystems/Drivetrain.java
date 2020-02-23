@@ -55,13 +55,13 @@ public class Drivetrain extends SubsystemBase {
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
-    private double lP = -0.07;
+    private double lP = -0.073;
     private double lI = 0.000026;
     private double lD = 0;
 
-    private double aP = 0.01893;
-    private double aI = 1.3;
-    private double aD = 0.002;
+    private double aP = -0.02;
+    private double aI = 0.00003;
+    private double aD = 0;
 
     private double dP = 0;
     private double dI = 0;
@@ -120,6 +120,7 @@ public class Drivetrain extends SubsystemBase {
         PID1.disableContinuousInput();
 
         PID2 = new PIDController(sP, sI, sD);
+        PID2.disableContinuousInput();
 
         odometry = new DifferentialDriveOdometry(Rotation2d.fromDegrees(getHeading()));
 
@@ -196,13 +197,16 @@ public class Drivetrain extends SubsystemBase {
         switch (mode) {
             case LIMELIGHT:
                 PID1.reset();
+                PID1.disableContinuousInput();
                 PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
                 PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
                 PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
                 PID1.setTolerance(1);
+
                 break;
             case ANGLE:
                 PID1.reset();
+                PID1.enableContinuousInput(-180.0, 180.0);
                 PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle P", aP));
                 PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle I", aI));
                 PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Angle/Angle D", aD));
@@ -210,6 +214,7 @@ public class Drivetrain extends SubsystemBase {
                 break;
             case DISTANCE:
                 PID1.reset();
+                PID1.disableContinuousInput();
                 PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance P", dP));
                 PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance I", dI));
                 PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Distance D", dD));
@@ -217,6 +222,7 @@ public class Drivetrain extends SubsystemBase {
                 break;
             case STRAIGHTEN:
                 PID2.reset();
+                PID2.disableContinuousInput();
                 PID2.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Straighten P", sP));
                 PID2.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Straighten I", sI));
                 PID2.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Distance/Straighten D", sD));
@@ -224,6 +230,7 @@ public class Drivetrain extends SubsystemBase {
                 break;
             default:
                 PID1.reset();
+                PID1.disableContinuousInput();
                 PID1.setP(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight P", lP));
                 PID1.setI(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight I", lI));
                 PID1.setD(SmartDashboard.getNumber("Drivetrain/DrivePID/Limelight/Limelight D", lD));
@@ -277,7 +284,8 @@ public class Drivetrain extends SubsystemBase {
     // Other PID Drive methods
     // for angle
     public void turnToAngle(double angle) {
-        drive(0, PID1.calculate(getHeading(), angle));
+        drive(0, PID1.calculate(getHeading(), angle) * 0.5);
+        SmartDashboard.putNumber("Turn PID Output", PID1.calculate(getHeading(), angle));
     }
 
     public boolean angleOnTarget(double angle) {
@@ -285,7 +293,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void resetNavX() {
-        navx.resetDisplacement();
+        navx.reset();
     }
 
     // for distance
@@ -315,7 +323,7 @@ public class Drivetrain extends SubsystemBase {
         encoders[RIGHT_FRONT].setPosition(0);
         encoders[LEFT_BACK].setPosition(0);
         encoders[RIGHT_BACK].setPosition(0);
-        navx.resetDisplacement();
+        resetNavX();
 
         Rotation2d originRotation = new Rotation2d(0.0);
         Pose2d originPose = new Pose2d(0.0, 0.0, originRotation);
@@ -364,7 +372,6 @@ public class Drivetrain extends SubsystemBase {
 
     @Override
     public void periodic() {
-        SmartDashboard.putNumber("Heading", getHeading());
         SmartDashboard.putNumber("Drivetrain/Encoders/ENC Distance Left m", getLeftEncDistance());
         SmartDashboard.putNumber("Drivetrain/Encoders/ENC Distance Right m", getRightEncDistance());
         SmartDashboard.putNumber("Drivetrain/Encoders/Avg Distance", (getLeftEncDistance() + getRightEncDistance()) / 2);

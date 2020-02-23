@@ -26,7 +26,7 @@ public class Robot extends TimedRobot {
         autonMode = new SendableChooser<>();
 
         autonMode.setDefaultOption("Default", auton.DEFAULT);
-        autonMode.addOption("Trench 6", auton.TRENCH_SIX);
+        autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
 
         SmartDashboard.putData("Auton", autonMode);
 
@@ -52,8 +52,9 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand(/*autonMode.getSelected()*/);
         m_robotContainer.resetDrive();
+        m_robotContainer.cancelDriveControl();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -66,6 +67,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        m_robotContainer.setDriveControl();
         m_robotContainer.resetDrive();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();

@@ -63,7 +63,7 @@ public class RobotContainer {
 
     public enum auton {
         DEFAULT,
-        TRENCH_SIX;
+        TRENCH_FIVE;
     }
 
     //commands
@@ -72,7 +72,23 @@ public class RobotContainer {
     private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber, drivetrain);
+    private Command driveControl = new DriveControl(drivetrain, lowerChassis);
 
+    //auton commands
+    private Command defaultAuton = timeoutShoot.withTimeout(4)
+                                .andThen(new RunCommand(() -> drivetrain.drive(-0.5, 0.0)).withTimeout(1))
+                                .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
+
+    private Command fiveBall = new InstantCommand(() -> drivetrain.setUpPID(PIDMode.ANGLE))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1)
+                            .andThen(new InstantCommand(() -> intake.begin())))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.5, 0.0)).withTimeout(2))
+                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0))
+                            .andThen(new RunCommand(() -> drivetrain.turnToAngle(-175))).withTimeout(1.7))
+                            .andThen(new InstantCommand(() -> intake.end()))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1.5))
+                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)))
+                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, true).withTimeout(4));
     //test commands
     private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
@@ -83,8 +99,6 @@ public class RobotContainer {
     public RobotContainer() {
         
         configureButtonBindings();
-
-        drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
 
         drivetrain.putInitialDash();
         feeder.putInitialDash();
@@ -176,6 +190,14 @@ public class RobotContainer {
     public void resetDrive() {
         drivetrain.reset();
     }
+
+    public void setDriveControl() {
+        driveControl.schedule();
+    }
+
+    public void cancelDriveControl() {
+        driveControl.cancel();
+    }
     
     public void putInitialDashes() {
         drivetrain.putInitialDash();
@@ -194,7 +216,7 @@ public class RobotContainer {
         shooter.initPos();
     }
     
-    public Command getAutonomousCommand(/*auton selected*/) {
+    public Command getAutonomousCommand(auton selected) {
         // //Set up auton trajectory
         // DifferentialDriveVoltageConstraint autoVoltageConstraint =
         //     new DifferentialDriveVoltageConstraint(
@@ -266,24 +288,18 @@ public class RobotContainer {
         //         .alongWith(new InstantCommand(() -> intake.end()))
         //     .andThen(timeoutShoot.withTimeout(4.0));
 
-        Command defaultAuton = timeoutShoot.withTimeout(5)
-                                .andThen(new RunCommand(() -> drivetrain.drive(-0.3, 0.0)).withTimeout(1))
-                                .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
-
-        // switch (selected) {
-        //     case TRENCH_SIX:
-        //         return  trenchSixAuton;
-        //     case DEFAULT:
-        //         return defaultAuton; 
-        //     default:
-        //         return defaultAuton;
-        // }
+        switch (selected) {
+            case TRENCH_FIVE:
+                return  fiveBall;
+            case DEFAULT:
+                return defaultAuton; 
+            default:
+                return defaultAuton;
+        }
 
         //return new InstantCommand(() -> drivetrain.delay());
 
         // Run path following command, then stop at the end.
         //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
-
-        return defaultAuton;
     }
 }
