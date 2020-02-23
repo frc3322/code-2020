@@ -21,6 +21,7 @@ import java.util.List;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.Relay.Direction;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -158,10 +159,8 @@ public class RobotContainer {
                         .whenReleased(new InstantCommand(() -> shoot.cancel())
                         .alongWith(new InstantCommand(() -> hopper.stop())));
 
-        button_b_lower.whenPressed(new RunCommand(() -> climber.lowerClimber(0.3)).withInterrupt(() -> climber.atBottom())
-                        .andThen(() -> climber.stopClimber())
-                        .andThen(() -> climber.retractArm())
-                        .andThen(() -> drivetrain.setSlowMode(false)));
+        button_b_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(1)))
+                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
 
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));
@@ -195,92 +194,96 @@ public class RobotContainer {
         shooter.initPos();
     }
     
-    public Command getAutonomousCommand(auton selected) {
-        //Set up auton trajectory
-        DifferentialDriveVoltageConstraint autoVoltageConstraint =
-            new DifferentialDriveVoltageConstraint(
-                new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
-                                            Constants.DriveConstants.kvVoltSecondsPerMeter,
-                                            Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-                                            Constants.DriveConstants.kDriveKinematics,
-                                            10);
+    public Command getAutonomousCommand(/*auton selected*/) {
+        // //Set up auton trajectory
+        // DifferentialDriveVoltageConstraint autoVoltageConstraint =
+        //     new DifferentialDriveVoltageConstraint(
+        //         new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+        //                                     Constants.DriveConstants.kvVoltSecondsPerMeter,
+        //                                     Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+        //                                     Constants.DriveConstants.kDriveKinematics,
+        //                                     10);
     
-        TrajectoryConfig config =
-        new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                                Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                                .setKinematics(Constants.DriveConstants.kDriveKinematics)
-                                .addConstraint(autoVoltageConstraint);
+        // TrajectoryConfig config =
+        // new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+        //                         Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        //                         .setKinematics(Constants.DriveConstants.kDriveKinematics)
+        //                         .addConstraint(autoVoltageConstraint);
     
-        Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
-            new Pose2d(0, 0, new Rotation2d(0)),
-            List.of(
-                new Translation2d(1, 1),
-                new Translation2d(2, -1)
-            ),
-            new Pose2d(3, 0, new Rotation2d(0)),
-            config
-        );
+        // Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
+        //     new Pose2d(0, 0, new Rotation2d(0)),
+        //     List.of(
+        //         new Translation2d(1, 1),
+        //         new Translation2d(2, -1)
+        //     ),
+        //     new Pose2d(3, 0, new Rotation2d(0)),
+        //     config
+        // );
         
-        var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
-        testTrajectory = testTrajectory.transformBy(transform);
+        // var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
+        // testTrajectory = testTrajectory.transformBy(transform);
 
-        RamseteController disabledRamsete = new RamseteController() {
-            @Override
-            public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
-                    double angularVelocityRefRadiansPerSecond) {
-                return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
-            }
-        };
+        // RamseteController disabledRamsete = new RamseteController() {
+        //     @Override
+        //     public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
+        //             double angularVelocityRefRadiansPerSecond) {
+        //         return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
+        //     }
+        // };
 
-        var feedForward = new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
-        Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
-        //second element was:
+        // var feedForward = new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
+        // Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
+        // //second element was:
         
-        var m_leftReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_reference");
-        var m_leftMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_measurement");
-        var m_rightReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_reference");
-        var m_rightMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_measurement");
-        //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
+        // var m_leftReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_reference");
+        // var m_leftMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_measurement");
+        // var m_rightReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_reference");
+        // var m_rightMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_measurement");
+        // //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
         
-        RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
-        disabledRamsete,
-        feedForward,
-        Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
-        new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        (leftVolts, rightVolts) ->{
-            drivetrain.tankDriveVolts(leftVolts, rightVolts);
+        // RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
+        // disabledRamsete,
+        // feedForward,
+        // Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
+        // new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
+        // // RamseteCommand passes volts to the callback
+        // (leftVolts, rightVolts) ->{
+        //     drivetrain.tankDriveVolts(leftVolts, rightVolts);
 
-            m_leftMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().leftMetersPerSecond));
-            m_leftReference.setNumber(leftVolts);
+        //     m_leftMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().leftMetersPerSecond));
+        //     m_leftReference.setNumber(leftVolts);
 
-            m_rightMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().rightMetersPerSecond));
-            m_rightReference.setNumber(-rightVolts);
-        }, drivetrain);
+        //     m_rightMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().rightMetersPerSecond));
+        //     m_rightReference.setNumber(-rightVolts);
+        // }, drivetrain);
 
-        Command trenchSixAuton = 
-            timeoutShoot.withTimeout(3.0)
-            .andThen(new TurnToAngle(drivetrain, 180.0))
-            .andThen(new DriveDistance(drivetrain, 3.0))
-                .alongWith(new InstantCommand(() -> intake.begin()))
-            .andThen(new TurnToAngle(drivetrain, 180.0))
-                .alongWith(new InstantCommand(() -> intake.end()))
-            .andThen(timeoutShoot.withTimeout(4.0));
+        // Command trenchSixAuton = 
+        //     timeoutShoot.withTimeout(3.0)
+        //     .andThen(new TurnToAngle(drivetrain, 180.0))
+        //     .andThen(new DriveDistance(drivetrain, 3.0))
+        //         .alongWith(new InstantCommand(() -> intake.begin()))
+        //     .andThen(new TurnToAngle(drivetrain, 180.0))
+        //         .alongWith(new InstantCommand(() -> intake.end()))
+        //     .andThen(timeoutShoot.withTimeout(4.0));
 
-        Command defaultAuton = timeoutShoot.withTimeout(3)
+        Command defaultAuton = timeoutShoot.withTimeout(5)
                                 .andThen(new RunCommand(() -> drivetrain.drive(-0.3, 0.0)).withTimeout(1))
                                 .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 
-        switch (selected) {
-            case TRENCH_SIX:
-                return  trenchSixAuton;
-            case DEFAULT:
-                return defaultAuton; 
-            default:
-                return defaultAuton;
-        }
+        // switch (selected) {
+        //     case TRENCH_SIX:
+        //         return  trenchSixAuton;
+        //     case DEFAULT:
+        //         return defaultAuton; 
+        //     default:
+        //         return defaultAuton;
+        // }
+
+        //return new InstantCommand(() -> drivetrain.delay());
 
         // Run path following command, then stop at the end.
         //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+
+        return defaultAuton;
     }
 }

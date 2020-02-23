@@ -52,7 +52,7 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand(/*autonMode.getSelected()*/);
         m_robotContainer.resetDrive();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();

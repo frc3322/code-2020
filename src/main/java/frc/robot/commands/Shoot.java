@@ -28,7 +28,7 @@ public class Shoot extends CommandBase {
     double angleSetpoint;
 
     int limeTimer = 0;
-    int limeTimeLimit = 10; //50 per second
+    int limeTimeLimit = 15; //50 per second
 
     int shootTimer = 0;
     int shootTimeLimit = 15;
@@ -37,6 +37,7 @@ public class Shoot extends CommandBase {
 
     boolean limelightAligned = false;
     boolean shooterSped = false;
+    boolean startLimeTimer = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
         this.drivetrain = drivetrain;
@@ -81,16 +82,16 @@ public class Shoot extends CommandBase {
 
                 //Check if robot is aligned to target for given time
                 if (drivetrain.alimeOnTarget()) {
+                    startLimeTimer = true;
+                }
+
+                if(startLimeTimer){
                     limeTimer++;
                     if(limeTimer > limeTimeLimit){
                         drivetrain.drive(0,0);
                         limelightAligned = true;
                     }
-
-                } else {
-                    limeTimer = 0;
                 }
-
                 //Check if shooter is at speed for given time
                 if (shooter.onTarget(shootSetpoint)) {
                     shootTimer++;
@@ -142,6 +143,7 @@ public class Shoot extends CommandBase {
         feeder.setShotSinceFed(true);
         limelightAligned = false;
         shooterSped = false;
+        startLimeTimer = false;
     }
 
     // Returns true when the command should end.

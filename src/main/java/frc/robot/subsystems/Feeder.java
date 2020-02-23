@@ -40,7 +40,7 @@ public class Feeder extends SubsystemBase {
         motors[FEED_2].setInverted(false);
 
         motors[FEED_1].setSmartCurrentLimit(20, 30);
-        motors[FEED_2].setSmartCurrentLimit(20, 25);
+        motors[FEED_2].setSmartCurrentLimit(25, 30);
 
         motors[FEED_1].setIdleMode(IdleMode.kBrake);
         motors[FEED_2].setIdleMode(IdleMode.kBrake);
