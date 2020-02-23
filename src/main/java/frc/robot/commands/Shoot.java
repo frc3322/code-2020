@@ -28,10 +28,10 @@ public class Shoot extends CommandBase {
     double angleSetpoint;
 
     int limeTimer = 0;
-    int limeTimeLimit = 15; //50 per second
+    int limeTimeLimit = 10; //50 per second
 
     int shootTimer = 0;
-    int shootTimeLimit = 20;
+    int shootTimeLimit = 15;
 
     double shootSetpoint;
 
