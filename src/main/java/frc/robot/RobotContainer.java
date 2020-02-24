@@ -88,7 +88,7 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> intake.end()))
                             .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1.5))
                             .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)))
-                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, true).withTimeout(4));
+                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, true));
     //test commands
     private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
