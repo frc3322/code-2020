@@ -78,7 +78,8 @@ public class RobotContainer {
     
 
     //auton commands
-    private Command defaultAuton = timeoutShoot.withTimeout(4)
+    private Command defaultAuton = new RunCommand(() -> drivetrain.delay()).withTimeout(SmartDashboard.getNumber("Auton Delay", 0))
+                                .andThen(timeoutShoot.withTimeout(4))
                                 .andThen(new RunCommand(() -> drivetrain.drive(-0.5, 0.0)).withTimeout(1))
                                 .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 

@@ -29,6 +29,7 @@ public class Robot extends TimedRobot {
         autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
 
         SmartDashboard.putData("Auton", autonMode);
+        SmartDashboard.putNumber("Auton Delay", 0);
 
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
@@ -52,7 +53,6 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        SmartDashboard.putData("Auton", autonMode);
         m_robotContainer.resetDrive();
         m_robotContainer.cancelDriveControl();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());

@@ -314,7 +314,7 @@ public class Drivetrain extends SubsystemBase {
 
     // to make a run command for delay
     public void delay() {
-
+        //nothing
     }
 
     // Methods for Pathfinding Auton
