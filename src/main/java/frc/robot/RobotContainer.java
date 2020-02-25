@@ -8,13 +8,20 @@
 package frc.robot;
 
 import frc.robot.commands.DriveControl;
+import frc.robot.commands.ExtendArm;
 import frc.robot.commands.LedControl;
+import frc.robot.commands.Shoot;
+import frc.robot.commands.auton.DriveDistance;
+import frc.robot.commands.auton.TurnToAngle;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.Drivetrain.PIDMode;
 
 import java.util.List;
 
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Relay.Direction;
+import edu.wpi.first.wpilibj.command.CommandGroup;
 import edu.wpi.first.wpilibj.controller.PIDController;
 import edu.wpi.first.wpilibj.controller.RamseteController;
 import edu.wpi.first.wpilibj.controller.SimpleMotorFeedforward;
@@ -22,6 +29,7 @@ import edu.wpi.first.wpilibj.geometry.Pose2d;
 import edu.wpi.first.wpilibj.geometry.Rotation2d;
 import edu.wpi.first.wpilibj.geometry.Translation2d;
 import edu.wpi.first.wpilibj.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.trajectory.Trajectory;
 import edu.wpi.first.wpilibj.trajectory.TrajectoryConfig;
@@ -48,22 +56,57 @@ public class RobotContainer {
     private final Hopper hopper = new Hopper();
     private final Intake intake = new Intake();
     private final Feeder feeder = new Feeder();
-
+    private final Climber climber = new Climber();
+    
     private final Joystick lowerChassis = new Joystick(0);
     private final Joystick upperChassis = new Joystick(1);
 
+    public enum auton {
+        DEFAULT,
+        TRENCH_FIVE;
+    }
+
+    //commands
+    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
+    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
+    private Command extendArm = new ExtendArm(climber, drivetrain);
+    private Command driveControl = new DriveControl(drivetrain, lowerChassis);
+
+    //auton commands
+    private Command defaultAuton = timeoutShoot.withTimeout(4)
+                                .andThen(new RunCommand(() -> drivetrain.drive(-0.5, 0.0)).withTimeout(1))
+                                .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
+
+    private Command fiveBall = new InstantCommand(() -> drivetrain.setUpPID(PIDMode.ANGLE))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1)
+                            .andThen(new InstantCommand(() -> intake.begin())))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.5, 0.0)).withTimeout(2))
+                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0))
+                            .andThen(new RunCommand(() -> drivetrain.turnToAngle(-175))).withTimeout(1.7))
+                            .andThen(new InstantCommand(() -> intake.end()))
+                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1.5))
+                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)))
+                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, true));
+    //test commands
+    private Command testDriveDistance = new DriveDistance(drivetrain, 2);
+    private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
+    
+    public static boolean intaking = false;
+    public static boolean shooting = false;
+    
     public RobotContainer() {
         
         configureButtonBindings();
-        getAutonomousCommand();
 
-        drivetrain.setDefaultCommand(new DriveControl(drivetrain, lowerChassis));
-
+        drivetrain.putInitialDash();
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
         
         LedData.getInstance().setAlliance();
+        climber.putInitialDash();
     }
 
     private void configureButtonBindings() {
@@ -75,6 +118,7 @@ public class RobotContainer {
         Button bumper_right_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUMPER_RIGHT);
         Button button_back_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_BACK);
         Button button_start_upper = new JoystickButton(upperChassis, RobotMap.XBOX.BUTTON_START);
+        DPadButton dpad_down_upper = new DPadButton(upperChassis, DPadButton.Direction.DOWN);
 
         Button bumper_left_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUMPER_LEFT);
         Button bumper_right_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUMPER_RIGHT);
@@ -83,91 +127,181 @@ public class RobotContainer {
         Button left_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_LEFT);
         Button right_stick_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.STICK_RIGHT);
         Button button_a_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_A);
+        Button button_b_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_B);
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
+        DPadButton dpad_up_lower = new DPadButton(lowerChassis, DPadButton.Direction.UP);
+        
 
+        //upper
+        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(shooter.findRPM())))
+                        .whenReleased(new InstantCommand(() -> shooter.stop()));
 
-        button_a_upper.whenPressed(new InstantCommand(() -> shooter.setSetpoint(SmartDashboard.getNumber("Shooter Setpoint", 3000))))
-                .whenReleased(new InstantCommand(() -> shooter.stop()));
+        button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
+                        .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
+                
+        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
+                        .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
-        button_a_lower.whenPressed(new RunCommand(() -> drivetrain.pidDrive(0.0),
-                drivetrain)/* .withInterrupt(()->drivetrain.onTarget()) */);
-        button_x_lower.whenPressed(new DriveControl(drivetrain, lowerChassis));
+        bumper_left_upper.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
+                            .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
 
-        button_y_lower.whenPressed(new InstantCommand(() -> feeder.feed(0.2)));
+        dpad_down_upper.whenPressed(new InstantCommand(() -> climber.pushWinch(0.3)))
+                    .whenReleased(new InstantCommand(() -> climber.stopWinch()));
 
-        //! Uncomment when testing LedControl 
-        // button_x_upper.whenPressed(new LedControl(LedControl.LedMode.OFF));
-        // button_y_upper.whenPressed(new LedControl(LedControl.LedMode.ON));
+        // button_a_upper.whenPressed(new InstantCommand(() -> climber.raiseClimber(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        // button_b_upper.whenPressed(new InstantCommand(() -> climber.lowerClimber(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        // bumper_right_upper.whenPressed(new InstantCommand(() -> climber.toggle()));
+
+        // button_y_upper.whenPressed(new InstantCommand(() -> climber.setWinch(.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+
+        // button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
+        //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        //lower
+        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))
+                            .whenReleased(new InstantCommand(() -> intake.end())
+                            .andThen(new RunCommand(() -> intake.start()).withTimeout(0.1)
+                            .andThen(new InstantCommand(() -> intake.stop()))));
+
+        bumper_left_lower.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
+                            .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
+
+        button_a_lower.whenPressed(new InstantCommand(() -> shoot.schedule()))
+                        .whenReleased(new InstantCommand(() -> shoot.cancel())
+                        .alongWith(new InstantCommand(() -> hopper.stop())));
+
+        button_b_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(1)))
+                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
+                        .whenReleased(new InstantCommand(() -> intake.end()));
+
+        button_y_lower.whenPressed(new InstantCommand(() -> extendArm.schedule()))
+                        .whenReleased(new InstantCommand(() -> extendArm.cancel()));
+
+        dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(1)))
+                .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+
     }
 
-    public Drivetrain getDrivetrain() {
-        return drivetrain;
+    public void resetDrive() {
+        drivetrain.reset();
     }
 
-    DifferentialDriveVoltageConstraint autoVoltageConstraint =
-        new DifferentialDriveVoltageConstraint(
-            new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
-                                       Constants.DriveConstants.kvVoltSecondsPerMeter,
-                                       Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
-                                       Constants.DriveConstants.kDriveKinematics,
-                                       10);
+    public void setDriveControl() {
+        driveControl.schedule();
+    }
 
-    TrajectoryConfig config =
-    new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
-                            Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
-                            .setKinematics(Constants.DriveConstants.kDriveKinematics)
-                            .addConstraint(autoVoltageConstraint);
+    public void cancelDriveControl() {
+        driveControl.cancel();
+    }
+    
+    public void putInitialDashes() {
+        drivetrain.putInitialDash();
+        feeder.putInitialDash();
+        shooter.putInitialDash();
+        hopper.putInitialDash();
+        climber.putInitialDash();
+    }
 
-    Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
-    new Pose2d(0, 0, new Rotation2d(0)),
-    List.of(
-        new Translation2d(1, 1),
-        new Translation2d(2, -1)
-    ),
-    new Pose2d(3, 0, new Rotation2d(0)),
-    config
-    );
-
-    public Command getAutonomousCommand() {    
-        var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
-        testTrajectory = testTrajectory.transformBy(transform);
-
-        RamseteController disabledRamsete = new RamseteController() {
-            @Override
-            public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
-                    double angularVelocityRefRadiansPerSecond) {
-                return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
-            }
-        };
-
-        var feedForward = new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
-        Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
-        //second element was:
+    public void setInitPos() {
+        climber.initPos();
+        drivetrain.initPos();
+        feeder.initPos();
+        hopper.initPos();
+        intake.initPos();
+        shooter.initPos();
+    }
+    
+    public Command getAutonomousCommand(auton selected) {
+        // //Set up auton trajectory
+        // DifferentialDriveVoltageConstraint autoVoltageConstraint =
+        //     new DifferentialDriveVoltageConstraint(
+        //         new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts,
+        //                                     Constants.DriveConstants.kvVoltSecondsPerMeter,
+        //                                     Constants.DriveConstants.kaVoltSecondsSquaredPerMeter),
+        //                                     Constants.DriveConstants.kDriveKinematics,
+        //                                     10);
+    
+        // TrajectoryConfig config =
+        // new TrajectoryConfig(Constants.AutoConstants.kMaxSpeedMetersPerSecond,
+        //                         Constants.AutoConstants.kMaxAccelerationMetersPerSecondSquared)
+        //                         .setKinematics(Constants.DriveConstants.kDriveKinematics)
+        //                         .addConstraint(autoVoltageConstraint);
+    
+        // Trajectory testTrajectory = TrajectoryGenerator.generateTrajectory(
+        //     new Pose2d(0, 0, new Rotation2d(0)),
+        //     List.of(
+        //         new Translation2d(1, 1),
+        //         new Translation2d(2, -1)
+        //     ),
+        //     new Pose2d(3, 0, new Rotation2d(0)),
+        //     config
+        // );
         
-        var m_leftReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_reference");
-        var m_leftMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_measurement");
-        var m_rightReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_reference");
-        var m_rightMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_measurement");
-        //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
+        // var transform = drivetrain.getPose().minus(testTrajectory.getInitialPose());
+        // testTrajectory = testTrajectory.transformBy(transform);
+
+        // RamseteController disabledRamsete = new RamseteController() {
+        //     @Override
+        //     public ChassisSpeeds calculate(Pose2d currentPose, Pose2d poseRef, double linearVelocityRefMeters,
+        //             double angularVelocityRefRadiansPerSecond) {
+        //         return new ChassisSpeeds(linearVelocityRefMeters, 0.0, angularVelocityRefRadiansPerSecond);
+        //     }
+        // };
+
+        // var feedForward = new SimpleMotorFeedforward(Constants.DriveConstants.ksVolts, Constants.DriveConstants.kvVoltSecondsPerMeter,
+        // Constants.DriveConstants.kaVoltSecondsSquaredPerMeter);
+        // //second element was:
         
-        RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
-        disabledRamsete,
-        feedForward,
-        Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
-        new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
-        // RamseteCommand passes volts to the callback
-        (leftVolts, rightVolts) ->{
-            drivetrain.tankDriveVolts(leftVolts, rightVolts);
+        // var m_leftReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_reference");
+        // var m_leftMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("left_measurement");
+        // var m_rightReference = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_reference");
+        // var m_rightMeasurement = NetworkTableInstance.getDefault().getTable("troubleshooting").getEntry("right_measurement");
+        // //new RamseteController(Constants.AutoConstants.kRamseteB, Constants.AutoConstants.kRamseteZeta)
+        
+        // RamseteCommand ramseteCommand = new RamseteCommand(testTrajectory, drivetrain::getPose,
+        // disabledRamsete,
+        // feedForward,
+        // Constants.DriveConstants.kDriveKinematics, drivetrain::getWheelSpeeds,
+        // new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0), new PIDController(Constants.DriveConstants.kPDriveVel, 0, 0),
+        // // RamseteCommand passes volts to the callback
+        // (leftVolts, rightVolts) ->{
+        //     drivetrain.tankDriveVolts(leftVolts, rightVolts);
 
-            m_leftMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().leftMetersPerSecond));
-            m_leftReference.setNumber(leftVolts);
+        //     m_leftMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().leftMetersPerSecond));
+        //     m_leftReference.setNumber(leftVolts);
 
-            m_rightMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().rightMetersPerSecond));
-            m_rightReference.setNumber(-rightVolts);
-        }, drivetrain);
+        //     m_rightMeasurement.setNumber(feedForward.calculate(drivetrain.getWheelSpeeds().rightMetersPerSecond));
+        //     m_rightReference.setNumber(-rightVolts);
+        // }, drivetrain);
+
+        // Command trenchSixAuton = 
+        //     timeoutShoot.withTimeout(3.0)
+        //     .andThen(new TurnToAngle(drivetrain, 180.0))
+        //     .andThen(new DriveDistance(drivetrain, 3.0))
+        //         .alongWith(new InstantCommand(() -> intake.begin()))
+        //     .andThen(new TurnToAngle(drivetrain, 180.0))
+        //         .alongWith(new InstantCommand(() -> intake.end()))
+        //     .andThen(timeoutShoot.withTimeout(4.0));
+
+        switch (selected) {
+            case TRENCH_FIVE:
+                return  fiveBall;
+            case DEFAULT:
+                return defaultAuton; 
+            default:
+                return defaultAuton;
+        }
+
+        //return new InstantCommand(() -> drivetrain.delay());
 
         // Run path following command, then stop at the end.
-        return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
+        //return ramseteCommand.andThen(() -> drivetrain.tankDriveVolts(0, 0));
     }
 }

@@ -19,36 +19,30 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableEntry;
 import edu.wpi.first.networktables.NetworkTableInstance;
-import edu.wpi.first.wpilibj.SpeedControllerGroup;
+import frc.robot.Constants;
 
 import static frc.robot.Robot.m_can;
 
-import java.util.HashMap;
-
 public class Shooter extends SubsystemBase {
 
-    private static double P = 0.00051;
-    private static double I = 0.000001;
-    private static double D = 30;
-    private static double F = 0;
+    private static double P = 0.0004;
+    private static double I = 0.0000009;
+    private static double D = 0;
+    private static double F = 0.000180;
 
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
 
     private final int MOTOR_0 = 0, MOTOR_1 = 1;
 
-    private double[] distances = {0, 1, 2, 3, 4};
+    private double[] distances = {10, 16, 20, 23, 25};
 
-    private double[] RPMs = {3000, 3000, 3300, 3100};
+    private double[] RPMs = {3200, 3450, 3550, 3700, 3800};
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
-    private NetworkTableEntry tx = table.getEntry("tx");
     private NetworkTableEntry ty = table.getEntry("ty");
-    private NetworkTableEntry ta = table.getEntry("ta");
 
-    private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
-    private double limelightA = ta.getDouble(0.0);
 
     CANPIDController controller;
 
@@ -56,7 +50,22 @@ public class Shooter extends SubsystemBase {
         motors[MOTOR_0] = new CANSparkMax(m_can.SHOOTER_1, MotorType.kBrushless);
         motors[MOTOR_1] = new CANSparkMax(m_can.SHOOTER_2, MotorType.kBrushless);
 
+        motors[MOTOR_0].restoreFactoryDefaults();
+        motors[MOTOR_1].restoreFactoryDefaults();
+
+        motors[MOTOR_0].setInverted(false);
+        motors[MOTOR_1].setInverted(false);
+
+        motors[MOTOR_0].setIdleMode(IdleMode.kCoast);
+        motors[MOTOR_1].setIdleMode(IdleMode.kCoast);
+
+        motors[MOTOR_0].setSmartCurrentLimit(50, 40);
+        motors[MOTOR_1].setSmartCurrentLimit(50, 40);
+
         motors[MOTOR_1].follow(motors[MOTOR_0], true);
+        
+        motors[MOTOR_0].burnFlash();
+        motors[MOTOR_1].burnFlash();
 
         encoders[MOTOR_0] = new CANEncoder(motors[MOTOR_0]);
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
@@ -73,20 +82,26 @@ public class Shooter extends SubsystemBase {
         updateConstants();
     }
 
+    public void initPos() {
+        stop();
+    }
+
     public void setSetpoint(double setpoint) {
         controller.setReference(setpoint, ControlType.kVelocity);
     }
 
     public double getDistance() {
-        double limelightAngle = SmartDashboard.getNumber("Limelight Angle", 45);
+        limelightY = ty.getDouble(0.0);
+        double limelightAngle = 10;
         double targetAngle = limelightY;
-        double limelightHeight = SmartDashboard.getNumber("Limelight Height", 1/2);
+        SmartDashboard.putNumber("Limelight/Target Angle", targetAngle);
+        double limelightHeight = (2+(1/12));
         double targetHeight = (7 + (5/6));
 
         return ((targetHeight-limelightHeight)/(Math.tan((limelightAngle + targetAngle) * Math.PI/180)));
     }
 
-    public double getRPM() {
+    public double findRPM() {
         double myNumber = getDistance();
         double distance = Math.abs(distances[0] - myNumber);
         int idx = 0;
@@ -98,15 +113,17 @@ public class Shooter extends SubsystemBase {
             }
         }
 
-        if(idx <= distances.length && idx <= RPMs.length){
+        if(idx < distances.length && idx < RPMs.length){
             return RPMs[idx];
         } else {
             return 0;
         }
+
+        // return (39 * getDistance()) + 2810;
     }
 
     public double publishRPM() {
-        SmartDashboard.putNumber("Shooter RPM", encoders[MOTOR_0].getVelocity());
+        SmartDashboard.putNumber("Shooter/Shooter RPM", encoders[MOTOR_0].getVelocity());
         return encoders[MOTOR_0].getVelocity();
     }
 
@@ -118,27 +135,28 @@ public class Shooter extends SubsystemBase {
         motors[MOTOR_0].setVoltage(0);
     }
 
+    public boolean onTarget(double setpoint) {
+        return Math.abs(encoders[MOTOR_0].getVelocity() - setpoint) < Constants.ShooterConstants.SHOOTER_TOLERANCE;
+    }
+
     public void putInitialDash(){
-        SmartDashboard.putNumber("Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter P", P);
-        SmartDashboard.putNumber("Shooter I", I);
-        SmartDashboard.putNumber("Shooter D", D); 
-        SmartDashboard.putNumber("Shooter F", F);
-        SmartDashboard.putNumber("Shooter Setpoint", 3000);
-        SmartDashboard.putNumber("Robot Distance", 0);
+        SmartDashboard.putNumber("Shooter/Shooter Speed", 0);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter P", P);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter I", I);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter D", D); 
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter F", F);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
     }
 
     public void updateConstants() {
-        SmartDashboard.putNumber("A PID value", controller.getP());
-        controller.setP(SmartDashboard.getNumber("Shooter P", P));
-        controller.setI(SmartDashboard.getNumber("Shooter I", I));
-        controller.setD(SmartDashboard.getNumber("Shooter D", D));
-        controller.setFF(SmartDashboard.getNumber("Shooter F", F));
+        controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter P", P));
+        controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter I", I));
+        controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter D", D));
+        controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter F", F));
     }
 
     @Override
     public void periodic() {
-        //setSpeed(SmartDashboard.getNumber("Shooter Speed", 0));
         publishRPM();
     }
 }

@@ -7,46 +7,146 @@
 
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj.command.Subsystem;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
+import frc.robot.subsystems.Feeder;
+import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
+import frc.robot.subsystems.Drivetrain.PIDMode;
 
 public class Shoot extends CommandBase {
-  Drivetrain drivetrain;
-  Shooter shooter;
+    Drivetrain drivetrain;
+    Shooter shooter;
+    Feeder feeder;
+    Hopper hopper;
+    boolean feed;
+    boolean alime;
+    double initAngle;
+    double initTX;
+    double angleSetpoint;
 
-  public Shoot(Drivetrain subsystem) {
-    drivetrain = subsystem;
-    addRequirements(subsystem);
+    int limeTimer = 0;
+    int limeTimeLimit = 5; //50 per second
 
-    shooter = new Shooter();
-  }
+    int shootTimer = 0;
+    int shootTimeLimit = 5;
 
-  // Called when the command is initially scheduled.
-  @Override
-  public void initialize() {
-    shooter.setSetpoint(3000);
-  }
+    double shootSetpoint;
 
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
-    if(!drivetrain.onTarget()){
-      drivetrain.pidDrive(0.0);
+    boolean limelightAligned = false;
+    boolean shooterSped = false;
+    boolean startLimeTimer = false;
+
+    public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
+        this.drivetrain = drivetrain;
+        addRequirements(shooter);
+
+        this.shooter = shooter;
+        this.feeder = feeder;
+        this.hopper = hopper;
+        feed = false;
+        this.alime = alime;
     }
-  }
 
-  // Called once the command ends or is interrupted.
-  @Override
-  public void end(boolean interrupted) {
-    
-  }
+    // Called when the command is initially scheduled.
+    @Override
+    public void initialize() {
+        shooter.updateConstants();
+        if (alime) {
+            shootSetpoint = shooter.findRPM();
+            //setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
+            drivetrain.setUpPID(PIDMode.LIMELIGHT);
+            initAngle = drivetrain.getHeading();
+            initTX = drivetrain.getLimelightX();
+            angleSetpoint = initAngle - initTX;
+        } else {
+            shootSetpoint = shooter.findRPM();
+        }
 
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
+        shooter.setSetpoint(shootSetpoint);
+        feed = false;
+    }
+
+    // Called every time the scheduler runs while the command is scheduled.
+    @Override
+    public void execute() {
+        if (!feed) {
+            if (alime) {
+                SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", shooter.onTarget(shootSetpoint));
+                SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
+
+                //Align with limelight
+                drivetrain.alime(initAngle, initTX);
+
+                //Check if robot is aligned to target for given time
+                if(drivetrain.alimeOnTarget()){
+                    limeTimer++;
+                    if(limeTimer > limeTimeLimit){
+                        drivetrain.drive(0,0);
+                        limelightAligned = true;
+                    }
+                } else {
+                    limeTimer = 0;
+                }
+                //Check if shooter is at speed for given time
+                if (shooter.onTarget(shootSetpoint)) {
+                    shootTimer++;
+                    if(shootTimer > shootTimeLimit){
+                        shooterSped = true;
+                    }
+
+                } else {
+                    shootTimer = 0;
+                }
+
+                //Feed if both robot is aligned and shooter is at speed
+                if(limelightAligned && shooterSped){
+                    feed = true;
+                }
+                
+            } else {
+                if (shooter.onTarget(shootSetpoint)) {
+                    shootTimer++;
+                    if(shootTimer > shootTimeLimit){
+                        shooterSped = true;
+                    }
+
+                } else {
+                    shootTimer = 0;
+                }
+                
+                if(shooterSped){
+                    feed = true;
+                }
+            }
+        } else {
+            drivetrain.drive(0,0);
+            feeder.feedTop(0.4);
+            feeder.feedBottom(0.6);
+            hopper.cycle(-0.5, -0.5);
+        }
+    }
+
+    // Called once the command ends or is interrupted.
+    @Override
+    public void end(boolean interrupted) {
+        feeder.stop();
+        shooter.stop();
+        limeTimer = 0;
+        shootTimer = 0;
+        feed = false;
+        hopper.stop();
+        feeder.setShotSinceFed(true);
+        limelightAligned = false;
+        shooterSped = false;
+        startLimeTimer = false;
+    }
+
+    // Returns true when the command should end.
+    @Override
+    public boolean isFinished() {
+        return false;
+    }
 }

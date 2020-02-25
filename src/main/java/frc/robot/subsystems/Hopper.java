@@ -9,72 +9,106 @@ package frc.robot.subsystems;
 
 import com.revrobotics.CANEncoder;
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Robot.m_can;
 
 public class Hopper extends SubsystemBase {
-  /**
-   * Creates a new Hopper.
-   */
-  private CANSparkMax[] motors = new CANSparkMax[2];
-  private CANEncoder[] encoders = new CANEncoder[2];
+    /**
+     * Creates a new Hopper.
+     */
+    private CANSparkMax[] motors = new CANSparkMax[2];
+    private CANEncoder[] encoders = new CANEncoder[2];
 
-  private int LEFT = 0, RIGHT = 1;
-
-
-  public Hopper() {
-    motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
-    motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
-
-    encoders[LEFT] = motors[LEFT].getEncoder();
-    encoders[RIGHT] = motors[RIGHT].getEncoder();
-
-    motors[LEFT].setSmartCurrentLimit(20, 15);
-    motors[RIGHT].setSmartCurrentLimit(20, 15);
-  }
-
-  public void putInitialDash() {
-    SmartDashboard.putNumber("Left Hopper Speed", 0);
-    SmartDashboard.putNumber("Right Hopper Speed", 0);
-  }
-
-  public void cycle(double leftSpeed, double rightSpeed) {
-    //TODO: make this a reasonable value instead of this placeholder
-    motors[LEFT].set(leftSpeed);
-    motors[RIGHT].set(rightSpeed);
-  }
-
-  public void stop() {
-    motors[LEFT].set(0);
-  }
+    DigitalInput cellSensor;
   
-  public double getVoltage(int n) {
-    return motors[n].getBusVoltage();
-  }
+    private int LEFT = 0, RIGHT = 1;
 
-  public double getMotorHeat(int n) {
-    return motors[n].getMotorTemperature();
-  }
+    private double timer = 0;
 
-  public double getOutputCurrent(int n) {
-    return motors[n].getOutputCurrent();
-  }
+    public Hopper() {
+        motors[LEFT] = new CANSparkMax(m_can.LEFT_HOPPER_MOTOR, MotorType.kBrushless);
+        motors[RIGHT] = new CANSparkMax(m_can.RIGHT_HOPPER_MOTOR, MotorType.kBrushless);
 
-  public double getEncoder(int n) {
-    return encoders[n].getPosition();
-  }
+        motors[LEFT].restoreFactoryDefaults();
+        motors[RIGHT].restoreFactoryDefaults();
 
-  public double getVelocity(int n) {
-    return encoders[n].getVelocity();
-  }
+        motors[LEFT].setInverted(false);
+        motors[RIGHT].setInverted(false);
 
-  @Override
-  public void periodic() {
-    // This method will be called once per scheduler run
-    cycle(SmartDashboard.getNumber("Left Hopper Speed", 0), SmartDashboard.getNumber("Right Hopper Speed", 0));
-  }
+        motors[LEFT].setSmartCurrentLimit(20, 30);
+        motors[RIGHT].setSmartCurrentLimit(20, 30);
+
+        motors[LEFT].setIdleMode(IdleMode.kBrake);
+        motors[RIGHT].setIdleMode(IdleMode.kBrake);
+
+        motors[LEFT].burnFlash();
+        motors[RIGHT].burnFlash();
+
+        encoders[LEFT] = motors[LEFT].getEncoder();
+        encoders[RIGHT] = motors[RIGHT].getEncoder();
+    }
+
+    public void initPos() {
+        stop();
+    }
+
+    public void putInitialDash() {
+        SmartDashboard.putNumber("Left Hopper Speed", 0);
+        SmartDashboard.putNumber("Right Hopper Speed", 0);
+        
+    }
+
+    public void cycle(double m_leftSpeed, double m_rightSpeed) {
+        // double leftSpeed = 0;
+        // double rightSpeed = 0;
+        // timer++;
+        // if ((timer/50) > 1){
+        //     timer = 0;
+        // } else if ((timer/50) > 0.5) {
+        //     leftSpeed = m_leftSpeed;
+        //     rightSpeed = m_rightSpeed;
+        // } 
+        motors[LEFT].set(m_leftSpeed);
+        motors[RIGHT].set(m_rightSpeed);
+    }
+
+    public boolean getIR() {
+        return cellSensor.get();
+    }
+
+    public void stop() {
+        motors[LEFT].set(0);
+        motors[RIGHT].set(0);
+    }
+
+    public double getVoltage(int n) {
+        return motors[n].getBusVoltage();
+    }
+
+    public double getMotorHeat(int n) {
+        return motors[n].getMotorTemperature();
+    }
+
+    public double getOutputCurrent(int n) {
+        return motors[n].getOutputCurrent();
+    }
+
+    public double getEncoder(int n) {
+        return encoders[n].getPosition();
+    }
+
+    public double getVelocity(int n) {
+        return encoders[n].getVelocity();
+    }
+
+    @Override
+    public void periodic() {
+
+    }
 }

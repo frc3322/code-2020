@@ -8,25 +8,35 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.TimedRobot;
+import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.LedData;
+import frc.robot.RobotContainer.auton;
 
 public class Robot extends TimedRobot {
     
     private RobotContainer m_robotContainer;
     private static Command m_autonomousCommand;
-    private Drivetrain m_drivetrain;
     public static Constants.RobotMap.CAN m_can;
+    private SendableChooser<auton> autonMode;
 
     @Override
     public void robotInit() {
+        autonMode = new SendableChooser<>();
+
+        autonMode.setDefaultOption("Default", auton.DEFAULT);
+        autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
+
+        SmartDashboard.putData("Auton", autonMode);
+
         m_can = new Constants.RobotMap.CAN();
         m_robotContainer = new RobotContainer();
-        m_drivetrain = m_robotContainer.getDrivetrain();
-        m_autonomousCommand = m_robotContainer.getAutonomousCommand();
+        
+        m_robotContainer.putInitialDashes();
+
     }
 
     @Override
@@ -44,7 +54,10 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
-        m_drivetrain.resetForAuto();
+        SmartDashboard.putData("Auton", autonMode);
+        m_robotContainer.resetDrive();
+        m_robotContainer.cancelDriveControl();
+        m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
         if (m_autonomousCommand != null) {
             m_autonomousCommand.schedule();
         }
@@ -57,11 +70,13 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
-        //m_shooter.setSetpoint(2000);
-        m_drivetrain.resetForAuto();
+        SmartDashboard.putData("Auton", autonMode);
+        m_robotContainer.setDriveControl();
+        m_robotContainer.resetDrive();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
+        m_robotContainer.setInitPos();
     }
 
     @Override
