@@ -24,6 +24,8 @@ public class Feeder extends SubsystemBase {
     private boolean shotSinceFed = false;
     private boolean intookSinceFed = false;
     private boolean cellSensorGot = false;
+    private boolean timeout = false;
+    private boolean autofeed = true;
     private int timer = 0;
     private int timeLimit = 9;
     private int feederTimeoutTimer = 0;
@@ -87,6 +89,14 @@ public class Feeder extends SubsystemBase {
         setGotFalse();
     }
 
+    public void setTimeout(boolean m_timeout){
+        timeout = m_timeout;
+    }
+
+    public void setAutofeed(boolean m_autofeed) {
+        autofeed = m_autofeed;
+    }
+
     public void updateDash() {
         
     }
@@ -112,8 +122,17 @@ public class Feeder extends SubsystemBase {
         if (RobotContainer.intaking) {
             intookSinceFed = true;
         }
+
+        if(timeout){
+            feederTimeoutTimer++;
+            if(feederTimeoutTimer > feederTimeout) {
+                stop();
+                timeout = false;
+                autofeed = false;
+            }
+        }
       
-        if (intookSinceFed) {
+        if (intookSinceFed && autofeed) {
             if (firstTime || shotSinceFed) {
                 feedTop(0.8);
                 feedBottom(.8);

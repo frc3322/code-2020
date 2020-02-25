@@ -15,6 +15,7 @@ import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.PIDMode;
+import frc.robot.subsystems.Shooter.ShooterPIDMode;
 
 public class Shoot extends CommandBase {
     Drivetrain drivetrain;
@@ -53,7 +54,7 @@ public class Shoot extends CommandBase {
     // Called when the command is initially scheduled.
     @Override
     public void initialize() {
-        shooter.updateConstants();
+        shooter.setUpPID(ShooterPIDMode.RAMP);
         if (alime) {
             shootSetpoint = shooter.findRPM();
             //setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
@@ -122,6 +123,7 @@ public class Shoot extends CommandBase {
                 }
             }
         } else {
+            shooter.setUpPID(ShooterPIDMode.SHOOT);
             drivetrain.drive(0,0);
             feeder.feedTop(0.4);
             feeder.feedBottom(0.6);

@@ -24,11 +24,20 @@ import frc.robot.Constants;
 import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
-
-    private static double P = 0.0004;
-    private static double I = 0.0000009;
-    private static double D = 0;
-    private static double F = 0.000180;
+    
+    private static double rP = 0.0004;
+    private static double rI = 0.0000009;
+    private static double rD = 0;
+    private static double rF = 0.000180;
+    
+    private static double sP = 0.0004;
+    private static double sI = 0.0000009;
+    private static double sD = 0;
+    private static double sF = 0.000180;
+    
+    public enum ShooterPIDMode {
+        RAMP, SHOOT
+    }
 
     private CANSparkMax[] motors = new CANSparkMax[2];
     private CANEncoder[] encoders = new CANEncoder[2];
@@ -71,15 +80,31 @@ public class Shooter extends SubsystemBase {
         encoders[MOTOR_1] = new CANEncoder(motors[MOTOR_1]);
 
         controller = motors[MOTOR_0].getPIDController();
-
-        controller.setP(P);
-        controller.setI(I);
-        controller.setD(D);
-        controller.setFF(F);
-
         controller.setOutputRange(0, 1);
+    }
 
-        updateConstants();
+    public void setUpPID(ShooterPIDMode pidMode) {
+        switch(pidMode){
+            case RAMP:
+                controller.setP(rP);
+                controller.setI(rI);
+                controller.setD(rD);
+                controller.setFF(rF);
+                break;
+            case SHOOT:
+                controller.setP(sP);
+                controller.setI(sI);
+                controller.setD(sD);
+                controller.setFF(sF);
+                break;
+            default:
+                controller.setP(sP);
+                controller.setI(sI);
+                controller.setD(sD);
+                controller.setFF(sF);
+                break;
+        }
+
     }
 
     public void initPos() {
@@ -141,18 +166,18 @@ public class Shooter extends SubsystemBase {
 
     public void putInitialDash(){
         SmartDashboard.putNumber("Shooter/Shooter Speed", 0);
-        SmartDashboard.putNumber("Shooter/ShootPID/Shooter P", P);
-        SmartDashboard.putNumber("Shooter/ShootPID/Shooter I", I);
-        SmartDashboard.putNumber("Shooter/ShootPID/Shooter D", D); 
-        SmartDashboard.putNumber("Shooter/ShootPID/Shooter F", F);
-        SmartDashboard.putNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
-    }
 
-    public void updateConstants() {
-        controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter P", P));
-        controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter I", I));
-        controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter D", D));
-        controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter F", F));
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter rP", rP);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter rI", rI);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter rD", rD); 
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter rF", rF);
+
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter sP", sP);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter sI", sI);
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter sD", sD); 
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter sF", sF);
+
+        SmartDashboard.putNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
     }
 
     @Override

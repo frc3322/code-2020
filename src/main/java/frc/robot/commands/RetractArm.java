@@ -13,18 +13,18 @@ import frc.robot.Constants;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.Drivetrain;
 
-public class ExtendArm extends CommandBase {
+public class RetractArm extends CommandBase {
   private Climber climber;
   private Drivetrain drivetrain;
   private int RAISE = 0, CLIMB = 1;
 
   private int timer;
-  private int timeLimit = 200;
+  private int timeLimit = 50;
 
-  private boolean extend = false;  
+  private boolean retract = false;  
   private boolean extendedAtStart = false;
 
-  public ExtendArm(Climber climber, Drivetrain drivetrain) {
+  public RetractArm(Climber climber, Drivetrain drivetrain) {
     this.drivetrain = drivetrain;
     this.climber = climber;
     addRequirements(climber);
@@ -33,30 +33,25 @@ public class ExtendArm extends CommandBase {
   @Override
   public void initialize() {
     extendedAtStart = climber.isExtended();
-    drivetrain.setSlowMode(true);
-    climber.extendArm();
-    extend = false;
   }
 
   @Override
   public void execute() {
     SmartDashboard.putBoolean("extended at start?", extendedAtStart);
-    if(!extendedAtStart && !extend){
-      timer++;
-      if(timer > timeLimit) {
-        climber.resetEncoders();
-        extend = true;
-      }
-    } else {
-      extend = true;
-    }
+    
 
-    if (extend) {
-      if (climber.getEncoder(RAISE) < Constants.ClimberContants.CLIMBER_ARM_TOP_LIMIT){
-          climber.raiseClimber(Constants.ClimberContants.ARM_EXTEND_SPEED);
+    if (extendedAtStart) {
+      if (climber.getEncoder(RAISE) > Constants.ClimberContants.CLIMBER_ARM_BOTTOM_THRESHOLD){
+          climber.lowerClimber(0.3);
       } else {
           climber.stopClimber();
-          climber.stopWinch();
+          timer++;
+
+          if(timer > timeLimit){
+            climber.retractArm();
+            drivetrain.setSlowMode(false);
+          }
+          
       }
     }
   }
@@ -64,8 +59,8 @@ public class ExtendArm extends CommandBase {
   @Override
   public void end(boolean interrupted) {
     climber.stopClimber();
-    climber.stopWinch();
     timer = 0;
+
     extendedAtStart = false;
   }
 

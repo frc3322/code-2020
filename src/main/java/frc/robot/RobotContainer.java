@@ -10,6 +10,7 @@ package frc.robot;
 import frc.robot.commands.DriveControl;
 import frc.robot.commands.ExtendArm;
 import frc.robot.commands.LedControl;
+import frc.robot.commands.RetractArm;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auton.DriveDistance;
 import frc.robot.commands.auton.TurnToAngle;
@@ -72,7 +73,9 @@ public class RobotContainer {
     private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber, drivetrain);
+    private Command retractArm = new RetractArm(climber, drivetrain);
     private Command driveControl = new DriveControl(drivetrain, lowerChassis);
+    
 
     //auton commands
     private Command defaultAuton = timeoutShoot.withTimeout(4)
@@ -129,6 +132,7 @@ public class RobotContainer {
         Button button_x_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_X);
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
         DPadButton dpad_up_lower = new DPadButton(lowerChassis, DPadButton.Direction.UP);
+        DPadButton dpad_left_lower = new DPadButton(lowerChassis, DPadButton.Direction.LEFT);
         
 
         //upper
@@ -161,8 +165,11 @@ public class RobotContainer {
         // button_x_upper.whenPressed(new InstantCommand(() -> climber.setWinch(-.3)))
         //                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         //lower
-        bumper_right_lower.whenPressed(new InstantCommand(() -> intake.begin()))
-                            .whenReleased(new InstantCommand(() -> intake.end())
+        bumper_right_lower.whenPressed(new InstantCommand(() -> feeder.setTimeout(false))
+                            .andThen(new InstantCommand(() -> feeder.setAutofeed(true)))
+                            .andThen(new InstantCommand(() -> intake.begin())))
+                            .whenReleased(new InstantCommand(() -> feeder.setTimeout(true))
+                            .andThen(new InstantCommand(() -> intake.end()))
                             .andThen(new RunCommand(() -> intake.start()).withTimeout(0.1)
                             .andThen(new InstantCommand(() -> intake.stop()))));
 
@@ -173,8 +180,8 @@ public class RobotContainer {
                         .whenReleased(new InstantCommand(() -> shoot.cancel())
                         .alongWith(new InstantCommand(() -> hopper.stop())));
 
-        button_b_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(1)))
-                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+        button_b_lower.whenPressed(new InstantCommand(() -> retractArm.schedule()))
+                        .whenReleased(new InstantCommand(() -> retractArm.cancel()));
 
         button_x_lower.whenPressed(new InstantCommand(() -> intake.outtakeBegin()))
                         .whenReleased(new InstantCommand(() -> intake.end()));
@@ -184,6 +191,9 @@ public class RobotContainer {
 
         dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(1)))
                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
+        
+        dpad_left_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(0.3)))
+                        .whenReleased(new InstantCommand(() -> climber.stopClimber()));
 
     }
 
