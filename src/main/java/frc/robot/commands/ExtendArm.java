@@ -19,7 +19,7 @@ public class ExtendArm extends CommandBase {
   private int RAISE = 0, CLIMB = 1;
 
   private int timer;
-  private int timeLimit = 200;
+  private int timeLimit = 165;
 
   private boolean extend = false;  
   private boolean extendedAtStart = false;

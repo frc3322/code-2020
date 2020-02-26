@@ -4,6 +4,8 @@ import com.revrobotics.CANSparkMax;
 import com.revrobotics.CANSparkMax.IdleMode;
 import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -27,9 +29,9 @@ public class Feeder extends SubsystemBase {
     private boolean timeout = false;
     private boolean autofeed = true;
     private int timer = 0;
-    private int timeLimit = 9;
+    private int timeLimit = 11;
     private int feederTimeoutTimer = 0;
-    private int feederTimeout = 30;
+    private int feederTimeout = 100;
 
     public Feeder() {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
@@ -129,6 +131,7 @@ public class Feeder extends SubsystemBase {
                 stop();
                 timeout = false;
                 autofeed = false;
+                feederTimeoutTimer = 0;
             }
         }
       
@@ -136,6 +139,7 @@ public class Feeder extends SubsystemBase {
             if (firstTime || shotSinceFed) {
                 feedTop(0.8);
                 feedBottom(.8);
+                
                 if (!cellSensor.get()) {
                     cellSensorGot = true;
                 }

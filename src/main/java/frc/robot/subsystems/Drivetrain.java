@@ -127,7 +127,7 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void initPos() {
-
+        setLimelight(true);
     }
 
     public void putInitialDash(){
@@ -240,6 +240,15 @@ public class Drivetrain extends SubsystemBase {
     }
 
     // Limelight PID methods
+    public void setLimelight(boolean on){
+        if (on) {
+            table.getEntry("ledMode").setNumber(3);
+        } else {
+            table.getEntry("ledMode").setNumber(1);
+        }
+        
+    }
+
     public double getLimelightX() {
         limelightX = tx.getDouble(0.0);
         SmartDashboard.putNumber("Drivetrain/Limelight/Limelight tx", limelightX);

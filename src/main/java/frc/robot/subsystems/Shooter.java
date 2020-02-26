@@ -25,15 +25,15 @@ import static frc.robot.Robot.m_can;
 
 public class Shooter extends SubsystemBase {
     
-    private static double rP = 0.0004;
-    private static double rI = 0.0000009;
-    private static double rD = 0;
-    private static double rF = 0.000180;
+    private static double rP = 0.00035;
+    private static double rI = 0.0000012;
+    private static double rD = 0.001;
+    private static double rF = 0;
     
-    private static double sP = 0.0004;
-    private static double sI = 0.0000009;
+    private static double sP = 0.0003;
+    private static double sI = 0;
     private static double sD = 0;
-    private static double sF = 0.000180;
+    private static double sF = 0;
     
     public enum ShooterPIDMode {
         RAMP, SHOOT
@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
 
     private double[] distances = {10, 16, 20, 23, 25};
 
-    private double[] RPMs = {3200, 3450, 3550, 3700, 3800};
+    private double[] RPMs = {3350, 3450, 3550, 3700, 3800};
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry ty = table.getEntry("ty");
@@ -86,22 +86,22 @@ public class Shooter extends SubsystemBase {
     public void setUpPID(ShooterPIDMode pidMode) {
         switch(pidMode){
             case RAMP:
-                controller.setP(rP);
-                controller.setI(rI);
-                controller.setD(rD);
-                controller.setFF(rF);
+                controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter rP", rP));
+                controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter rI", rI));
+                controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter rD", rD));
+                controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter rF", rF));
                 break;
             case SHOOT:
-                controller.setP(sP);
-                controller.setI(sI);
-                controller.setD(sD);
-                controller.setFF(sF);
+                controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sP", sP));
+                controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sI", sI));
+                controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sD", sD));
+                controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sF", sF));
                 break;
             default:
-                controller.setP(sP);
-                controller.setI(sI);
-                controller.setD(sD);
-                controller.setFF(sF);
+                controller.setP(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sP", rP));
+                controller.setI(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sI", rI));
+                controller.setD(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sD", rD));
+                controller.setFF(SmartDashboard.getNumber("Shooter/ShootPID/Shooter sF", rF));
                 break;
         }
 
@@ -182,6 +182,8 @@ public class Shooter extends SubsystemBase {
 
     @Override
     public void periodic() {
+        SmartDashboard.putNumber("Shooter RPM Setpoint", findRPM());
+        SmartDashboard.putNumber("Shooter Distance", getDistance());
         publishRPM();
     }
 }

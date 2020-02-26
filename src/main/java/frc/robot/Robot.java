@@ -36,6 +36,8 @@ public class Robot extends TimedRobot {
         
         m_robotContainer.putInitialDashes();
 
+        m_robotContainer.setInitPos();
+
     }
 
     @Override
@@ -53,6 +55,8 @@ public class Robot extends TimedRobot {
 
     @Override
     public void autonomousInit() {
+        SmartDashboard.putNumber("Auton Delay", 0);
+        m_robotContainer.setInitPos();
         m_robotContainer.resetDrive();
         m_robotContainer.cancelDriveControl();
         m_autonomousCommand = m_robotContainer.getAutonomousCommand(autonMode.getSelected());
@@ -68,13 +72,14 @@ public class Robot extends TimedRobot {
 
     @Override
     public void teleopInit() {
+        SmartDashboard.putNumber("Auton Delay", 0);
+        m_robotContainer.setInitPos();
         SmartDashboard.putData("Auton", autonMode);
         m_robotContainer.setDriveControl();
         m_robotContainer.resetDrive();
         if (m_autonomousCommand != null) {
             m_autonomousCommand.cancel();
         }
-        m_robotContainer.setInitPos();
     }
 
     @Override

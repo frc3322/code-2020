@@ -29,16 +29,17 @@ public class Shoot extends CommandBase {
     double angleSetpoint;
 
     int limeTimer = 0;
-    int limeTimeLimit = 5; //50 per second
+    int limeTimeLimit = 10; //50 per second
 
     int shootTimer = 0;
-    int shootTimeLimit = 5;
+    int shootTimeLimit = 10;
 
     double shootSetpoint;
 
     boolean limelightAligned = false;
     boolean shooterSped = false;
     boolean startLimeTimer = false;
+    boolean shootPIDSetUp = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
         this.drivetrain = drivetrain;
@@ -64,6 +65,7 @@ public class Shoot extends CommandBase {
             angleSetpoint = initAngle - initTX;
         } else {
             shootSetpoint = shooter.findRPM();
+            //shootSetpoint = 3200;
         }
 
         shooter.setSetpoint(shootSetpoint);
@@ -123,11 +125,15 @@ public class Shoot extends CommandBase {
                 }
             }
         } else {
-            shooter.setUpPID(ShooterPIDMode.SHOOT);
+            if(!shootPIDSetUp){
+                shooter.setUpPID(ShooterPIDMode.SHOOT);
+                shootPIDSetUp = true;
+            }
+            
             drivetrain.drive(0,0);
-            feeder.feedTop(0.4);
-            feeder.feedBottom(0.6);
-            hopper.cycle(-0.5, -0.5);
+            feeder.feedTop(1);
+            feeder.feedBottom(1);
+            hopper.cycle(-0.4, -0.4);
         }
     }
 
@@ -144,6 +150,7 @@ public class Shoot extends CommandBase {
         limelightAligned = false;
         shooterSped = false;
         startLimeTimer = false;
+        shootPIDSetUp = false;
     }
 
     // Returns true when the command should end.

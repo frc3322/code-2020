@@ -215,7 +215,7 @@ public final class Constants {
     }
 
     public static class ShooterConstants {
-        public static final double SHOOTER_TOLERANCE = 75.0;
+        public static final double SHOOTER_TOLERANCE = 25.0;
     }
 
     public static class ClimberContants {
