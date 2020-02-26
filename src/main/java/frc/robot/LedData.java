@@ -64,3 +64,4 @@ public class LedData {
         return instance;
     }
 }
+//LedData.getInstance().startPattern(SHOOT : TARGET : IDLE : CLIMB);

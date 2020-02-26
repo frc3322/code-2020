@@ -72,6 +72,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void pullWinch(double speed) {
+        LedData.getInstance().startPattern(LedData.LedMode.CLIMB);
         motors[CLIMB].set(speed);
     }
 
