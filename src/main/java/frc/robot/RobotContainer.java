@@ -9,7 +9,6 @@ package frc.robot;
 
 import frc.robot.commands.DriveControl;
 import frc.robot.commands.ExtendArm;
-import frc.robot.commands.LedControl;
 import frc.robot.commands.RetractArm;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auton.DriveDistance;
@@ -108,6 +107,8 @@ public class RobotContainer {
         feeder.putInitialDash();
         shooter.putInitialDash();
         hopper.putInitialDash();
+        
+        LedData.getInstance().setAlliance();
         climber.putInitialDash();
     }
 

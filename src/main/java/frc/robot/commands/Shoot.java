@@ -16,6 +16,7 @@ import frc.robot.subsystems.Hopper;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.PIDMode;
 import frc.robot.subsystems.Shooter.ShooterPIDMode;
+import frc.robot.LedData;
 
 public class Shoot extends CommandBase {
     Drivetrain drivetrain;
@@ -57,6 +58,7 @@ public class Shoot extends CommandBase {
     public void initialize() {
         shooter.setUpPID(ShooterPIDMode.RAMP);
         if (alime) {
+            LedData.getInstance().startPattern(LedData.LedMode.TARGET);
             shootSetpoint = shooter.findRPM();
             //setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
@@ -130,6 +132,7 @@ public class Shoot extends CommandBase {
                 shootPIDSetUp = true;
             }
             
+            LedData.getInstance().startPattern(LedData.LedMode.SHOOT);
             drivetrain.drive(0,0);
             feeder.feedTop(1);
             feeder.feedBottom(1);
@@ -140,6 +143,7 @@ public class Shoot extends CommandBase {
     // Called once the command ends or is interrupted.
     @Override
     public void end(boolean interrupted) {
+        LedData.getInstance().startPattern(LedData.LedMode.IDLE);
         feeder.stop();
         shooter.stop();
         limeTimer = 0;

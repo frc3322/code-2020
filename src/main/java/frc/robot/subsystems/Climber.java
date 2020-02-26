@@ -17,6 +17,7 @@ import edu.wpi.first.wpilibj.DoubleSolenoid.Value;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
+import frc.robot.LedData;
 
 import static frc.robot.Robot.m_can;
 
@@ -73,6 +74,7 @@ public class Climber extends SubsystemBase {
     }
 
     public void pullWinch(double speed) {
+        LedData.getInstance().startPattern(LedData.LedMode.CLIMB);
         motors[CLIMB].set(speed);
     }
 
