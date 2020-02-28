@@ -41,6 +41,7 @@ public class Shoot extends CommandBase {
     boolean shooterSped = false;
     boolean startLimeTimer = false;
     boolean shootPIDSetUp = false;
+    boolean ledsSet = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
         this.drivetrain = drivetrain;
@@ -65,6 +66,7 @@ public class Shoot extends CommandBase {
             initAngle = drivetrain.getHeading();
             initTX = drivetrain.getLimelightX();
             angleSetpoint = initAngle - initTX;
+            shootPIDSetUp = false;
         } else {
             shootSetpoint = shooter.findRPM();
             //shootSetpoint = 3200;
@@ -132,7 +134,11 @@ public class Shoot extends CommandBase {
                 shootPIDSetUp = true;
             }
             
-            LedData.getInstance().startPattern(LedData.LedMode.SHOOT);
+            if(!ledsSet){
+                LedData.getInstance().startPattern(LedData.LedMode.SHOOT);
+                ledsSet = true;
+            }
+                
             drivetrain.drive(0,0);
             feeder.feedTop(1);
             feeder.feedBottom(1);
@@ -155,6 +161,7 @@ public class Shoot extends CommandBase {
         shooterSped = false;
         startLimeTimer = false;
         shootPIDSetUp = false;
+        ledsSet = false;
     }
 
     // Returns true when the command should end.
