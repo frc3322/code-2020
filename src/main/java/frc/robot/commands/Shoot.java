@@ -140,8 +140,8 @@ public class Shoot extends CommandBase {
             }
                 
             drivetrain.drive(0,0);
-            feeder.feedTop(1);
-            feeder.feedBottom(1);
+            feeder.feedTop(0.7);
+            feeder.feedBottom(0.7);
             hopper.cycle(-0.4, -0.4);
         }
     }

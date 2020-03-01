@@ -63,13 +63,13 @@ public class RobotContainer {
 
     public enum auton {
         DEFAULT,
-        TRENCH_FIVE;
+        FEED;
     }
 
     //commands
     private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
     private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
-    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
+    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, false);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber, drivetrain);
     private Command retractArm = new RetractArm(climber, drivetrain);
@@ -78,6 +78,11 @@ public class RobotContainer {
 
     //auton commands
     private Command defaultAuton;
+
+    private Command feed = new InstantCommand(() -> intake.extend())
+                            .andThen(new RunCommand(() -> intake.outtake()).withTimeout(3))
+                            .andThen(new InstantCommand(() -> intake.retract()))
+                            .andThen(new InstantCommand(() -> intake.stop()));
 
     private Command fiveBall = new InstantCommand(() -> drivetrain.setUpPID(PIDMode.ANGLE))
                             .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1)
@@ -132,6 +137,8 @@ public class RobotContainer {
         Button button_y_lower = new JoystickButton(lowerChassis, RobotMap.XBOX.BUTTON_Y);
         DPadButton dpad_up_lower = new DPadButton(lowerChassis, DPadButton.Direction.UP);
         DPadButton dpad_left_lower = new DPadButton(lowerChassis, DPadButton.Direction.LEFT);
+        DPadButton dpad_right_lower = new DPadButton(lowerChassis, DPadButton.Direction.RIGHT);
+
         
 
         //upper
@@ -168,9 +175,7 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> feeder.setAutofeed(true)))
                             .andThen(new InstantCommand(() -> intake.begin())))
                             .whenReleased(new InstantCommand(() -> feeder.setTimeout(true))
-                            .andThen(new InstantCommand(() -> intake.end()))
-                            .andThen(new RunCommand(() -> intake.start()).withTimeout(0.1)
-                            .andThen(new InstantCommand(() -> intake.stop()))));
+                            .andThen(new InstantCommand(() -> intake.end())));
 
         bumper_left_lower.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
                             .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
@@ -191,8 +196,13 @@ public class RobotContainer {
         dpad_up_lower.whenPressed(new InstantCommand(() -> climber.pullWinch(1)))
                 .whenReleased(new InstantCommand(() -> climber.stopWinch()));
         
-        dpad_left_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(0.3)))
+        dpad_left_lower.whenPressed(new InstantCommand(() -> climber.lowerClimber(1)))
                         .whenReleased(new InstantCommand(() -> climber.stopClimber()));
+
+        dpad_right_lower.whenPressed(new InstantCommand(() -> climber.retractArm()));
+
+        button_start_lower.whenPressed(new InstantCommand(() -> hopper.cycle(0.8, 0.8)))
+                            .whenReleased(new InstantCommand(() -> hopper.stop()));
 
     }
 
@@ -303,8 +313,8 @@ public class RobotContainer {
                         .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 
         switch (selected) {
-            case TRENCH_FIVE:
-                return  fiveBall;
+            case FEED:
+                return  feed;
             case DEFAULT:
                 return defaultAuton; 
             default:

@@ -29,7 +29,7 @@ public class Feeder extends SubsystemBase {
     private boolean timeout = false;
     private boolean autofeed = true;
     private int timer = 0;
-    private int timeLimit = 11;
+    private int timeLimit = 9;
     private int feederTimeoutTimer = 0;
     private int feederTimeout = 100;
 

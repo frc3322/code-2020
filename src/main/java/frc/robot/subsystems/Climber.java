@@ -37,7 +37,7 @@ public class Climber extends SubsystemBase {
         motors[RAISE].setInverted(false);
         motors[CLIMB].setInverted(true);
 
-        motors[RAISE].setSmartCurrentLimit(50, 30);
+        motors[RAISE].setSmartCurrentLimit(40, 30);
         motors[CLIMB].setSmartCurrentLimit(80);
         motors[CLIMB].setSecondaryCurrentLimit(75);
 

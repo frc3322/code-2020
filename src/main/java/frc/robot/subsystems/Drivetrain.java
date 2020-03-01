@@ -55,8 +55,8 @@ public class Drivetrain extends SubsystemBase {
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
-    private double lP = -0.073;
-    private double lI = 0.000026;
+    private double lP = -0.075;
+    private double lI = 0.0000001;
     private double lD = 0;
 
     private double aP = -0.02;

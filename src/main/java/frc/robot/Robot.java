@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
         autonMode = new SendableChooser<>();
 
         autonMode.setDefaultOption("Default", auton.DEFAULT);
-        autonMode.addOption("Trench 5", auton.TRENCH_FIVE);
+        autonMode.addOption("Feed", auton.FEED);
 
         SmartDashboard.putData("Auton", autonMode);
         SmartDashboard.putNumber("Auton Delay", 0);
