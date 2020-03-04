@@ -7,12 +7,14 @@
 
 package frc.robot.commands;
 
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Feeder;
 import frc.robot.subsystems.Hopper;
+import frc.robot.subsystems.Intake;
 import frc.robot.subsystems.Shooter;
 import frc.robot.subsystems.Drivetrain.PIDMode;
 import frc.robot.subsystems.Shooter.ShooterPIDMode;
@@ -23,17 +25,24 @@ public class Shoot extends CommandBase {
     Shooter shooter;
     Feeder feeder;
     Hopper hopper;
+    Intake intake;
     boolean feed;
     boolean alime;
     double initAngle;
     double initTX;
     double angleSetpoint;
 
-    int limeTimer = 0;
-    int limeTimeLimit = 10; //50 per second
+    Timer limeTimer = new Timer();
+    double limeTimeLimit = 0.2; //50 per second
 
-    int shootTimer = 0;
-    int shootTimeLimit = 10;
+    Timer shootTimer = new Timer();
+    double shootTimeLimit = 0.2;
+
+    Timer jamStartTimer = new Timer();
+    double jamStartLimit = 0.2;
+
+    Timer jamStopTimer = new Timer();
+    double jamStopLimit = 0.4;
 
     double shootSetpoint;
 
@@ -43,13 +52,14 @@ public class Shoot extends CommandBase {
     boolean shootPIDSetUp = false;
     boolean ledsSet = false;
 
-    public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, boolean alime) {
+    public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, Intake intake, boolean alime) {
         this.drivetrain = drivetrain;
         addRequirements(shooter);
 
         this.shooter = shooter;
         this.feeder = feeder;
         this.hopper = hopper;
+        this.intake = intake;
         feed = false;
         this.alime = alime;
     }
@@ -89,23 +99,29 @@ public class Shoot extends CommandBase {
 
                 //Check if robot is aligned to target for given time
                 if(drivetrain.alimeOnTarget()){
-                    limeTimer++;
-                    if(limeTimer > limeTimeLimit){
+                    if(limeTimer.get() == 0.0){
+                        limeTimer.start();
+                    }
+                    
+                    if(limeTimer.get() > limeTimeLimit){
                         drivetrain.drive(0,0);
                         limelightAligned = true;
                     }
                 } else {
-                    limeTimer = 0;
+                    limeTimer.reset();
                 }
                 //Check if shooter is at speed for given time
                 if (shooter.onTarget(shootSetpoint)) {
-                    shootTimer++;
-                    if(shootTimer > shootTimeLimit){
+                    if(shootTimer.get() == 0.0){
+                        shootTimer.start();
+                    }
+                    
+                    if(shootTimer.get() > shootTimeLimit){
                         shooterSped = true;
                     }
 
                 } else {
-                    shootTimer = 0;
+                    shootTimer.reset();
                 }
 
                 //Feed if both robot is aligned and shooter is at speed
@@ -114,21 +130,39 @@ public class Shoot extends CommandBase {
                 }
                 
             } else {
+                //Check if shooter is at speed for given time
                 if (shooter.onTarget(shootSetpoint)) {
-                    shootTimer++;
-                    if(shootTimer > shootTimeLimit){
+                    if(shootTimer.get() == 0.0){
+                        shootTimer.start();
+                    }
+                    
+                    if(shootTimer.get() > shootTimeLimit){
                         shooterSped = true;
                     }
 
                 } else {
-                    shootTimer = 0;
+                    shootTimer.reset();
                 }
-                
-                if(shooterSped){
+
+                if (shooterSped) {
                     feed = true;
                 }
             }
         } else {
+            
+            if (jamStopTimer.get() == 0.0) {
+                jamStartTimer.start();
+                if (jamStartTimer.get() > jamStartLimit) {
+                    intake.set(-0.3, 0.0);
+                    jamStartTimer.stop();
+                    jamStopTimer.start();
+                }
+            } else if (jamStopTimer.get() > jamStopLimit) {
+                intake.stop();
+            } else {
+                intake.set(0.7, 0.0);
+            }
+
             if(!shootPIDSetUp){
                 shooter.setUpPID(ShooterPIDMode.SHOOT);
                 shootPIDSetUp = true;
@@ -152,8 +186,10 @@ public class Shoot extends CommandBase {
         LedData.getInstance().startPattern(LedData.LedMode.IDLE);
         feeder.stop();
         shooter.stop();
-        limeTimer = 0;
-        shootTimer = 0;
+        limeTimer.reset();
+        shootTimer.reset();
+        jamStartTimer.reset();
+        jamStopTimer.reset();
         feed = false;
         hopper.stop();
         feeder.setShotSinceFed(true);

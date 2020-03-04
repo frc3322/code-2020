@@ -55,8 +55,8 @@ public class Drivetrain extends SubsystemBase {
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
-    private double lP = -0.075;
-    private double lI = 0.0000001;
+    private double lP = -0.04;
+    private double lI = 0;
     private double lD = 0;
 
     private double aP = -0.02;
@@ -74,7 +74,7 @@ public class Drivetrain extends SubsystemBase {
     private double threshold = 2;
 
     public enum PIDMode {
-        LIMELIGHT, ALIME_GYRO, ANGLE, DISTANCE, STRAIGHTEN, 
+        LIMELIGHT, ANGLE, DISTANCE, STRAIGHTEN, 
     }
 
     public Drivetrain() {
@@ -268,13 +268,13 @@ public class Drivetrain extends SubsystemBase {
         double setpoint = (initAngle - initTX);
         SmartDashboard.putNumber("Drivetrain/DrivePID/Limelight/Setpoint", setpoint);
 
-        if (getLimelightX() < 4) {
+        if (Math.abs(getLimelightX()) < 4) {
             useLimelight = true;
         }
 
         if (useLimelight) {
             SmartDashboard.putBoolean("Drivetrain/DrivePID/Using Limelight", true);
-            drive(0, -1 * Math.copySign(0.3, getLimelightX()));
+            drive(0, Math.copySign(0.3, getLimelightX()));
         } else {
             SmartDashboard.putBoolean("Drivetrain/DrivePID/Using Limelight", false);
             drive(0, PID1.calculate(getHeading(), setpoint));

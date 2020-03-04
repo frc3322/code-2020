@@ -90,6 +90,11 @@ public class Intake extends SubsystemBase {
         motors[INTAKE_TOP].set(1);
     }
 
+    public void set(double topSpeed, double bottomSpeed) {
+        motors[INTAKE_TOP].set(topSpeed);
+        motors[INTAKE_BOTTOM].set(bottomSpeed);
+    }
+
     public void stop() {
         motors[INTAKE_BOTTOM].set(0);
         motors[INTAKE_TOP].set(0);

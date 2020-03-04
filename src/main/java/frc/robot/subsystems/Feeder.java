@@ -7,6 +7,7 @@ import com.revrobotics.CANSparkMaxLowLevel.MotorType;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -28,10 +29,10 @@ public class Feeder extends SubsystemBase {
     private boolean cellSensorGot = false;
     private boolean timeout = false;
     private boolean autofeed = true;
-    private int timer = 0;
-    private int timeLimit = 9;
-    private int feederTimeoutTimer = 0;
-    private int feederTimeout = 100;
+    private Timer feederTimeoutTimer = new Timer();
+    private double feederTimeout = 2.0;
+    private Timer feedTimer = new Timer();
+    private double feedTimeLimit = 0.2;
 
     public Feeder() {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
@@ -126,12 +127,12 @@ public class Feeder extends SubsystemBase {
         }
 
         if(timeout){
-            feederTimeoutTimer++;
-            if(feederTimeoutTimer > feederTimeout) {
+            feederTimeoutTimer.start();
+            if(feederTimeoutTimer.get() > feederTimeout) {
                 stop();
                 timeout = false;
                 autofeed = false;
-                feederTimeoutTimer = 0;
+                feederTimeoutTimer.reset();
             }
         }
       
@@ -145,14 +146,14 @@ public class Feeder extends SubsystemBase {
                 }
                 
                 if (cellSensorGot) {
-                    timer++;
-                    if (timer > timeLimit) {
+                    feedTimer.start();
+                    if (feedTimer.get() > feedTimeLimit) {
                         stop();
                         firstTime = false;
                         intookSinceFed = false;
                         shotSinceFed = false;
                         cellSensorGot = false;
-                        timer = 0;
+                        feedTimer.reset();
                     }
                 }
             }

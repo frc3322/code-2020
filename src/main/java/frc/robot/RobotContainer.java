@@ -67,9 +67,9 @@ public class RobotContainer {
     }
 
     //commands
-    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, true);
-    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, false);
-    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, false);
+    private Command shoot = new Shoot(drivetrain, shooter, feeder, hopper, intake, true);
+    private Command shootWithoutAlime = new Shoot(drivetrain, shooter, feeder, hopper, intake, false);
+    private Command timeoutShoot = new Shoot(drivetrain, shooter, feeder, hopper, intake, false);
     private Command cycleHopper = new RunCommand(() -> hopper.cycle(-0.5, -0.5));
     private Command extendArm = new ExtendArm(climber, drivetrain);
     private Command retractArm = new RetractArm(climber, drivetrain);
@@ -93,7 +93,12 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> intake.end()))
                             .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1.5))
                             .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)))
-                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, true));
+                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
+
+    private Command middleFive = new RunCommand(() -> drivetrain.drive(.7, 0)).withTimeout(2).alongWith(new InstantCommand(() -> intake.begin()))
+                                .andThen(new RunCommand(() -> drivetrain.drive(-.4, 0)).withTimeout(1))
+                                .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170))).alongWith(new InstantCommand(() -> intake.end()))
+                                .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
     //test commands
     private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
