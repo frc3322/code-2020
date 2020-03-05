@@ -31,8 +31,10 @@ public class Feeder extends SubsystemBase {
     private boolean autofeed = true;
     private Timer feederTimeoutTimer = new Timer();
     private double feederTimeout = 2.0;
+    private boolean feederTimeoutStarted = false;
     private Timer feedTimer = new Timer();
-    private double feedTimeLimit = 0.2;
+    private double feedTimeLimit = 0.12;
+    private boolean feederTimerStarted = false;
 
     public Feeder() {
         motors[FEED_1] = new CANSparkMax(m_can.FEEDER_1, MotorType.kBrushless);
@@ -127,11 +129,16 @@ public class Feeder extends SubsystemBase {
         }
 
         if(timeout){
-            feederTimeoutTimer.start();
+            if(!feederTimeoutStarted){
+                feederTimeoutTimer.start();
+                feederTimeoutStarted = true;
+            }
+
             if(feederTimeoutTimer.get() > feederTimeout) {
                 stop();
                 timeout = false;
                 autofeed = false;
+                feederTimeoutStarted = false;
                 feederTimeoutTimer.reset();
             }
         }
@@ -146,13 +153,17 @@ public class Feeder extends SubsystemBase {
                 }
                 
                 if (cellSensorGot) {
-                    feedTimer.start();
+                    if(!feederTimerStarted){
+                        feedTimer.start();
+                        feederTimerStarted = true;
+                    }
                     if (feedTimer.get() > feedTimeLimit) {
                         stop();
                         firstTime = false;
                         intookSinceFed = false;
                         shotSinceFed = false;
                         cellSensorGot = false;
+                        feederTimerStarted = false;
                         feedTimer.reset();
                     }
                 }

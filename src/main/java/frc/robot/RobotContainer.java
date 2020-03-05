@@ -178,9 +178,11 @@ public class RobotContainer {
         //lower
         bumper_right_lower.whenPressed(new InstantCommand(() -> feeder.setTimeout(false))
                             .andThen(new InstantCommand(() -> feeder.setAutofeed(true)))
-                            .andThen(new InstantCommand(() -> intake.begin())))
+                            .andThen(new InstantCommand(() -> intake.begin()))
+                            .andThen(new InstantCommand(() -> hopper.cycle(-0.3, 0.3))))
                             .whenReleased(new InstantCommand(() -> feeder.setTimeout(true))
-                            .andThen(new InstantCommand(() -> intake.end())));
+                            .andThen(new InstantCommand(() -> intake.end()))
+                            .andThen(new InstantCommand(() -> hopper.cycle(0, 0))));
 
         bumper_left_lower.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
                             .whenReleased(new InstantCommand(() -> shootWithoutAlime.cancel()));
