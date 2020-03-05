@@ -85,8 +85,7 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> intake.retract()))
                             .andThen(new InstantCommand(() -> intake.stop()));
 
-    private Command fiveBall = new InstantCommand(() -> drivetrain.setUpPID(PIDMode.ANGLE))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 1.5))
+    private Command fiveBall = new DriveDistanceJank(drivetrain, 0.7, 1.5)
                             .andThen(new InstantCommand(() -> intake.begin()))
                             .andThen(new DriveDistanceJank(drivetrain, 0.5, 0.5))
                             .andThen(new TurnToAngle(drivetrain, 175.0))
@@ -98,6 +97,15 @@ public class RobotContainer {
                                 .andThen(new RunCommand(() -> drivetrain.drive(-.4, 0)).withTimeout(1))
                                 .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170))).alongWith(new InstantCommand(() -> intake.end()))
                                 .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
+
+    private Command sixBall = new Shoot(drivetrain, shooter, feeder, hopper, intake, true)
+                            .andThen(new TurnToAngle(drivetrain, 180))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 1.5))
+                            .andThen(new InstantCommand(() -> intake.begin()))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.5, 0.5))
+                            .andThen(new InstantCommand(() -> intake.end()))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 2))
+                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
     //test commands
     private Command testDriveDistance = new DriveDistance(drivetrain, 2);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
