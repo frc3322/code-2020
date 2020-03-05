@@ -231,6 +231,10 @@ public class RobotContainer {
     public void cancelDriveControl() {
         driveControl.cancel();
     }
+
+    public void setLimelight(boolean on) {
+        drivetrain.setLimelight(on);
+    }
     
     public void putInitialDashes() {
         drivetrain.putInitialDash();

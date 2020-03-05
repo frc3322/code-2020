@@ -26,23 +26,19 @@ public class Shoot extends CommandBase {
     Feeder feeder;
     Hopper hopper;
     Intake intake;
-    boolean feed;
     boolean alime;
     double initAngle;
     double initTX;
     double angleSetpoint;
 
     Timer limeTimer = new Timer();
-    double limeTimeLimit = 0.2; //50 per second
+    double limeTimeLimit = 0.2; //seconds
 
     Timer shootTimer = new Timer();
-    double shootTimeLimit = 0.2;
-
-    Timer jamStartTimer = new Timer();
-    double jamStartLimit = 0.2;
-
-    Timer jamStopTimer = new Timer();
-    double jamStopLimit = 0.4;
+    double shootTimeLimit = 0.2;   
+    
+    Timer lightDelayTimer = new Timer();
+    double lightDelay = 0.2;
 
     double shootSetpoint;
 
@@ -51,6 +47,8 @@ public class Shoot extends CommandBase {
     boolean startLimeTimer = false;
     boolean shootPIDSetUp = false;
     boolean ledsSet = false;
+    boolean lightOn = false;
+    boolean feed = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, Intake intake, boolean alime) {
         this.drivetrain = drivetrain;
@@ -60,7 +58,6 @@ public class Shoot extends CommandBase {
         this.feeder = feeder;
         this.hopper = hopper;
         this.intake = intake;
-        feed = false;
         this.alime = alime;
     }
 
@@ -70,82 +67,90 @@ public class Shoot extends CommandBase {
         shooter.setUpPID(ShooterPIDMode.RAMP);
         if (alime) {
             LedData.getInstance().startPattern(LedData.LedMode.TARGET);
-            shootSetpoint = shooter.findRPM();
             //setpoint = SmartDashboard.getNumber("Shooter/ShootPID/Shooter Setpoint", 3000);
             drivetrain.setUpPID(PIDMode.LIMELIGHT);
-            initAngle = drivetrain.getHeading();
-            initTX = drivetrain.getLimelightX();
-            angleSetpoint = initAngle - initTX;
-            shootPIDSetUp = false;
+            drivetrain.setLimelight(true);
         } else {
-            shootSetpoint = shooter.findRPM();
+            drivetrain.setLimelight(true);
             //shootSetpoint = 3200;
         }
 
         shooter.setSetpoint(shootSetpoint);
-        feed = false;
     }
 
     // Called every time the scheduler runs while the command is scheduled.
     @Override
     public void execute() {
         if (!feed) {
-            if (alime) {
-                SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", shooter.onTarget(shootSetpoint));
-                SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
+            if(!lightOn) {
+                lightDelayTimer.start();
 
-                //Align with limelight
-                drivetrain.alime(initAngle, initTX);
-
-                //Check if robot is aligned to target for given time
-                if(drivetrain.alimeOnTarget()){
-                    if(limeTimer.get() == 0.0){
-                        limeTimer.start();
-                    }
-                    
-                    if(limeTimer.get() > limeTimeLimit){
-                        drivetrain.drive(0,0);
-                        limelightAligned = true;
-                    }
-                } else {
-                    limeTimer.reset();
-                }
-                //Check if shooter is at speed for given time
-                if (shooter.onTarget(shootSetpoint)) {
-                    if(shootTimer.get() == 0.0){
-                        shootTimer.start();
-                    }
-                    
-                    if(shootTimer.get() > shootTimeLimit){
-                        shooterSped = true;
-                    }
-
-                } else {
-                    shootTimer.reset();
+                if(lightDelayTimer.get() > lightDelay){
+                    initAngle = drivetrain.getHeading();
+                    initTX = drivetrain.getLimelightX();
+                    angleSetpoint = initAngle - initTX;
+                    shootSetpoint = shooter.findRPM();
+                    lightOn = true;
                 }
 
-                //Feed if both robot is aligned and shooter is at speed
-                if(limelightAligned && shooterSped){
-                    feed = true;
-                }
-                
             } else {
-                //Check if shooter is at speed for given time
-                if (shooter.onTarget(shootSetpoint)) {
-                    if(shootTimer.get() == 0.0){
-                        shootTimer.start();
+                if (alime) {
+                    SmartDashboard.putBoolean("Shooter/ShootPID/Shooter On Target", shooter.onTarget(shootSetpoint));
+                    SmartDashboard.putBoolean("Drivetrain/Limelight/Limelight on Target?", drivetrain.alimeOnTarget());
+
+                    //Align with limelight
+                    drivetrain.alime(initAngle, initTX);
+
+                    //Check if robot is aligned to target for given time
+                    if(drivetrain.alimeOnTarget()){
+                        if(limeTimer.get() == 0.0){
+                            limeTimer.start();
+                        }
+                        
+                        if(limeTimer.get() > limeTimeLimit){
+                            drivetrain.drive(0,0);
+                            limelightAligned = true;
+                        }
+                    } else {
+                        limeTimer.reset();
+                    }
+                    //Check if shooter is at speed for given time
+                    if (shooter.onTarget(shootSetpoint)) {
+                        if(shootTimer.get() == 0.0){
+                            shootTimer.start();
+                        }
+                        
+                        if(shootTimer.get() > shootTimeLimit){
+                            shooterSped = true;
+                        }
+
+                    } else {
+                        shootTimer.reset();
+                    }
+
+                    //Feed if both robot is aligned and shooter is at speed
+                    if(limelightAligned && shooterSped){
+                        feed = true;
                     }
                     
-                    if(shootTimer.get() > shootTimeLimit){
-                        shooterSped = true;
+                } else {
+                    //Check if shooter is at speed for given time
+                    if (shooter.onTarget(shootSetpoint)) {
+                        if(shootTimer.get() == 0.0){
+                            shootTimer.start();
+                        }
+                        
+                        if(shootTimer.get() > shootTimeLimit){
+                            shooterSped = true;
+                        }
+
+                    } else {
+                        shootTimer.reset();
                     }
 
-                } else {
-                    shootTimer.reset();
-                }
-
-                if (shooterSped) {
-                    feed = true;
+                    if (shooterSped) {
+                        feed = true;
+                    }
                 }
             }
         } else {
@@ -156,6 +161,7 @@ public class Shoot extends CommandBase {
             
             if(!ledsSet){
                 LedData.getInstance().startPattern(LedData.LedMode.SHOOT);
+                drivetrain.setLimelight(false);
                 ledsSet = true;
             }
                 
@@ -174,8 +180,6 @@ public class Shoot extends CommandBase {
         shooter.stop();
         limeTimer.reset();
         shootTimer.reset();
-        jamStartTimer.reset();
-        jamStopTimer.reset();
         feed = false;
         hopper.stop();
         feeder.setShotSinceFed(true);

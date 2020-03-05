@@ -39,6 +39,8 @@ public class Robot extends TimedRobot {
 
         m_robotContainer.setInitPos();
 
+        m_robotContainer.setLimelight(false);
+
     }
 
     @Override
