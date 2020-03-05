@@ -5,23 +5,24 @@ import edu.wpi.first.wpilibj2.command.CommandBase;
 import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.Drivetrain.PIDMode;
 
-public class DriveDistance extends CommandBase {
+public class DriveDistanceJank extends CommandBase {
 
     Drivetrain drivetrain;
 
+    private double speed;
     private double distance;
     private double initAngle;
 
-    public DriveDistance(Drivetrain drivetrain, double distance) {
+    public DriveDistanceJank(Drivetrain drivetrain, double speed, double distance) {
         this.drivetrain = drivetrain;
         addRequirements(drivetrain);
 
+        this.speed = speed;
         this.distance = distance;
     }
     
     @Override
     public void initialize(){
-        drivetrain.setUpPID(PIDMode.DISTANCE);
         drivetrain.setUpPID(PIDMode.STRAIGHTEN);
         drivetrain.resetEncoders();
 
@@ -31,7 +32,7 @@ public class DriveDistance extends CommandBase {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Drivetrain/OnTarget", drivetrain.distanceOnTarget(distance));
-        drivetrain.driveDistance(distance, initAngle);
+        drivetrain.driveDistance(speed, initAngle);
     }
 
     @Override

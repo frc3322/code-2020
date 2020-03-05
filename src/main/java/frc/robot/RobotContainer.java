@@ -12,6 +12,7 @@ import frc.robot.commands.ExtendArm;
 import frc.robot.commands.RetractArm;
 import frc.robot.commands.Shoot;
 import frc.robot.commands.auton.DriveDistance;
+import frc.robot.commands.auton.DriveDistanceJank;
 import frc.robot.commands.auton.TurnToAngle;
 import frc.robot.subsystems.*;
 import frc.robot.subsystems.Drivetrain.PIDMode;
@@ -85,14 +86,12 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> intake.stop()));
 
     private Command fiveBall = new InstantCommand(() -> drivetrain.setUpPID(PIDMode.ANGLE))
-                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1)
-                            .andThen(new InstantCommand(() -> intake.begin())))
-                            .andThen(new RunCommand(() -> drivetrain.drive(0.5, 0.0)).withTimeout(2))
-                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0))
-                            .andThen(new RunCommand(() -> drivetrain.turnToAngle(-175))).withTimeout(1.7))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 1.5))
+                            .andThen(new InstantCommand(() -> intake.begin()))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.5, 0.5))
+                            .andThen(new TurnToAngle(drivetrain, 175.0))
                             .andThen(new InstantCommand(() -> intake.end()))
-                            .andThen(new RunCommand(() -> drivetrain.drive(0.7, 0.0)).withTimeout(1.5))
-                            .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 2))
                             .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
 
     private Command middleFive = new RunCommand(() -> drivetrain.drive(.7, 0)).withTimeout(2).alongWith(new InstantCommand(() -> intake.begin()))

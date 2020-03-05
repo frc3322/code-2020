@@ -312,6 +312,11 @@ public class Drivetrain extends SubsystemBase {
         drive(PID1.calculate(avgDist, distance), PID2.calculate(getHeading(), initAngle));
     }
 
+    //for going straight
+    public void driveStraight(double speed, double initAngle) {
+        drive(speed, PID2.calculate(getHeading(), initAngle));
+    }
+
     public Boolean distanceOnTarget(double distance) {
         double avgDist = getLeftEncDistance() + getRightEncDistance() / 2;
         return Math.abs(distance) - Math.abs(avgDist)   < 0.1;

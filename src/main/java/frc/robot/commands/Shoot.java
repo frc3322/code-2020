@@ -149,20 +149,6 @@ public class Shoot extends CommandBase {
                 }
             }
         } else {
-            
-            if (jamStopTimer.get() == 0.0) {
-                jamStartTimer.start();
-                if (jamStartTimer.get() > jamStartLimit) {
-                    intake.set(-0.3, 0.0);
-                    jamStartTimer.stop();
-                    jamStopTimer.start();
-                }
-            } else if (jamStopTimer.get() > jamStopLimit) {
-                intake.stop();
-            } else {
-                intake.set(0.7, 0.0);
-            }
-
             if(!shootPIDSetUp){
                 shooter.setUpPID(ShooterPIDMode.SHOOT);
                 shootPIDSetUp = true;
