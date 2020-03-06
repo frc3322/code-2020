@@ -55,19 +55,19 @@ public class Drivetrain extends SubsystemBase {
     private double limelightX = tx.getDouble(0.0);
     private double limelightY = ty.getDouble(0.0);
 
-    private double lP = -0.05;
+    private double lP = -0.045;
     private double lI = 0;
     private double lD = 0;
 
-    private double aP = -0.02;
-    private double aI = 0.00003;
+    private double aP = -0.003;
+    private double aI = 0;
     private double aD = 0;
 
     private double dP = 0;
     private double dI = 0;
     private double dD = 0;
 
-    private double sP = 0;
+    private double sP = 0.001;
     private double sI =  0;
     private double sD = 0;
 
@@ -127,7 +127,6 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public void initPos() {
-        setLimelight(true);
     }
 
     public void putInitialDash(){
@@ -294,12 +293,14 @@ public class Drivetrain extends SubsystemBase {
     // Other PID Drive methods
     // for angle
     public void turnToAngle(double angle) {
-        drive(0, PID1.calculate(getHeading(), angle) * 0.5);
+        double PIDOutput = PID1.calculate(getHeading(), angle);
+        double boost = Math.copySign(0.3, PIDOutput);
+        drive(0, boost + PIDOutput);
         SmartDashboard.putNumber("Turn PID Output", PID1.calculate(getHeading(), angle));
     }
 
     public boolean angleOnTarget(double angle) {
-        return Math.abs(angle - getHeading()) < 1;
+        return Math.abs(Math.abs(angle) - Math.abs(getHeading())) < 1;
     }
 
     public void resetNavX() {
@@ -318,8 +319,8 @@ public class Drivetrain extends SubsystemBase {
     }
 
     public Boolean distanceOnTarget(double distance) {
-        double avgDist = getLeftEncDistance() + getRightEncDistance() / 2;
-        return Math.abs(distance) - Math.abs(avgDist)   < 0.1;
+        double avgDist = (getLeftEncDistance() + getRightEncDistance()) / 2;
+        return Math.abs(Math.abs(distance) - Math.abs(avgDist)) < 0.1;
     }
 
     public void resetEncoders() {

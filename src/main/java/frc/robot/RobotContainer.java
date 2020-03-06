@@ -64,7 +64,7 @@ public class RobotContainer {
 
     public enum auton {
         DEFAULT,
-        FEED;
+        SIX_BALL;
     }
 
     //commands
@@ -98,18 +98,20 @@ public class RobotContainer {
                                 .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170))).alongWith(new InstantCommand(() -> intake.end()))
                                 .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
 
-    private Command sixBall = new Shoot(drivetrain, shooter, feeder, hopper, intake, true)
+    private Command sixBall = new Shoot(drivetrain, shooter, feeder, hopper, intake, true).withTimeout(4.0)
                             .andThen(new TurnToAngle(drivetrain, 180))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 1.5))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 1.6))
                             .andThen(new InstantCommand(() -> intake.begin()))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.5, 0.5))
+                            .andThen(new DriveDistanceJank(drivetrain, 0.6, 2.3))
+                            .andThen(new RunCommand(() -> drivetrain.drive(-1, -0.7)).withTimeout(1))
                             .andThen(new InstantCommand(() -> intake.end()))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 2))
+                            .andThen(new TurnToAngle(drivetrain, -1))
                             .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
     //test commands
-    private Command testDriveDistance = new DriveDistance(drivetrain, 2);
+    private Command testDriveDistance = new DriveDistanceJank(drivetrain, .4, 2.0);
     private Command testTurnToAngle = new TurnToAngle(drivetrain, 180); 
-    
+    private Command testTurnToAngleZero = new TurnToAngle(drivetrain, 0); 
+
     public static boolean intaking = false;
     public static boolean shooting = false;
     
@@ -160,7 +162,10 @@ public class RobotContainer {
         button_b_upper.whenPressed(new InstantCommand(() -> testDriveDistance.schedule()))
                         .whenReleased(new InstantCommand(() -> testDriveDistance.cancel()));
                 
-        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
+        button_x_upper.whenPressed(new InstantCommand(() -> testTurnToAngleZero.schedule()))
+                        .whenReleased(new InstantCommand(() -> testTurnToAngleZero.cancel()));
+                        
+        button_y_upper.whenPressed(new InstantCommand(() -> testTurnToAngle.schedule()))
                         .whenReleased(new InstantCommand(() -> testTurnToAngle.cancel()));
 
         bumper_left_upper.whenPressed(new InstantCommand(() -> shootWithoutAlime.schedule()))
@@ -217,7 +222,6 @@ public class RobotContainer {
 
         button_start_lower.whenPressed(new InstantCommand(() -> hopper.cycle(0.8, 0.8)))
                             .whenReleased(new InstantCommand(() -> hopper.stop()));
-
     }
 
     public void resetDrive() {
@@ -331,8 +335,8 @@ public class RobotContainer {
                         .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 
         switch (selected) {
-            case FEED:
-                return  feed;
+            case SIX_BALL:
+                return  sixBall;
             case DEFAULT:
                 return defaultAuton; 
             default:

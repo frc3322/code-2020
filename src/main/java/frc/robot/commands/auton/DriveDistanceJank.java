@@ -32,7 +32,7 @@ public class DriveDistanceJank extends CommandBase {
     @Override
     public void execute() {
         SmartDashboard.putBoolean("Drivetrain/OnTarget", drivetrain.distanceOnTarget(distance));
-        drivetrain.driveDistance(speed, initAngle);
+        drivetrain.driveStraight(speed, initAngle);
     }
 
     @Override

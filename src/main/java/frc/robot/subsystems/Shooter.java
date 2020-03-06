@@ -46,7 +46,7 @@ public class Shooter extends SubsystemBase {
 
     private double[] distances = {10, 16, 20, 23, 25, 27};
 
-    private double[] RPMs = {3250, 3350, 3450, 3700, 3800, 3900};
+    private double[] RPMs = {3250, 3350, 3400, 3700, 3800, 3900};
 
     private NetworkTable table = NetworkTableInstance.getDefault().getTable("limelight");
     private NetworkTableEntry ty = table.getEntry("ty");

@@ -27,7 +27,7 @@ public class Robot extends TimedRobot {
         autonMode = new SendableChooser<>();
 
         autonMode.setDefaultOption("Default", auton.DEFAULT);
-        autonMode.addOption("Feed", auton.FEED);
+        autonMode.addOption("Six_Ball", auton.SIX_BALL);
 
         SmartDashboard.putData("Auton", autonMode);
         SmartDashboard.putNumber("Auton Delay", 0);
@@ -76,6 +76,7 @@ public class Robot extends TimedRobot {
     public void teleopInit() {
         SmartDashboard.putNumber("Auton Delay", 0);
         m_robotContainer.setInitPos();
+        m_robotContainer.setLimelight(false);
         SmartDashboard.putData("Auton", autonMode);
         m_robotContainer.setDriveControl();
         m_robotContainer.resetDrive();

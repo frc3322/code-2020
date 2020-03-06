@@ -20,7 +20,6 @@ public class TurnToAngle extends CommandBase {
     @Override
     public void initialize(){
         drivetrain.setUpPID(PIDMode.ANGLE);
-        drivetrain.resetNavX();
     }
 
     @Override
