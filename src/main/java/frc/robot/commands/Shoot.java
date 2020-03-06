@@ -49,7 +49,6 @@ public class Shoot extends CommandBase {
     boolean ledsSet = false;
     boolean lightOn = false;
     boolean feed = false;
-    boolean lightTimerStarted = false;
 
     public Shoot(Drivetrain drivetrain, Shooter shooter, Feeder feeder, Hopper hopper, Intake intake, boolean alime) {
         this.drivetrain = drivetrain;
@@ -76,7 +75,7 @@ public class Shoot extends CommandBase {
             //shootSetpoint = 3200;
         }
 
-        shooter.setSetpoint(shootSetpoint);
+        lightDelayTimer.start();
     }
 
     // Called every time the scheduler runs while the command is scheduled.
@@ -84,19 +83,15 @@ public class Shoot extends CommandBase {
     public void execute() {
         if (!feed) {
             if(!lightOn) {
-                if(!lightTimerStarted){
-                    lightDelayTimer.start();
-                    lightTimerStarted = true;
-                }
-
                 if(lightDelayTimer.get() > lightDelay){
                     initAngle = drivetrain.getHeading();
                     initTX = drivetrain.getLimelightX();
                     angleSetpoint = initAngle - initTX;
                     shootSetpoint = shooter.findRPM();
-                    lightOn = true;
-
+                    
                     shooter.setSetpoint(shootSetpoint);
+                    
+                    lightOn = true;
                 }
 
             } else {
@@ -197,7 +192,6 @@ public class Shoot extends CommandBase {
         lightOn = false;
         lightDelayTimer.reset();
         drivetrain.setLimelight(false);
-        lightTimerStarted = false;
     }
 
     // Returns true when the command should end.
