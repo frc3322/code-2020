@@ -59,7 +59,7 @@ public class Drivetrain extends SubsystemBase {
     private double lI = 0;
     private double lD = 0;
 
-    private double aP = -0.003;
+    private double aP = -0.0032;
     private double aI = 0;
     private double aD = 0;
 
@@ -294,7 +294,7 @@ public class Drivetrain extends SubsystemBase {
     // for angle
     public void turnToAngle(double angle) {
         double PIDOutput = PID1.calculate(getHeading(), angle);
-        double boost = Math.copySign(0.3, PIDOutput);
+        double boost = Math.copySign(0.4, PIDOutput);
         drive(0, boost + PIDOutput);
         SmartDashboard.putNumber("Turn PID Output", PID1.calculate(getHeading(), angle));
     }

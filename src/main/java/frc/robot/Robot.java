@@ -28,6 +28,7 @@ public class Robot extends TimedRobot {
 
         autonMode.setDefaultOption("Default", auton.DEFAULT);
         autonMode.addOption("Six_Ball", auton.SIX_BALL);
+        autonMode.addOption("Middle_Six", auton.MIDDLE_SIX);
 
         SmartDashboard.putData("Auton", autonMode);
         SmartDashboard.putNumber("Auton Delay", 0);

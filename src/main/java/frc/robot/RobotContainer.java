@@ -64,7 +64,8 @@ public class RobotContainer {
 
     public enum auton {
         DEFAULT,
-        SIX_BALL;
+        SIX_BALL,
+        MIDDLE_SIX;
     }
 
     //commands
@@ -85,18 +86,30 @@ public class RobotContainer {
                             .andThen(new InstantCommand(() -> intake.retract()))
                             .andThen(new InstantCommand(() -> intake.stop()));
 
-    private Command fiveBall = new DriveDistanceJank(drivetrain, 0.7, 1.5)
-                            .andThen(new InstantCommand(() -> intake.begin()))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.5, 0.5))
-                            .andThen(new TurnToAngle(drivetrain, 175.0))
-                            .andThen(new InstantCommand(() -> intake.end()))
-                            .andThen(new DriveDistanceJank(drivetrain, 0.7, 2))
-                            .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
-
-    private Command middleFive = new RunCommand(() -> drivetrain.drive(.7, 0)).withTimeout(2).alongWith(new InstantCommand(() -> intake.begin()))
-                                .andThen(new RunCommand(() -> drivetrain.drive(-.4, 0)).withTimeout(1))
-                                .andThen(new RunCommand(() -> drivetrain.turnToAngle(-170))).alongWith(new InstantCommand(() -> intake.end()))
+    private Command middleSix = new TurnToAngle(drivetrain, -25)
+                                .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true).withTimeout(4.0))
+                                .andThen(new TurnToAngle(drivetrain, -25))
+                                .andThen(new DriveDistanceJank(drivetrain, -.7, -2.2))
+                                .andThen(new InstantCommand(() -> intake.begin()))
+                                .andThen(new TurnToAngle(drivetrain, -85))
+                                .andThen(new DriveDistanceJank(drivetrain, .35, 1.25))
+                                .andThen(new RunCommand(() -> drivetrain.drive(-0.35, -0.35)).withTimeout(1))
+                                .andThen(new InstantCommand(() -> intake.end()))
+                                .andThen(new TurnToAngle(drivetrain, 0))
+                                .andThen(new DriveDistanceJank(drivetrain, 1, 1.5))
                                 .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
+    
+    
+    
+                                // new Shoot(drivetrain, shooter, feeder, hopper, intake, true).withTimeout(4.0)
+                                // .andThen(new TurnToAngle(drivetrain, 180))
+                                // .andThen(new InstantCommand(() -> intake.begin()))
+                                // .andThen(new DriveDistanceJank(drivetrain, .7, 1.7))
+                                // .andThen(new RunCommand(() -> drivetrain.drive(0.5, 0.5)).withTimeout(2.2))
+                                // .andThen(new RunCommand(() -> drivetrain.drive(-0.5, -0.5)).withTimeout(2.2))
+                                // .andThen(new InstantCommand(() -> intake.end()))
+                                // .andThen(new TurnToAngle(drivetrain, -30))
+                                // .andThen(new Shoot(drivetrain, shooter, feeder, hopper, intake, true));
 
     private Command sixBall = new Shoot(drivetrain, shooter, feeder, hopper, intake, true).withTimeout(4.0)
                             .andThen(new TurnToAngle(drivetrain, 180))
@@ -335,6 +348,8 @@ public class RobotContainer {
                         .andThen(new InstantCommand(() -> drivetrain.drive(0, 0)));
 
         switch (selected) {
+            case MIDDLE_SIX:
+                return middleSix;
             case SIX_BALL:
                 return  sixBall;
             case DEFAULT:
