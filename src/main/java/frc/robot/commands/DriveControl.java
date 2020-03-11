@@ -22,6 +22,7 @@ public class DriveControl extends CommandBase {
     private final Joystick lowerChassis;
     private double x;
     private double y;
+    private double scaledX;
     private double outputTurn;
     private double a = -67551.4;
     private double b = 67549.5;
@@ -89,6 +90,13 @@ public class DriveControl extends CommandBase {
             y = 0.0;
         }
 
+        if(x < 0){
+            scaledX = -((2 * Math.pow(-x, 3)) + (-2.2 * Math.pow(-x, 2)) + (1.2 * (-x)));
+        } else {
+            scaledX = ((2 * Math.pow(x, 3)) + (-2.2 * Math.pow(x, 2)) + (1.2 * (x)));
+        }
+
+
         // double sign = 1;
 
         // Math.copySign(sign, x);
@@ -101,7 +109,7 @@ public class DriveControl extends CommandBase {
         }
 
         if (y == 0.0) {
-            drivetrain.curvatureDrive(0, x, true);
+            drivetrain.curvatureDrive(0, scaledX, true);
         } else {
             drivetrain.curvatureDrive(y, x, false);
         }
